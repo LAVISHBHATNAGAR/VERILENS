@@ -1,116 +1,219 @@
 # VERILENS – Digital Truth & Safety Assistant
-> **AI Image Integrity, Synthetic Media Anomaly Detection & Media Provenance Suite**
 
-VERILENS is a modern, cyber-forensic web application built to analyze images for markers of AI generation and synthetic manipulation. Designed for academic and cybersecurity project demonstrations, VERILENS combines client-side visual signal processing with an expandable API architecture.
+![Project](https://img.shields.io/badge/Project-College%20Prototype-6366f1)
+![Status](https://img.shields.io/badge/Status-In%20Development-orange)
+![Platform](https://img.shields.io/badge/Platform-Web%20Application-2563eb)
 
----
+**VERILENS** is a web-based digital awareness and safety project designed to help users examine suspicious images, understand the risks of AI-generated media, and become more responsible digital citizens.
 
-## 🌟 Key Features
+The current project focuses on an **AI Image Checker**: users can upload an image, preview it, run the available analysis workflow, and view an explanatory result. The prototype is designed to support future integration with a genuine AI-image detection model or API.
 
-### 1. Multi-Spectral Image Forensics
-- **Error Level Analysis (ELA) Simulation**: Visualizes JPEG re-compression divergence across 8×8 block discrete cosine transform quantization matrices.
-- **High-Pass Sobel Edge Gradient**: Maps micro-contrast boundary transitions to detect unnatural edge sharpness or synthetic blurring.
-- **Sensor Noise Floor Variance**: Isolates high-frequency noise residuals to differentiate organic CMOS/CCD camera sensor grain (Poisson-Gaussian shot noise) from clean algorithmic diffusion smoothing.
-- **Forensic Zoom & Pan Inspector**: Examine micro-details at up to 250% magnification directly in the browser.
-
-### 2. Forensic Verdict & Anomaly Breakdown
-- **Dual Likelihood Metrics**: AI-Generated Likelihood vs. Authentic Capture Likelihood.
-- **Classification Status**: *Likely AI-generated*, *Likely authentic*, or *Inconclusive*.
-- **4-Pillar Evaluation**:
-  - Sensor Grain & Noise
-  - Micro-Texture Consistency
-  - Optical & Light Coherence
-  - Metadata & EXIF Provenance
-- **Detailed Anomaly Reports**: Flags specific irregularities (e.g., specular highlight divergence, facial micro-smoothing, hardware tag stripping).
-
-### 3. Session History & Report Generation
-- **Session Audit Ledger**: Tracks previously checked images during the session with thumbnails, timestamps, and one-click re-inspection.
-- **Forensic PDF Export**: Generates a professional, branded PDF certificate complete with file provenance, SHA-256 integrity hash, verdict badges, and anomaly explanations.
-- **JSON Data Export**: Exports machine-readable forensic schemas.
-
-### 4. Digital Truth Suite Companions
-- **Fake News & Credibility Scanner**: Audits headlines and viral claims for clickbait polarity, emotional urgency manipulation, and sensational syntax, with direct one-click links to Google Fact Check and Reuters.
-- **Privacy & Media Provenance Guide**: Educational guide detailing browser-local processing, GPS/EXIF metadata privacy, and the C2PA cryptographic content credential standard.
-- **Interactive API Configuration**: Switch between *Demo Heuristic Mode* and *Custom Cloud API Mode* with sample FastAPI / PyTorch backend code.
+> **Important:** A detector cannot reliably prove that an image is real or AI-generated in every case. The current demo mode is illustrative and must not be treated as a scientifically verified detection result. VERILENS is an awareness and decision-support tool, not a source of certainty.
 
 ---
 
-## 🔬 Scientific & Ethical Transparency
+## Table of Contents
 
-VERILENS adheres to strict academic integrity standards:
-- It **does not claim infallible black-box certainty**.
-- The default **Demo Heuristic Engine** computes deterministic client-side metrics from the image canvas without sending media to external tracking databases.
-- The modular service layer (`src/services/detectionService.js`) enables straightforward integration with production vision models (e.g., Sightengine, Hive Moderation, Hugging Face Deepfake detectors).
+- [Problem Statement](#problem-statement)
+- [Proposed Solution](#proposed-solution)
+- [Objectives](#objectives)
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Privacy and Security](#privacy-and-security)
+- [Limitations](#limitations)
+- [Future Scope](#future-scope)
+- [Team Contributions](#team-contributions)
+- [Project Purpose](#project-purpose)
 
----
+## Problem Statement
 
-## 🚀 Getting Started
+AI-generated images are becoming increasingly realistic and can be difficult for ordinary users to distinguish from photographs. Misleading or manipulated media may contribute to misinformation, impersonation, and confusion online. Many users also lack the knowledge or tools to assess suspicious digital content carefully.
+
+## Proposed Solution
+
+VERILENS aims to make digital-content awareness easier through a simple web interface. Its image-checking workflow lets users upload an image, inspect a preview, run an analysis, and review an explanatory result. The wider project concept can be expanded with news verification, privacy education, suspicious-link awareness, and digital-literacy resources.
+
+## Objectives
+
+- Promote awareness of AI-generated and manipulated media.
+- Provide an accessible interface for examining suspicious images.
+- Explain results in a clear and understandable way.
+- Encourage users to verify information before sharing it.
+- Build a foundation that can later connect to real image-analysis services.
+- Promote responsible and privacy-conscious use of digital tools.
+
+## Features
+
+### Current AI Image Checker prototype
+
+- **Image upload:** Select an image from a device.
+- **Drag and drop:** Add an image through the upload area, if enabled in the interface.
+- **Image preview:** Review the selected image before analysis.
+- **File validation:** Accept supported image formats and show errors for unsupported files.
+- **Analysis workflow:** Run the available demo analysis or connected analysis service.
+- **Result display:** Present an assessment, explanation, and visual indicators.
+- **Session history:** Review images analyzed during the current session, if enabled.
+- **Report export:** Download an analysis summary, if enabled.
+- **Responsive layout:** Designed for desktop and mobile screens.
+
+### Planned wider-platform modules
+
+- Fake-news and claim verification guidance.
+- Privacy and online-safety guide.
+- Suspicious-link awareness and checking.
+- Digital-awareness quizzes.
+- Future AI-generated video analysis.
+
+Only features implemented in the current build should be described as fully operational during a project demonstration.
+
+## How It Works
+
+1. Open the VERILENS website.
+2. Select an image using the upload control or drag-and-drop area.
+3. Check the image preview and confirm that the correct file is selected.
+4. Select **Analyze Image**.
+5. The website runs its configured analysis workflow.
+6. Review the displayed assessment and explanation.
+7. Remove the image, analyze another image, or review the session history if those options are available.
+
+### Interpreting results
+
+A result such as “Likely AI-generated,” “Likely authentic,” or “Inconclusive” should be treated as an assessment, not a guarantee. Image editing, compression, resizing, and new generation methods can affect detection. Users should consider the original source, context, metadata, and independent evidence as well.
+
+## Technology Stack
+
+The intended implementation uses:
+
+| Technology | Purpose |
+|---|---|
+| React | Component-based user interface |
+| JavaScript | Application logic and interactions |
+| HTML | Web-page structure |
+| CSS | Styling and responsive design |
+| Antigravity | AI-assisted development environment |
+| AI detection API/model | Planned integration for genuine image analysis |
+| GitHub | Source-code hosting and collaboration |
+
+The exact stack may vary depending on the implementation in the repository. Update this table to match the dependencies and services actually used.
+
+## Project Structure
+
+A typical React project may use a structure similar to this:
+
+```text
+verilens/
+├── public/
+│   └── assets/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── styles/
+│   ├── App.jsx
+│   └── main.jsx
+├── package.json
+├── README.md
+└── index.html
+```
+
+The actual repository structure may differ. Adjust this example to match your codebase.
+
+## Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
+
+- Node.js (LTS version recommended)
 - npm
+- Git
+- A modern web browser
 
 ### Installation
+
+1. Clone the repository:
+
 ```bash
-# Clone or navigate to the project directory
-cd "ai image checker"
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+```
 
-# Install dependencies
+2. Move into the project directory:
+
+```bash
+cd verilens
+```
+
+3. Install dependencies:
+
+```bash
 npm install
+```
 
-# Start development server
+4. Start the development server:
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:5173/` in your browser.
+5. Open the local URL shown in the terminal (commonly `http://localhost:5173` for Vite projects).
 
-### Production Build
-```bash
-# Build optimized production bundle
-npm run build
+> If your project uses a different framework or scripts, follow the commands in its `package.json`.
 
-# Preview production build locally
-npm run preview
-```
+## Usage
+
+1. Launch the website.
+2. Open the AI Image Checker.
+3. Upload a supported image.
+4. Review the preview.
+5. Run the analysis.
+6. Read the result and its limitations before drawing conclusions.
+
+## Privacy and Security
+
+- Do not upload confidential, sensitive, or personal images unless the service's data-handling practices are understood.
+- The prototype should clearly explain whether images are processed locally or sent to a third-party service.
+- Do not claim that uploads are never stored unless this has been verified in the implementation and by the connected provider.
+- Validate file type and size before processing.
+- Keep API keys and secret credentials out of frontend source code and public GitHub repositories.
+- Provide a clear privacy notice before enabling external analysis services.
+
+## Limitations
+
+- AI-image detection is probabilistic and can be inaccurate.
+- A detector may incorrectly label a genuine image or fail to identify generated content.
+- Results depend on the quality and capabilities of the analysis model or service.
+- Demo-mode results are illustrative only and are not evidence of authenticity.
+- The current prototype's functionality depends on the features actually implemented and connected.
+
+## Future Scope
+
+- Integrate a validated AI-image detection model or API.
+- Add video-analysis support.
+- Add news-claim verification using reliable sources.
+- Develop a privacy and cybersecurity learning section.
+- Add multilingual support.
+- Build a mobile-friendly application.
+- Add user accounts and saved reports, with appropriate privacy safeguards.
+- Improve transparency by showing model limitations and confidence explanations.
+
+## Team Contributions
+
+Add your actual team details here:
+
+| Team Member | Responsibility |
+|---|---|
+| Member 1 | Project research and documentation |
+| Member 2 | UI/UX and frontend development |
+| Member 3 | Image-analysis research and integration |
+| Member 4 | Testing, presentation, and project demonstration |
+
+Replace the member labels with names and update responsibilities to reflect the work each person completed.
+
+## Project Purpose
+
+VERILENS is developed as an educational college project for the **Digital Data** subject. It demonstrates how web technologies can be used to address a current digital-safety challenge and encourages critical thinking when viewing and sharing online media.
 
 ---
 
-## 📂 Project Structure
-
-```
-ai image checker/
-├── public/                 # Static assets & favicon
-├── src/
-│   ├── assets/             # Brand graphics & icons
-│   ├── components/         # Modular React components
-│   │   ├── AboutSection.jsx      # Project overview & tech specs
-│   │   ├── AnalysisHistory.jsx   # Slide-out session history drawer
-│   │   ├── AnalysisResult.jsx    # Dual-gauge results & anomaly breakdown
-│   │   ├── ApiConfigModal.jsx    # Mode switch & backend code sample
-│   │   ├── FakeNewsChecker.jsx   # Information credibility scanner
-│   │   ├── Footer.jsx            # System telemetry & footer
-│   │   ├── Hero.jsx              # Cyber hero banner
-│   │   ├── ImagePreview.jsx      # Multi-spectrum canvas visualizer
-│   │   ├── ImageUploader.jsx     # Drag-and-drop zone & sample selector
-│   │   ├── Navbar.jsx            # Cyber navigation bar
-│   │   ├── PrivacyGuide.jsx      # Metadata privacy & deepfake checklist
-│   │   └── ScanningAnimation.jsx # Multi-stage laser radar HUD
-│   ├── data/
-│   │   └── sampleImages.js       # Pre-bundled benchmark test images
-│   ├── services/
-│   │   ├── detectionService.js   # Heuristic engine & API connector
-│   │   └── reportGenerator.js    # jsPDF forensic audit exporter
-│   ├── utils/
-│   │   └── canvasFilters.js      # ELA, Sobel edge, & noise floor filters
-│   ├── App.jsx             # Root application orchestrator
-│   ├── index.css           # Cyberpunk/cybersecurity design system
-│   └── main.jsx            # Application entrypoint
-├── index.html              # HTML shell & font definitions
-├── package.json            # Project dependencies & scripts
-└── vite.config.js          # Vite build configuration
-```
-
----
-
-## 🛡️ License
-Educational demonstration project for college coursework and cybersecurity presentations.
+**VERILENS – Look closer. Think smarter. Verify before you trust.**
