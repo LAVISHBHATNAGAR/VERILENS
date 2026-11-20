@@ -5,11 +5,8 @@ import {
   ZoomIn, 
   ZoomOut, 
   RotateCcw, 
-  Maximize2, 
-  SlidersHorizontal,
-  Info,
-  CheckCircle,
-  FileCheck
+  FileCheck,
+  Layers
 } from 'lucide-react';
 import { drawFilterToCanvas } from '../utils/canvasFilters';
 import { formatBytes } from '../services/detectionService';
@@ -32,8 +29,8 @@ export default function ImagePreview({
     const canvas = canvasRef.current;
 
     // Set canvas dimensions to match image aspect ratio bounded to viewport
-    const maxPreviewWidth = 800;
-    const maxPreviewHeight = 480;
+    const maxPreviewWidth = 840;
+    const maxPreviewHeight = 500;
 
     let w = img.naturalWidth || img.width || 800;
     let h = img.naturalHeight || img.height || 600;
@@ -61,7 +58,8 @@ export default function ImagePreview({
       <div className="glass-panel" style={{
         padding: '24px',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        background: 'rgba(12, 51, 85, 0.75)'
       }}>
         {/* Top Control Bar */}
         <div style={{
@@ -72,28 +70,28 @@ export default function ImagePreview({
           gap: '12px',
           marginBottom: '18px',
           paddingBottom: '14px',
-          borderBottom: '1px solid rgba(56, 189, 248, 0.12)'
+          borderBottom: '1px solid rgba(248, 248, 255, 0.08)'
         }}>
           {/* File Name & Format Chip */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'rgba(0, 240, 255, 0.1)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '9px',
+              background: 'rgba(210, 245, 0, 0.12)',
+              border: '1px solid rgba(210, 245, 0, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <FileCheck size={18} color="#00f0ff" />
+              <FileCheck size={19} color="#D2F500" />
             </div>
             <div>
               <div style={{
-                fontSize: '0.95rem',
-                fontWeight: '600',
-                color: '#f8fafc',
-                maxWidth: '280px',
+                fontSize: '0.96rem',
+                fontWeight: '700',
+                color: 'var(--ghost-white)',
+                maxWidth: '300px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis'
@@ -103,7 +101,7 @@ export default function ImagePreview({
               <div style={{
                 fontSize: '0.72rem',
                 fontFamily: 'var(--font-mono)',
-                color: 'var(--text-muted)'
+                color: 'var(--ghost-white-muted)'
               }}>
                 {imageItem.dimensions.width} × {imageItem.dimensions.height} px • {formatBytes(imageItem.size)}
               </div>
@@ -115,10 +113,10 @@ export default function ImagePreview({
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'rgba(5, 24, 41, 0.7)',
             padding: '4px',
             borderRadius: '10px',
-            border: '1px solid rgba(56, 189, 248, 0.12)'
+            border: '1px solid rgba(248, 248, 255, 0.08)'
           }}>
             {filters.map((f) => {
               const isActive = activeFilter === f.id;
@@ -127,14 +125,14 @@ export default function ImagePreview({
                   key={f.id}
                   onClick={() => setActiveFilter(f.id)}
                   style={{
-                    background: isActive ? 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(168, 85, 247, 0.25) 100%)' : 'transparent',
-                    border: isActive ? '1px solid rgba(0, 240, 255, 0.4)' : '1px solid transparent',
-                    color: isActive ? '#00f0ff' : '#94a3b8',
-                    padding: '5px 10px',
-                    borderRadius: '6px',
+                    background: isActive ? 'rgba(210, 245, 0, 0.16)' : 'transparent',
+                    border: isActive ? '1px solid rgba(210, 245, 0, 0.45)' : '1px solid transparent',
+                    color: isActive ? '#D2F500' : 'var(--ghost-white-subtle)',
+                    padding: '6px 12px',
+                    borderRadius: '7px',
                     fontSize: '0.75rem',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: isActive ? '600' : '400',
+                    fontWeight: isActive ? '700' : '500',
                     cursor: 'pointer',
                     transition: 'all 0.15s ease'
                   }}
@@ -177,16 +175,16 @@ export default function ImagePreview({
         {/* Viewport Canvas Display Area */}
         <div style={{
           position: 'relative',
-          minHeight: '340px',
+          minHeight: '360px',
           maxHeight: '520px',
-          background: '#040711',
+          background: '#04111d',
           borderRadius: '12px',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          border: '1px solid rgba(56, 189, 248, 0.2)',
-          boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.8)'
+          border: '1px solid rgba(248, 248, 255, 0.12)',
+          boxShadow: 'inset 0 0 50px rgba(0, 0, 0, 0.85)'
         }}>
           {/* Laser scanline overlay when analyzing */}
           {isAnalyzing && <div className="scan-laser-line" />}
@@ -196,8 +194,8 @@ export default function ImagePreview({
             position: 'absolute',
             inset: 0,
             backgroundImage: `
-              linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px)
+              linear-gradient(to right, rgba(248, 248, 255, 0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(248, 248, 255, 0.03) 1px, transparent 1px)
             `,
             backgroundSize: '24px 24px',
             pointerEvents: 'none'
@@ -230,19 +228,19 @@ export default function ImagePreview({
             position: 'absolute',
             bottom: '12px',
             left: '12px',
-            background: 'rgba(6, 9, 19, 0.75)',
-            border: '1px solid rgba(0, 240, 255, 0.3)',
-            padding: '3px 8px',
+            background: 'rgba(9, 39, 66, 0.88)',
+            border: '1px solid rgba(210, 245, 0, 0.3)',
+            padding: '4px 10px',
             borderRadius: '6px',
             fontFamily: 'var(--font-mono)',
             fontSize: '0.68rem',
-            color: '#38bdf8',
+            color: '#D2F500',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
             backdropFilter: 'blur(8px)'
           }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#00f0ff' }} />
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#D2F500', boxShadow: '0 0 6px #D2F500' }} />
             <span>FILTER: {activeFilter.toUpperCase()}</span>
             <span>|</span>
             <span>ZOOM: {Math.round(zoomLevel * 100)}%</span>
@@ -256,7 +254,7 @@ export default function ImagePreview({
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '12px',
-          marginTop: '20px'
+          marginTop: '22px'
         }}>
           {/* Remove Image Option */}
           <button
@@ -269,19 +267,19 @@ export default function ImagePreview({
             <span>Remove Image</span>
           </button>
 
-          {/* Analyze Image Button */}
+          {/* Analyze Image Button (Acid Green Primary CTA) */}
           <button
             type="button"
             onClick={onAnalyze}
             disabled={isAnalyzing}
             className="btn-primary"
             style={{
-              padding: '13px 28px',
+              padding: '14px 32px',
               fontSize: '1rem',
-              boxShadow: '0 4px 22px rgba(0, 240, 255, 0.45)'
+              boxShadow: '0 4px 24px rgba(210, 245, 0, 0.4)'
             }}
           >
-            <Scan size={18} />
+            <Scan size={18} color="#092742" />
             <span>{isAnalyzing ? 'Analyzing Visual Patterns...' : 'Analyze Image'}</span>
           </button>
         </div>

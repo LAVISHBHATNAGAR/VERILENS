@@ -23,7 +23,6 @@ export default function ApiConfigModal({
 }) {
   const [backendStatus, setBackendStatus] = useState(null);
   const [checkingBackend, setCheckingBackend] = useState(false);
-  const [showCode, setShowCode] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -55,9 +54,9 @@ export default function ApiConfigModal({
       position: 'fixed',
       inset: 0,
       zIndex: 250,
-      background: 'rgba(3, 7, 18, 0.82)',
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
+      background: 'rgba(5, 24, 41, 0.85)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -66,42 +65,42 @@ export default function ApiConfigModal({
     }}>
       <div className="glass-panel" style={{
         width: '100%',
-        maxWidth: '620px',
+        maxWidth: '640px',
         maxHeight: '90vh',
         overflowY: 'auto',
-        background: '#090d1a',
-        border: '1px solid rgba(0, 240, 255, 0.3)',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.15)',
+        background: '#092742',
+        border: '1px solid rgba(210, 245, 0, 0.35)',
+        boxShadow: '0 24px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(210, 245, 0, 0.15)',
         borderRadius: '16px',
-        padding: '28px'
+        padding: '30px'
       }}>
         {/* Header */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '20px',
-          paddingBottom: '14px',
-          borderBottom: '1px solid rgba(56, 189, 248, 0.15)'
+          marginBottom: '22px',
+          paddingBottom: '16px',
+          borderBottom: '1px solid rgba(248, 248, 255, 0.1)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
+              width: '40px',
+              height: '40px',
               borderRadius: '10px',
-              background: 'rgba(0, 240, 255, 0.15)',
+              background: 'rgba(210, 245, 0, 0.14)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1px solid rgba(0, 240, 255, 0.35)'
+              border: '1px solid rgba(210, 245, 0, 0.4)'
             }}>
-              <Sliders size={20} color="#00f0ff" />
+              <Sliders size={20} color="#D2F500" />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#ffffff' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--ghost-white)' }}>
                 Forensic Detection Engine Architecture
               </h3>
-              <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '0.76rem', color: 'var(--ghost-white-muted)' }}>
                 Multi-Signal Forensic Pipeline &amp; Secure Backend Integration
               </p>
             </div>
@@ -112,27 +111,27 @@ export default function ApiConfigModal({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#94a3b8',
+              color: 'var(--ghost-white-subtle)',
               cursor: 'pointer',
               padding: '6px'
             }}
           >
-            <X size={20} />
+            <X size={20} color="#D2F500" />
           </button>
         </div>
 
         {/* Backend Server Status Card */}
         <div style={{
-          background: 'rgba(15, 23, 42, 0.7)',
-          padding: '16px',
+          background: 'rgba(12, 51, 85, 0.75)',
+          padding: '18px',
           borderRadius: '12px',
-          border: '1px solid rgba(56, 189, 248, 0.2)',
+          border: '1px solid rgba(248, 248, 255, 0.1)',
           marginBottom: '20px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Activity size={16} color="#00f0ff" />
-              <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
+              <Activity size={17} color="#D2F500" />
+              <span style={{ fontSize: '0.86rem', fontWeight: '800', color: 'var(--ghost-white)', fontFamily: 'var(--font-mono)' }}>
                 BACKEND SERVER STATUS
               </span>
             </div>
@@ -141,10 +140,11 @@ export default function ApiConfigModal({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#38bdf8',
-                fontSize: '0.72rem',
+                color: '#D2F500',
+                fontSize: '0.74rem',
                 cursor: 'pointer',
-                fontFamily: 'var(--font-mono)'
+                fontFamily: 'var(--font-mono)',
+                fontWeight: '700'
               }}
             >
               {checkingBackend ? 'Pinging...' : 'Refresh Status'}
@@ -156,17 +156,17 @@ export default function ApiConfigModal({
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: backendStatus?.status === 'online' ? '#10b981' : '#f59e0b',
-              boxShadow: backendStatus?.status === 'online' ? '0 0 8px #10b981' : '0 0 8px #f59e0b'
+              background: backendStatus?.status === 'online' ? '#D2F500' : '#FFB800',
+              boxShadow: backendStatus?.status === 'online' ? '0 0 10px #D2F500' : '0 0 10px #FFB800'
             }} />
-            <span style={{ fontSize: '0.86rem', color: '#f1f5f9', fontWeight: '600' }}>
+            <span style={{ fontSize: '0.88rem', color: 'var(--ghost-white)', fontWeight: '700' }}>
               {backendStatus?.status === 'online' 
                 ? 'Multi-Signal Forensic Backend Active (Port 3001)' 
                 : 'Server Inactive (Falling back to local Canvas Signal Processor)'}
             </span>
           </div>
 
-          <p style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '6px', lineHeight: 1.45 }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--ghost-white-subtle)', marginTop: '8px', lineHeight: 1.5 }}>
             {backendStatus?.status === 'online' 
               ? 'Real 2D Fourier FFT, PRNU sensor noise variance, and optical dispersion analysis are executing on server raw pixel buffers.'
               : 'Run `npm run server` in your project terminal to start the full multi-signal pipeline.'}
@@ -175,31 +175,32 @@ export default function ApiConfigModal({
 
         {/* Security Notice: API Keys on Backend */}
         <div style={{
-          background: 'rgba(168, 85, 247, 0.08)',
-          padding: '16px',
+          background: 'rgba(5, 24, 41, 0.75)',
+          padding: '18px',
           borderRadius: '12px',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
+          border: '1px solid rgba(248, 248, 255, 0.1)',
           marginBottom: '20px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Lock size={16} color="#c084fc" />
-            <span style={{ fontSize: '0.84rem', fontWeight: '700', color: '#c084fc', fontFamily: 'var(--font-mono)' }}>
+            <Lock size={16} color="#D2F500" />
+            <span style={{ fontSize: '0.84rem', fontWeight: '700', color: '#D2F500', fontFamily: 'var(--font-mono)' }}>
               SECURE BACKEND CREDENTIALS (.env)
             </span>
           </div>
-          <p style={{ fontSize: '0.8rem', color: '#cbd5e1', lineHeight: 1.5, marginBottom: '10px' }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--ghost-white-subtle)', lineHeight: 1.55, marginBottom: '12px' }}>
             To prevent credential leaks, API keys are <strong>never stored or exposed in frontend client code</strong>. Configure your credentials inside the project's root <code>.env</code> file:
           </p>
 
           <pre style={{
-            background: 'rgba(7, 11, 20, 0.9)',
-            padding: '12px',
+            background: '#04111d',
+            padding: '14px',
             borderRadius: '8px',
-            fontSize: '0.74rem',
+            fontSize: '0.76rem',
             fontFamily: 'var(--font-mono)',
-            color: '#7dd3fc',
-            lineHeight: 1.5,
-            overflowX: 'auto'
+            color: '#D2F500',
+            lineHeight: 1.55,
+            overflowX: 'auto',
+            border: '1px solid rgba(248, 248, 255, 0.08)'
           }}>
 {`# .env configuration
 PORT=3001
@@ -211,8 +212,8 @@ HIVE_API_KEY=`}
         </div>
 
         {/* Multi-Signal Pipeline Pillars List */}
-        <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '600', color: '#94a3b8', marginBottom: '8px' }}>
+        <div style={{ marginBottom: '22px' }}>
+          <div style={{ fontSize: '0.84rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: 'var(--ghost-white)', marginBottom: '10px' }}>
             ACTIVE FORENSIC SIGNAL PIPELINE:
           </div>
 
@@ -225,30 +226,30 @@ HIVE_API_KEY=`}
               { name: 'Pretrained Vision Model (ViT)', desc: 'Deep neural network classification via Hugging Face Inference API or configured model.' }
             ].map((item, idx) => (
               <div key={idx} style={{
-                padding: '10px 14px',
+                padding: '12px 14px',
                 borderRadius: '8px',
-                background: 'rgba(7, 11, 20, 0.6)',
-                border: '1px solid rgba(56, 189, 248, 0.1)',
+                background: 'rgba(12, 51, 85, 0.6)',
+                border: '1px solid rgba(248, 248, 255, 0.08)',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '10px'
               }}>
-                <CheckCircle2 size={15} color="#00f0ff" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <CheckCircle2 size={16} color="#D2F500" style={{ marginTop: '2px', flexShrink: 0 }} />
                 <div>
-                  <div style={{ fontSize: '0.84rem', fontWeight: '600', color: '#f8fafc' }}>{item.name}</div>
-                  <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '2px' }}>{item.desc}</div>
+                  <div style={{ fontSize: '0.86rem', fontWeight: '700', color: 'var(--ghost-white)' }}>{item.name}</div>
+                  <div style={{ fontSize: '0.76rem', color: 'var(--ghost-white-subtle)', marginTop: '2px' }}>{item.desc}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Close Button */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+        {/* Close Button (Acid Green) */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
           <button
             onClick={onClose}
             className="btn-primary"
-            style={{ padding: '10px 24px' }}
+            style={{ padding: '11px 26px' }}
           >
             Done
           </button>

@@ -4,11 +4,9 @@ import {
   FileImage, 
   AlertCircle, 
   Sparkles, 
-  Check, 
-  Camera, 
-  Cpu, 
   ChevronRight,
-  ShieldAlert
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
 import { SAMPLE_IMAGES } from '../data/sampleImages';
 
@@ -115,7 +113,7 @@ export default function ImageUploader({ onImageSelected }) {
   };
 
   return (
-    <div style={{ maxWidth: '880px', margin: '0 auto' }}>
+    <div id="image-uploader-section" style={{ maxWidth: '920px', margin: '0 auto' }}>
       {/* Drag & Drop Upload Container */}
       <div
         onDragOver={handleDragOver}
@@ -124,14 +122,14 @@ export default function ImageUploader({ onImageSelected }) {
         onClick={() => fileInputRef.current?.click()}
         className="glass-panel"
         style={{
-          padding: '48px 24px',
+          padding: '52px 28px',
           textAlign: 'center',
           cursor: 'pointer',
           borderWidth: '2px',
           borderStyle: isDragOver ? 'solid' : 'dashed',
-          borderColor: isDragOver ? 'var(--cyan-core)' : 'rgba(56, 189, 248, 0.28)',
-          backgroundColor: isDragOver ? 'rgba(0, 240, 255, 0.05)' : 'rgba(15, 23, 42, 0.65)',
-          boxShadow: isDragOver ? '0 0 35px rgba(0, 240, 255, 0.35)' : '0 10px 30px rgba(0, 0, 0, 0.5)',
+          borderColor: isDragOver ? 'var(--acid-green)' : 'rgba(248, 248, 255, 0.16)',
+          backgroundColor: isDragOver ? 'rgba(210, 245, 0, 0.06)' : 'rgba(12, 51, 85, 0.7)',
+          boxShadow: isDragOver ? '0 0 40px rgba(210, 245, 0, 0.3)' : '0 14px 40px rgba(5, 24, 41, 0.7)',
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.25s ease'
@@ -146,45 +144,45 @@ export default function ImageUploader({ onImageSelected }) {
           style={{ display: 'none' }}
         />
 
-        {/* Cyber Center Icon with glowing rings */}
+        {/* Center Cyber Icon with glowing ring */}
         <div style={{
-          width: '76px',
-          height: '76px',
+          width: '80px',
+          height: '80px',
           borderRadius: '50%',
-          margin: '0 auto 20px auto',
-          background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.15) 0%, rgba(168, 85, 247, 0.2) 100%)',
-          border: '1px solid rgba(0, 240, 255, 0.4)',
+          margin: '0 auto 22px auto',
+          background: 'linear-gradient(135deg, #092742 0%, #134673 100%)',
+          border: '1px solid rgba(210, 245, 0, 0.45)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 0 25px rgba(0, 240, 255, 0.2)',
+          boxShadow: '0 0 26px rgba(210, 245, 0, 0.2)',
           transition: 'transform 0.2s ease',
           transform: isDragOver ? 'scale(1.1)' : 'scale(1)'
         }}>
-          <UploadCloud size={38} color="#00f0ff" />
+          <UploadCloud size={40} color="#D2F500" />
         </div>
 
         <h3 style={{
-          fontSize: '1.35rem',
+          fontSize: '1.45rem',
           fontWeight: '700',
-          marginBottom: '8px',
-          color: '#ffffff'
+          marginBottom: '10px',
+          color: 'var(--ghost-white)'
         }}>
-          {isDragOver ? 'Drop Image to Inspect' : 'Drag & Drop Your Image Here'}
+          {isDragOver ? 'Release to Inspect Visual Residuals' : 'Drag & Drop Your Image Here'}
         </h3>
 
         <p style={{
-          color: 'var(--text-secondary)',
-          fontSize: '0.92rem',
-          maxWidth: '520px',
-          margin: '0 auto 24px auto',
-          lineHeight: 1.5
+          color: 'var(--ghost-white-subtle)',
+          fontSize: '0.94rem',
+          maxWidth: '540px',
+          margin: '0 auto 26px auto',
+          lineHeight: 1.55
         }}>
-          Drop any suspicious photo or graphic to analyze synthetic visual patterns, compression discrepancies, and pixel anomalies.
+          Drop any suspicious photograph, portrait, or graphic to analyze synthetic visual patterns, compression discrepancies, and deep learning artifacts.
         </p>
 
-        {/* Browse Button */}
-        <div style={{ marginBottom: '24px' }}>
+        {/* Browse Button (Acid Green CTA) */}
+        <div style={{ marginBottom: '26px' }}>
           <button 
             type="button"
             className="btn-primary"
@@ -192,8 +190,12 @@ export default function ImageUploader({ onImageSelected }) {
               e.stopPropagation();
               fileInputRef.current?.click();
             }}
+            style={{
+              padding: '13px 28px',
+              fontSize: '0.96rem'
+            }}
           >
-            <FileImage size={17} />
+            <FileImage size={18} color="#092742" />
             <span>Browse Image</span>
           </button>
         </div>
@@ -202,20 +204,20 @@ export default function ImageUploader({ onImageSelected }) {
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '8px',
+          gap: '10px',
           fontSize: '0.78rem',
           fontFamily: 'var(--font-mono)',
-          color: 'var(--text-muted)',
-          padding: '6px 14px',
-          borderRadius: '20px',
-          background: 'rgba(30, 41, 59, 0.5)',
-          border: '1px solid rgba(255, 255, 255, 0.06)'
+          color: 'var(--ghost-white-muted)',
+          padding: '7px 16px',
+          borderRadius: '24px',
+          background: 'rgba(5, 24, 41, 0.75)',
+          border: '1px solid rgba(248, 248, 255, 0.1)'
         }}>
-          <span>ACCEPTED FORMATS:</span>
-          <span style={{ color: '#38bdf8' }}>JPG, JPEG, PNG, WEBP</span>
+          <span>FORMATS:</span>
+          <span style={{ color: '#D2F500', fontWeight: '700' }}>JPG, JPEG, PNG, WEBP</span>
           <span>•</span>
           <span>MAX SIZE:</span>
-          <span style={{ color: '#c084fc' }}>15 MB</span>
+          <span style={{ color: 'var(--ghost-white)', fontWeight: '700' }}>15 MB</span>
         </div>
       </div>
 
@@ -223,28 +225,28 @@ export default function ImageUploader({ onImageSelected }) {
       {errorMessage && (
         <div style={{
           marginTop: '16px',
-          padding: '12px 16px',
+          padding: '14px 18px',
           borderRadius: '10px',
-          background: 'rgba(239, 68, 68, 0.12)',
-          border: '1px solid rgba(239, 68, 68, 0.4)',
+          background: 'rgba(255, 71, 87, 0.12)',
+          border: '1px solid rgba(255, 71, 87, 0.4)',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          color: '#fca5a5',
-          fontSize: '0.88rem'
+          color: '#FFA8A8',
+          fontSize: '0.9rem'
         }}>
-          <AlertCircle size={18} color="#ef4444" style={{ flexShrink: 0 }} />
+          <AlertCircle size={18} color="#FF4757" style={{ flexShrink: 0 }} />
           <span>{errorMessage}</span>
         </div>
       )}
 
-      {/* Quick Test Reference Samples Bar */}
-      <div style={{ marginTop: '28px' }}>
+      {/* Benchmark Reference Samples Bar */}
+      <div style={{ marginTop: '32px' }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '12px',
+          marginBottom: '14px',
           flexWrap: 'wrap',
           gap: '8px'
         }}>
@@ -252,21 +254,21 @@ export default function ImageUploader({ onImageSelected }) {
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            fontSize: '0.85rem',
-            fontWeight: '600',
-            color: '#cbd5e1'
+            fontSize: '0.88rem',
+            fontWeight: '700',
+            color: 'var(--ghost-white)'
           }}>
-            <Sparkles size={15} color="#00f0ff" />
-            <span>Or test with benchmark sample images:</span>
+            <Sparkles size={16} color="#D2F500" />
+            <span>Or test instantly with reference benchmark images:</span>
           </div>
-          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-            One-click instant analysis
+          <span style={{ fontSize: '0.75rem', color: 'var(--ghost-white-muted)' }}>
+            One-click instant forensic audit
           </span>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
           gap: '12px'
         }}>
           {SAMPLE_IMAGES.map((sample) => {
@@ -277,25 +279,25 @@ export default function ImageUploader({ onImageSelected }) {
                 onClick={() => handleSelectSample(sample)}
                 className="glass-panel"
                 style={{
-                  padding: '10px 14px',
+                  padding: '12px 14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   cursor: 'pointer',
                   borderRadius: '12px',
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  border: '1px solid rgba(56, 189, 248, 0.15)',
+                  background: 'rgba(12, 51, 85, 0.65)',
+                  border: '1px solid rgba(248, 248, 255, 0.1)',
                   transition: 'all 0.2s ease'
                 }}
               >
                 {/* Thumbnail Preview */}
                 <div style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '46px',
+                  height: '46px',
                   borderRadius: '8px',
                   overflow: 'hidden',
-                  background: '#0f172a',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: '#051829',
+                  border: '1px solid rgba(248, 248, 255, 0.12)',
                   flexShrink: 0
                 }}>
                   <img 
@@ -307,9 +309,9 @@ export default function ImageUploader({ onImageSelected }) {
 
                 <div style={{ overflow: 'hidden', flex: 1 }}>
                   <div style={{
-                    fontSize: '0.82rem',
-                    fontWeight: '600',
-                    color: '#f8fafc',
+                    fontSize: '0.84rem',
+                    fontWeight: '700',
+                    color: 'var(--ghost-white)',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
@@ -323,20 +325,20 @@ export default function ImageUploader({ onImageSelected }) {
                     marginTop: '2px'
                   }}>
                     <span style={{
-                      fontSize: '0.66rem',
+                      fontSize: '0.67rem',
                       fontFamily: 'var(--font-mono)',
-                      color: isAi ? '#f87171' : '#34d399',
-                      fontWeight: '700'
+                      color: isAi ? '#FF6B6B' : '#D2F500',
+                      fontWeight: '800'
                     }}>
                       {isAi ? 'SYNTHETIC' : 'AUTHENTIC'}
                     </span>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.67rem', color: 'var(--ghost-white-muted)' }}>
                       • {sample.dimensions.width}x{sample.dimensions.height}
                     </span>
                   </div>
                 </div>
 
-                <ChevronRight size={14} color="#64748b" />
+                <ChevronRight size={15} color="var(--ghost-white-muted)" />
               </div>
             );
           })}

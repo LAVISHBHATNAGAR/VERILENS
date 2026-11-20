@@ -18,23 +18,23 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   const margin = 18;
   const contentW = pageW - margin * 2;
 
-  // Background - Dark theme header banner
-  doc.setFillColor(11, 15, 25);
+  // Background - Dark theme header banner (Cyan Navy)
+  doc.setFillColor(9, 39, 66);
   doc.rect(0, 0, pageW, 46, 'F');
 
-  // Cyan brand accent bar
-  doc.setFillColor(0, 240, 255);
+  // Acid Green brand accent bar
+  doc.setFillColor(210, 245, 0);
   doc.rect(0, 44, pageW, 2, 'F');
 
   // Header Title
-  doc.setTextColor(255, 255, 255);
+  doc.setTextColor(248, 248, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
   doc.text('VERILENS', margin, 18);
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(56, 189, 248);
+  doc.setTextColor(210, 245, 0);
   doc.text('DIGITAL TRUTH & SAFETY ASSISTANT • FORENSIC INTEGRITY AUDIT', margin, 24);
 
   // Top Right Info

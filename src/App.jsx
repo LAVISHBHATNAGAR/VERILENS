@@ -158,7 +158,13 @@ export default function App() {
           {activeTab === 'checker' && (
             <div>
               {/* Hero Banner */}
-              <Hero onExploreSamples={() => {}} />
+              <Hero 
+                onExploreSamples={() => {}} 
+                onLearnMore={() => {
+                  setActiveTab('about');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }} 
+              />
 
               {/* View 1: If no image uploaded yet, show large upload area */}
               {!currentImage && !analysisResult && (

@@ -4,11 +4,9 @@ import {
   ShieldCheck, 
   EyeOff, 
   FileCheck, 
-  AlertCircle, 
   Check, 
   Sparkles,
-  Info,
-  Layers
+  Info
 } from 'lucide-react';
 
 export default function PrivacyGuide() {
@@ -16,19 +14,16 @@ export default function PrivacyGuide() {
     {
       title: 'Local Browser Processing (Zero Remote Storage)',
       icon: EyeOff,
-      color: '#00f0ff',
       description: 'In VERILENS demo mode, image pixels are drawn to an offscreen HTML5 canvas element inside your browser window. No images are sent to external databases or stored permanently.'
     },
     {
       title: 'EXIF Metadata & Location Privacy',
       icon: Lock,
-      color: '#a855f7',
       description: 'Photos taken on smartphones frequently embed exact GPS coordinates, camera serial numbers, and device identifiers in EXIF headers. Scrubbing metadata before sharing public photos prevents geo-stalking.'
     },
     {
       title: 'C2PA Cryptographic Content Credentials',
       icon: FileCheck,
-      color: '#10b981',
       description: 'The Coalition for Content Provenance and Authenticity (C2PA) standard embeds tamper-evident cryptographic digital signatures into camera firmware to certify authentic origin from lens to display.'
     }
   ];
@@ -49,21 +44,21 @@ export default function PrivacyGuide() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '6px 14px',
-          borderRadius: '20px',
-          background: 'rgba(168, 85, 247, 0.1)',
-          border: '1px solid rgba(168, 85, 247, 0.3)',
-          marginBottom: '16px'
+          padding: '7px 16px',
+          borderRadius: '24px',
+          background: 'rgba(12, 51, 85, 0.7)',
+          border: '1px solid rgba(210, 245, 0, 0.35)',
+          marginBottom: '18px'
         }}>
-          <Lock size={14} color="#c084fc" />
-          <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#c084fc', fontWeight: '600' }}>
+          <Lock size={15} color="#D2F500" />
+          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: '#D2F500', fontWeight: '700' }}>
             DIGITAL PRIVACY &amp; SECURITY PROTOCOLS
           </span>
         </div>
-        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#ffffff', marginBottom: '8px' }}>
+        <h2 style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--ghost-white)', marginBottom: '10px' }}>
           Privacy, Provenance &amp; Media Safety Guide
         </h2>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto', fontSize: '0.95rem' }}>
+        <p style={{ color: 'var(--ghost-white-subtle)', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
           Understanding how digital imagery can expose personal information, and how to verify synthetic media responsibly.
         </p>
       </div>
@@ -78,24 +73,24 @@ export default function PrivacyGuide() {
         {guideCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={idx} className="glass-panel" style={{ padding: '24px' }}>
+            <div key={idx} className="glass-panel" style={{ padding: '26px', background: 'rgba(12, 51, 85, 0.75)' }}>
               <div style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '10px',
-                background: `${card.color}15`,
-                border: `1px solid ${card.color}40`,
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: 'rgba(210, 245, 0, 0.12)',
+                border: '1px solid rgba(210, 245, 0, 0.35)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '16px'
+                marginBottom: '18px'
               }}>
-                <Icon size={22} color={card.color} />
+                <Icon size={22} color="#D2F500" />
               </div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#ffffff', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--ghost-white)', marginBottom: '10px' }}>
                 {card.title}
               </h3>
-              <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+              <p style={{ fontSize: '0.88rem', color: 'var(--ghost-white-subtle)', lineHeight: 1.6 }}>
                 {card.description}
               </p>
             </div>
@@ -104,10 +99,10 @@ export default function PrivacyGuide() {
       </div>
 
       {/* Deepfake Defense Checklist */}
-      <div className="glass-panel" style={{ padding: '28px', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-          <Sparkles size={20} color="#00f0ff" />
-          <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#ffffff' }}>
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: 'rgba(12, 51, 85, 0.75)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
+          <Sparkles size={20} color="#D2F500" />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--ghost-white)' }}>
             Practical Visual Anomaly Checklist for Everyday Users
           </h3>
         </div>
@@ -118,29 +113,30 @@ export default function PrivacyGuide() {
               display: 'flex',
               alignItems: 'flex-start',
               gap: '12px',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              background: 'rgba(7, 11, 20, 0.55)',
-              border: '1px solid rgba(56, 189, 248, 0.1)'
+              padding: '14px 18px',
+              borderRadius: '10px',
+              background: 'rgba(5, 24, 41, 0.65)',
+              border: '1px solid rgba(248, 248, 255, 0.08)'
             }}>
               <div style={{
-                width: '20px',
-                height: '20px',
+                width: '22px',
+                height: '22px',
                 borderRadius: '50%',
-                background: 'rgba(0, 240, 255, 0.15)',
+                background: 'rgba(210, 245, 0, 0.16)',
+                border: '1px solid rgba(210, 245, 0, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
                 marginTop: '2px'
               }}>
-                <Check size={12} color="#00f0ff" />
+                <Check size={13} color="#D2F500" />
               </div>
               <div>
-                <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#f1f5f9' }}>
+                <div style={{ fontSize: '0.92rem', fontWeight: '700', color: 'var(--ghost-white)' }}>
                   {tip.title}
                 </div>
-                <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                <div style={{ fontSize: '0.84rem', color: 'var(--ghost-white-subtle)', marginTop: '2px', lineHeight: 1.5 }}>
                   {tip.desc}
                 </div>
               </div>

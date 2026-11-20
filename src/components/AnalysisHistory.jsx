@@ -4,13 +4,13 @@ import {
   Trash2, 
   History, 
   Clock, 
-  ExternalLink, 
-  AlertTriangle, 
-  CheckCircle2, 
-  HelpCircle,
   FileImage,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  AlertTriangle,
+  HelpCircle
 } from 'lucide-react';
+import { formatBytes } from '../services/detectionService';
 
 export default function AnalysisHistory({ 
   isOpen, 
@@ -26,9 +26,9 @@ export default function AnalysisHistory({
       position: 'fixed',
       inset: 0,
       zIndex: 200,
-      background: 'rgba(3, 7, 18, 0.75)',
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
+      background: 'rgba(5, 24, 41, 0.8)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
       display: 'flex',
       justifyContent: 'flex-end',
       animation: 'fadeIn 0.2s ease'
@@ -38,40 +38,40 @@ export default function AnalysisHistory({
         width: '100%',
         maxWidth: '460px',
         height: '100%',
-        background: '#090d19',
-        borderLeft: '1px solid rgba(56, 189, 248, 0.2)',
-        boxShadow: '-10px 0 40px rgba(0, 0, 0, 0.8)',
+        background: '#051829',
+        borderLeft: '1px solid rgba(248, 248, 255, 0.12)',
+        boxShadow: '-12px 0 50px rgba(0, 0, 0, 0.85)',
         display: 'flex',
         flexDirection: 'column',
         animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         {/* Drawer Header */}
         <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid rgba(56, 189, 248, 0.12)',
+          padding: '22px 24px',
+          borderBottom: '1px solid rgba(248, 248, 255, 0.1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'rgba(15, 23, 42, 0.6)'
+          background: 'rgba(9, 39, 66, 0.95)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'rgba(0, 240, 255, 0.12)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '9px',
+              background: 'rgba(210, 245, 0, 0.12)',
+              border: '1px solid rgba(210, 245, 0, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <History size={18} color="#00f0ff" />
+              <History size={19} color="#D2F500" />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#ffffff' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--ghost-white)' }}>
                 Session History
               </h3>
-              <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '0.74rem', color: 'var(--ghost-white-muted)' }}>
                 {history.length} {history.length === 1 ? 'image' : 'images'} audited in this session
               </p>
             </div>
@@ -82,13 +82,13 @@ export default function AnalysisHistory({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#94a3b8',
+              color: 'var(--ghost-white-subtle)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px'
             }}
           >
-            <X size={20} />
+            <X size={20} color="#D2F500" />
           </button>
         </div>
 
@@ -104,14 +104,14 @@ export default function AnalysisHistory({
           {history.length === 0 ? (
             <div style={{
               textAlign: 'center',
-              padding: '60px 20px',
-              color: 'var(--text-muted)'
+              padding: '70px 20px',
+              color: 'var(--ghost-white-muted)'
             }}>
-              <FileImage size={44} color="#334155" style={{ margin: '0 auto 12px auto' }} />
-              <h4 style={{ fontSize: '0.95rem', color: '#94a3b8', marginBottom: '6px' }}>
+              <FileImage size={46} color="#0c3355" style={{ margin: '0 auto 14px auto' }} />
+              <h4 style={{ fontSize: '1rem', color: 'var(--ghost-white-subtle)', marginBottom: '8px', fontWeight: '700' }}>
                 No Scans Conducted Yet
               </h4>
-              <p style={{ fontSize: '0.8rem', lineHeight: 1.5, maxWidth: '280px', margin: '0 auto' }}>
+              <p style={{ fontSize: '0.84rem', lineHeight: 1.55, maxWidth: '280px', margin: '0 auto', color: 'var(--ghost-white-muted)' }}>
                 Upload and analyze an image to track your inspection chain-of-custody in this session.
               </p>
             </div>
@@ -132,8 +132,8 @@ export default function AnalysisHistory({
                     padding: '14px',
                     borderRadius: '12px',
                     cursor: 'pointer',
-                    background: 'rgba(15, 23, 42, 0.65)',
-                    border: '1px solid rgba(56, 189, 248, 0.15)',
+                    background: 'rgba(12, 51, 85, 0.7)',
+                    border: '1px solid rgba(248, 248, 255, 0.1)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
@@ -146,110 +146,100 @@ export default function AnalysisHistory({
                     height: '52px',
                     borderRadius: '8px',
                     overflow: 'hidden',
-                    background: '#040711',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: '#051829',
+                    border: '1px solid rgba(248, 248, 255, 0.1)',
                     flexShrink: 0
                   }}>
-                    {item.previewUrl ? (
-                      <img 
-                        src={item.previewUrl} 
-                        alt="Thumbnail" 
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                      />
-                    ) : (
-                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FileImage size={20} color="#64748b" />
-                      </div>
-                    )}
+                    <img 
+                      src={item.previewUrl} 
+                      alt="Thumbnail" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
                   </div>
 
-                  {/* Details */}
+                  {/* Information Details */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: '0.85rem',
-                      fontWeight: '600',
-                      color: '#f8fafc',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px'
+                    }}>
+                      <span style={{
+                        fontSize: '0.66rem',
+                        fontFamily: 'var(--font-mono)',
+                        padding: '2px 7px',
+                        borderRadius: '4px',
+                        fontWeight: '800',
+                        background: isAi ? 'rgba(255, 71, 87, 0.15)' : isReal ? 'rgba(210, 245, 0, 0.15)' : 'rgba(255, 184, 0, 0.15)',
+                        color: isAi ? '#FF6B6B' : isReal ? '#D2F500' : '#FFB800'
+                      }}>
+                        {isAi ? 'LIKELY AI' : isReal ? 'LIKELY AUTHENTIC' : 'INCONCLUSIVE'}
+                      </span>
+
+                      <span style={{ fontSize: '0.68rem', color: 'var(--ghost-white-muted)' }}>
+                        {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+
+                    <div style={{
+                      fontSize: '0.86rem',
+                      fontWeight: '700',
+                      color: 'var(--ghost-white)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis'
                     }}>
-                      {item.result.metadata.fileName}
+                      {item.imageData?.name || 'Inspected Image'}
                     </div>
 
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px',
-                      marginTop: '4px'
+                      fontSize: '0.72rem',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--ghost-white-muted)',
+                      marginTop: '3px'
                     }}>
-                      <span style={{
-                        fontSize: '0.68rem',
-                        fontFamily: 'var(--font-mono)',
-                        padding: '1px 6px',
-                        borderRadius: '4px',
-                        fontWeight: '700',
-                        background: isAi ? 'rgba(239, 68, 68, 0.15)' : isReal ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                        color: isAi ? '#f87171' : isReal ? '#34d399' : '#fbbf24'
-                      }}>
-                        {item.result.verdict}
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        {item.result.aiScore}% AI
-                      </span>
-                    </div>
-
-                    <div style={{
-                      fontSize: '0.68rem',
-                      color: 'var(--text-muted)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      marginTop: '4px'
-                    }}>
-                      <Clock size={11} />
-                      <span>{new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <span>AI: {item.result.aiScore}%</span>
+                      <span>•</span>
+                      <span>Real: {item.result.realScore}%</span>
                     </div>
                   </div>
 
-                  <ArrowRight size={15} color="#64748b" />
+                  <ArrowRight size={16} color="#D2F500" style={{ flexShrink: 0 }} />
                 </div>
               );
             })
           )}
         </div>
 
-        {/* Drawer Footer with Clear Button */}
+        {/* Drawer Footer Actions */}
         {history.length > 0 && (
           <div style={{
             padding: '18px 24px',
-            borderTop: '1px solid rgba(56, 189, 248, 0.12)',
-            background: 'rgba(15, 23, 42, 0.6)',
+            borderTop: '1px solid rgba(248, 248, 255, 0.1)',
+            background: 'rgba(9, 39, 66, 0.85)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}>
             <button
-              onClick={() => {
-                if (window.confirm('Clear all audit logs from this session?')) {
-                  onClearHistory();
-                }
-              }}
+              onClick={onClearHistory}
               className="btn-danger-outline"
-              style={{ width: '100%', justifyContent: 'center' }}
+              style={{ fontSize: '0.8rem', padding: '8px 14px' }}
             >
-              <Trash2 size={15} />
-              <span>Clear History ({history.length})</span>
+              <Trash2 size={14} />
+              <span>Clear History</span>
             </button>
+
+            <span style={{ fontSize: '0.72rem', color: 'var(--ghost-white-muted)' }}>
+              Ephemeral session storage
+            </span>
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes slideIn {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }
