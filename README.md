@@ -156,7 +156,7 @@ npm install
 npm run dev
 ```
 
-5. Open the local URL shown in the terminal (commonly `http://localhost:5173` for Vite projects).
+5. Open the local URL shown in the terminal (commonly `https://verilens-alpha.vercel.app` for Vite projects).
 
 > If your project uses a different framework or scripts, follow the commands in its `package.json`.
 
