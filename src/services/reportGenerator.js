@@ -42,7 +42,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setTextColor(148, 163, 184);
   doc.text(`REPORT ID: ${analysisResult.id || 'VRL-SEC-01'}`, pageW - margin, 18, { align: 'right' });
   doc.text(`ISSUED: ${new Date(analysisResult.timestamp).toLocaleString()}`, pageW - margin, 24, { align: 'right' });
-  doc.text(`ENGINE: ${analysisResult.modeLabel || 'Demo Heuristic Engine'}`, pageW - margin, 30, { align: 'right' });
+  doc.text(`ENGINE: ${analysisResult.isRealEngine ? 'Multi-Signal Engine' : 'Client Signal Engine'}`, pageW - margin, 30, { align: 'right' });
 
   let y = 56;
 
@@ -62,7 +62,8 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setTextColor(71, 85, 105);
   doc.text(`File Name: ${analysisResult.metadata.fileName}`, margin + 6, y + 15);
   doc.text(`Dimensions: ${analysisResult.metadata.dimensions}  |  File Size: ${analysisResult.metadata.fileSize}`, margin + 6, y + 21);
-  doc.text(`SHA-256 Digest: ${analysisResult.metadata.sha256Hash.substring(0, 44)}...`, margin + 6, y + 26);
+  const hashDigest = (analysisResult.metadata.sha256Hash || 'N/A').substring(0, 44);
+  doc.text(`SHA-256 Digest: ${hashDigest}...`, margin + 6, y + 26);
 
   y += 34;
 
@@ -90,9 +91,9 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setFontSize(13);
   doc.text(`VERDICT: ${analysisResult.verdict.toUpperCase()}`, margin + 8, y + 10);
 
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.text(
-    `AI Synthesis Likelihood: ${analysisResult.aiScore}%   |   Authentic Capture Likelihood: ${analysisResult.realScore}%`,
+    `AI Likelihood: ${analysisResult.aiScore}%   |   Authentic Likelihood: ${analysisResult.realScore}%   |   Confidence: ${analysisResult.confidence || 'N/A'}% (${analysisResult.confidenceLevel || 'Calibrated'})`,
     margin + 8,
     y + 18
   );
@@ -103,14 +104,15 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(15, 23, 42);
-  doc.text('FORENSIC SUMMARY', margin, y);
+  doc.text('FORENSIC SUMMARY & ASSESSMENT', margin, y);
   y += 5;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
   doc.setTextColor(51, 65, 85);
 
-  const splitExplanation = doc.splitTextToSize(analysisResult.explanation, contentW);
+  const summaryText = analysisResult.summary || analysisResult.explanation || 'Assessment completed.';
+  const splitExplanation = doc.splitTextToSize(summaryText, contentW);
   doc.text(splitExplanation, margin, y);
   y += splitExplanation.length * 4.5 + 6;
 
@@ -118,7 +120,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(15, 23, 42);
-  doc.text('SPECTRAL PILLAR BREAKDOWN', margin, y);
+  doc.text('FORENSIC PILLAR BREAKDOWN', margin, y);
   y += 6;
 
   // Table header
@@ -127,7 +129,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setFontSize(7.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(71, 85, 105);
-  doc.text('INSPECTION PILLAR', margin + 4, y + 5);
+  doc.text('INSPECTION DOMAIN', margin + 4, y + 5);
   doc.text('SCORE', margin + 80, y + 5);
   doc.text('EVALUATION STATUS', margin + 115, y + 5);
   y += 7;
@@ -153,30 +155,34 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   }
   y += 6;
 
-  // Section 5: Detected Irregularities & Anomalies
+  // Section 5: Detected Irregularities & Indicators
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
   doc.setTextColor(15, 23, 42);
-  doc.text('DETECTED IRREGULARITIES & FORENSIC OBSERVATIONS', margin, y);
+  doc.text('DETECTED INDICATORS & ANOMALY SIGNALS', margin, y);
   y += 6;
 
   if (analysisResult.anomalies && analysisResult.anomalies.length > 0) {
-    analysisResult.anomalies.forEach((ano, idx) => {
+    analysisResult.anomalies.forEach((ano) => {
       if (y > pageH - 45) {
         doc.addPage();
         y = 20;
       }
 
+      const title = ano.name || ano.title || 'Signal Detected';
+      const desc = ano.detail || ano.description || '';
+      const type = ano.type || (ano.severity ? `${ano.severity} PRIORITY` : 'INDICATOR');
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.setTextColor(30, 41, 59);
-      doc.text(`[${ano.severity}] ${ano.title} (${ano.category})`, margin, y);
+      doc.text(`[${type}] ${title}`, margin, y);
       y += 4.5;
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       doc.setTextColor(71, 85, 105);
-      const splitDesc = doc.splitTextToSize(ano.description, contentW - 4);
+      const splitDesc = doc.splitTextToSize(desc, contentW - 4);
       doc.text(splitDesc, margin + 2, y);
       y += splitDesc.length * 4 + 4;
     });
@@ -192,12 +198,11 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   doc.setFont('helvetica', 'italic');
   doc.setTextColor(148, 163, 184);
   const disclaimerText = doc.splitTextToSize(
-    'LEGAL NOTICE: ' + analysisResult.disclaimer + ' For high-stakes decisions, verify through C2PA provenance credentials and trusted investigative sources.',
+    'LEGAL NOTICE: ' + (analysisResult.reliabilityNotice || analysisResult.disclaimer || 'No AI detector is 100% accurate.') + ' Verify critical media using C2PA provenance and journalistic sources.',
     contentW
   );
   doc.text(disclaimerText, margin, y);
 
-  // Save the PDF
   const cleanId = (analysisResult.id || 'Report').replace(/[^a-zA-Z0-9_-]/g, '_');
   doc.save(`VERILENS_Forensic_Report_${cleanId}.pdf`);
 }

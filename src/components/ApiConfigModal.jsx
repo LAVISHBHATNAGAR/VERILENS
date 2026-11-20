@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Sliders, 
@@ -9,9 +9,11 @@ import {
   CheckCircle2, 
   ExternalLink,
   ShieldAlert,
-  Save
+  Save,
+  Activity,
+  Layers,
+  Lock
 } from 'lucide-react';
-import { DETECTION_MODES } from '../services/detectionService';
 
 export default function ApiConfigModal({ 
   isOpen, 
@@ -19,65 +21,41 @@ export default function ApiConfigModal({
   config, 
   onSaveConfig 
 }) {
-  const [mode, setMode] = useState(config.mode || DETECTION_MODES.DEMO);
-  const [endpoint, setEndpoint] = useState(config.apiEndpoint || '');
-  const [apiKey, setApiKey] = useState(config.apiKey || '');
+  const [backendStatus, setBackendStatus] = useState(null);
+  const [checkingBackend, setCheckingBackend] = useState(false);
   const [showCode, setShowCode] = useState(false);
-  const [savedSuccess, setSavedSuccess] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      checkServerHealth();
+    }
+  }, [isOpen]);
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    onSaveConfig({
-      mode,
-      apiEndpoint: endpoint.trim(),
-      apiKey: apiKey.trim()
-    });
-    setSavedSuccess(true);
-    setTimeout(() => {
-      setSavedSuccess(false);
-      onClose();
-    }, 600);
+  const checkServerHealth = async () => {
+    setCheckingBackend(true);
+    try {
+      const res = await fetch('/api/health');
+      if (res.ok) {
+        const data = await res.json();
+        setBackendStatus(data);
+      } else {
+        setBackendStatus({ status: 'offline' });
+      }
+    } catch {
+      setBackendStatus({ status: 'offline' });
+    } finally {
+      setCheckingBackend(false);
+    }
   };
 
-  const samplePythonBackend = `# Sample FastAPI / PyTorch Backend for VERILENS
-from fastapi import FastAPI, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-import torch
-from PIL import Image
-import io
-
-app = FastAPI(title="VERILENS Detection Node")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.post("/api/detect")
-async def detect_ai_image(image: UploadFile = File(...)):
-    contents = await image.read()
-    img = Image.open(io.BytesIO(contents))
-    
-    # Run through your fine-tuned ResNet / ViT or HuggingFace model
-    # Example output structure matching VERILENS schema:
-    return {
-        "ai_score": 0.89, # 89% AI likelihood
-        "summary": "Deep neural network detected spatial high-frequency artifacts typical of diffusion synthesis.",
-        "anomalies": [
-            {"id": "feat-1", "severity": "HIGH", "category": "Diffusion Artifact", "title": "High Frequency Disparity", "description": "Layer activations highlight synthetic edge transitions."}
-        ]
-    }`;
+  if (!isOpen) return null;
 
   return (
     <div style={{
       position: 'fixed',
       inset: 0,
       zIndex: 250,
-      background: 'rgba(3, 7, 18, 0.8)',
+      background: 'rgba(3, 7, 18, 0.82)',
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
       display: 'flex',
@@ -88,7 +66,7 @@ async def detect_ai_image(image: UploadFile = File(...)):
     }}>
       <div className="glass-panel" style={{
         width: '100%',
-        maxWidth: '580px',
+        maxWidth: '620px',
         maxHeight: '90vh',
         overflowY: 'auto',
         background: '#090d1a',
@@ -121,10 +99,10 @@ async def detect_ai_image(image: UploadFile = File(...)):
             </div>
             <div>
               <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#ffffff' }}>
-                Forensic Engine Configuration
+                Forensic Detection Engine Architecture
               </h3>
               <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-                Select analysis mode or integrate external AI vision models
+                Multi-Signal Forensic Pipeline &amp; Secure Backend Integration
               </p>
             </div>
           </div>
@@ -143,202 +121,138 @@ async def detect_ai_image(image: UploadFile = File(...)):
           </button>
         </div>
 
-        <form onSubmit={handleSave}>
-          {/* Mode Selector */}
-          <div style={{ marginBottom: '22px' }}>
-            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', color: '#cbd5e1', marginBottom: '10px' }}>
-              Select Operational Engine:
-            </label>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {/* Option 1: Demo Heuristic */}
-              <div
-                onClick={() => setMode(DETECTION_MODES.DEMO)}
-                style={{
-                  padding: '14px 16px',
-                  borderRadius: '10px',
-                  border: mode === DETECTION_MODES.DEMO ? '1px solid #00f0ff' : '1px solid rgba(56, 189, 248, 0.15)',
-                  background: mode === DETECTION_MODES.DEMO ? 'rgba(0, 240, 255, 0.08)' : 'rgba(15, 23, 42, 0.5)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <div style={{
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  border: mode === DETECTION_MODES.DEMO ? '5px solid #00f0ff' : '2px solid #64748b',
-                  marginTop: '2px',
-                  flexShrink: 0
-                }} />
-                <div>
-                  <div style={{ fontSize: '0.92rem', fontWeight: '600', color: '#f8fafc' }}>
-                    Client-Side Demo Heuristic Mode (Active Default)
-                  </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.45 }}>
-                    Evaluates local image canvas entropy, DCT quantization, and noise floor. Fully functional offline with zero API requirements.
-                  </div>
-                </div>
-              </div>
-
-              {/* Option 2: Custom API */}
-              <div
-                onClick={() => setMode(DETECTION_MODES.API)}
-                style={{
-                  padding: '14px 16px',
-                  borderRadius: '10px',
-                  border: mode === DETECTION_MODES.API ? '1px solid #a855f7' : '1px solid rgba(56, 189, 248, 0.15)',
-                  background: mode === DETECTION_MODES.API ? 'rgba(168, 85, 247, 0.08)' : 'rgba(15, 23, 42, 0.5)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <div style={{
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  border: mode === DETECTION_MODES.API ? '5px solid #a855f7' : '2px solid #64748b',
-                  marginTop: '2px',
-                  flexShrink: 0
-                }} />
-                <div>
-                  <div style={{ fontSize: '0.92rem', fontWeight: '600', color: '#f8fafc' }}>
-                    Custom Cloud API / Backend Model
-                  </div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.45 }}>
-                    Route uploads to an external AI detection REST endpoint (e.g., Sightengine, Hive, Hugging Face, or local FastAPI server).
-                  </div>
-                </div>
-              </div>
+        {/* Backend Server Status Card */}
+        <div style={{
+          background: 'rgba(15, 23, 42, 0.7)',
+          padding: '16px',
+          borderRadius: '12px',
+          border: '1px solid rgba(56, 189, 248, 0.2)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Activity size={16} color="#00f0ff" />
+              <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
+                BACKEND SERVER STATUS
+              </span>
             </div>
-          </div>
-
-          {/* API Credentials Inputs if API mode selected */}
-          {mode === DETECTION_MODES.API && (
-            <div style={{
-              background: 'rgba(7, 11, 20, 0.75)',
-              padding: '16px',
-              borderRadius: '10px',
-              border: '1px solid rgba(168, 85, 247, 0.25)',
-              marginBottom: '20px'
-            }}>
-              <div style={{ marginBottom: '14px' }}>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#cbd5e1', marginBottom: '6px' }}>
-                  Endpoint REST URL:
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type="url"
-                    value={endpoint}
-                    onChange={(e) => setEndpoint(e.target.value)}
-                    placeholder="https://your-api.com/v1/detect"
-                    required={mode === DETECTION_MODES.API}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px 10px 34px',
-                      background: 'rgba(15, 23, 42, 0.8)',
-                      border: '1px solid rgba(56, 189, 248, 0.2)',
-                      borderRadius: '8px',
-                      color: '#ffffff',
-                      fontSize: '0.85rem',
-                      fontFamily: 'var(--font-mono)'
-                    }}
-                  />
-                  <Globe size={15} color="#64748b" style={{ position: 'absolute', left: '10px', top: '12px' }} />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '0.78rem', color: '#cbd5e1', marginBottom: '6px' }}>
-                  Bearer API Key / Token:
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="sk_live_..."
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px 10px 34px',
-                      background: 'rgba(15, 23, 42, 0.8)',
-                      border: '1px solid rgba(56, 189, 248, 0.2)',
-                      borderRadius: '8px',
-                      color: '#ffffff',
-                      fontSize: '0.85rem',
-                      fontFamily: 'var(--font-mono)'
-                    }}
-                  />
-                  <Key size={15} color="#64748b" style={{ position: 'absolute', left: '10px', top: '12px' }} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Toggle Developer Integration Code */}
-          <div style={{ marginBottom: '22px' }}>
             <button
-              type="button"
-              onClick={() => setShowCode(!showCode)}
+              onClick={checkServerHealth}
               style={{
                 background: 'transparent',
                 border: 'none',
                 color: '#38bdf8',
-                fontSize: '0.8rem',
-                fontFamily: 'var(--font-mono)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
+                fontSize: '0.72rem',
                 cursor: 'pointer',
-                padding: '4px 0'
+                fontFamily: 'var(--font-mono)'
               }}
             >
-              <Code size={14} />
-              <span>{showCode ? 'Hide Backend Integration Code' : 'View Backend Python / FastAPI Sample'}</span>
+              {checkingBackend ? 'Pinging...' : 'Refresh Status'}
             </button>
+          </div>
 
-            {showCode && (
-              <pre style={{
-                marginTop: '10px',
-                padding: '14px',
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              background: backendStatus?.status === 'online' ? '#10b981' : '#f59e0b',
+              boxShadow: backendStatus?.status === 'online' ? '0 0 8px #10b981' : '0 0 8px #f59e0b'
+            }} />
+            <span style={{ fontSize: '0.86rem', color: '#f1f5f9', fontWeight: '600' }}>
+              {backendStatus?.status === 'online' 
+                ? 'Multi-Signal Forensic Backend Active (Port 3001)' 
+                : 'Server Inactive (Falling back to local Canvas Signal Processor)'}
+            </span>
+          </div>
+
+          <p style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '6px', lineHeight: 1.45 }}>
+            {backendStatus?.status === 'online' 
+              ? 'Real 2D Fourier FFT, PRNU sensor noise variance, and optical dispersion analysis are executing on server raw pixel buffers.'
+              : 'Run `npm run server` in your project terminal to start the full multi-signal pipeline.'}
+          </p>
+        </div>
+
+        {/* Security Notice: API Keys on Backend */}
+        <div style={{
+          background: 'rgba(168, 85, 247, 0.08)',
+          padding: '16px',
+          borderRadius: '12px',
+          border: '1px solid rgba(168, 85, 247, 0.25)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <Lock size={16} color="#c084fc" />
+            <span style={{ fontSize: '0.84rem', fontWeight: '700', color: '#c084fc', fontFamily: 'var(--font-mono)' }}>
+              SECURE BACKEND CREDENTIALS (.env)
+            </span>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: '#cbd5e1', lineHeight: 1.5, marginBottom: '10px' }}>
+            To prevent credential leaks, API keys are <strong>never stored or exposed in frontend client code</strong>. Configure your credentials inside the project's root <code>.env</code> file:
+          </p>
+
+          <pre style={{
+            background: 'rgba(7, 11, 20, 0.9)',
+            padding: '12px',
+            borderRadius: '8px',
+            fontSize: '0.74rem',
+            fontFamily: 'var(--font-mono)',
+            color: '#7dd3fc',
+            lineHeight: 1.5,
+            overflowX: 'auto'
+          }}>
+{`# .env configuration
+PORT=3001
+HUGGINGFACE_API_KEY=hf_your_key_here
+SIGHTENGINE_API_USER=
+SIGHTENGINE_API_SECRET=
+HIVE_API_KEY=`}
+          </pre>
+        </div>
+
+        {/* Multi-Signal Pipeline Pillars List */}
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '600', color: '#94a3b8', marginBottom: '8px' }}>
+            ACTIVE FORENSIC SIGNAL PIPELINE:
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {[
+              { name: '2D Spatial Fast Fourier Transform (FFT)', desc: 'Detects periodic upsampling lattice peaks and unnatural power spectral decay.' },
+              { name: 'PRNU CMOS Sensor Noise Floor & Kurtosis', desc: 'Measures Poisson-Gaussian shot noise in smooth areas to isolate synthetic waxiness.' },
+              { name: 'Optical Chromatic Dispersion & Edges', desc: 'Checks for sub-pixel optical glass dispersion vs achromatic synthetic boundary cuts.' },
+              { name: 'Container & EXIF Metadata Provenance', desc: 'Inspects camera tags, ComfyUI/Stable Diffusion prompt chunks, and container headers.' },
+              { name: 'Pretrained Vision Model (ViT)', desc: 'Deep neural network classification via Hugging Face Inference API or configured model.' }
+            ].map((item, idx) => (
+              <div key={idx} style={{
+                padding: '10px 14px',
                 borderRadius: '8px',
-                background: 'rgba(3, 7, 18, 0.95)',
-                border: '1px solid rgba(56, 189, 248, 0.2)',
-                color: '#93c5fd',
-                fontSize: '0.72rem',
-                fontFamily: 'var(--font-mono)',
-                overflowX: 'auto',
-                lineHeight: 1.45
+                background: 'rgba(7, 11, 20, 0.6)',
+                border: '1px solid rgba(56, 189, 248, 0.1)',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '10px'
               }}>
-                {samplePythonBackend}
-              </pre>
-            )}
+                <CheckCircle2 size={15} color="#00f0ff" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: '0.84rem', fontWeight: '600', color: '#f8fafc' }}>{item.name}</div>
+                  <div style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '2px' }}>{item.desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Footer Save Button */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-secondary"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-            >
-              <Save size={16} />
-              <span>{savedSuccess ? 'Config Saved!' : 'Apply Configuration'}</span>
-            </button>
-          </div>
-        </form>
+        {/* Close Button */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+          <button
+            onClick={onClose}
+            className="btn-primary"
+            style={{ padding: '10px 24px' }}
+          >
+            Done
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -12,11 +12,12 @@ import {
   Layers, 
   Info, 
   Eye, 
-  Share2,
-  ExternalLink,
-  Lock,
-  ChevronDown,
-  ChevronUp
+  Lock, 
+  ChevronDown, 
+  ChevronUp,
+  Cpu,
+  Activity,
+  AlertCircle
 } from 'lucide-react';
 import { downloadPdfReport, downloadJsonData } from '../services/reportGenerator';
 import confetti from 'canvas-confetti';
@@ -40,13 +41,14 @@ export default function AnalysisResult({
     setDownloading(true);
     try {
       downloadPdfReport(result, imageItem?.dataUrl);
-      // Trigger a light celebratory confetti burst if authentic, or cyber sparkle
-      confetti({
-        particleCount: 40,
-        spread: 60,
-        origin: { y: 0.8 },
-        colors: isReal ? ['#10b981', '#34d399', '#059669'] : ['#00f0ff', '#a855f7', '#38bdf8']
-      });
+      if (isReal) {
+        confetti({
+          particleCount: 40,
+          spread: 60,
+          origin: { y: 0.8 },
+          colors: ['#10b981', '#34d399', '#059669']
+        });
+      }
     } catch (err) {
       console.error('PDF generation error:', err);
     } finally {
@@ -58,12 +60,11 @@ export default function AnalysisResult({
     downloadJsonData(result);
   };
 
-  // Color theme definitions
   const themeColors = {
     ai: {
       primary: '#ef4444',
       bg: 'rgba(239, 68, 68, 0.1)',
-      border: 'rgba(239, 68, 68, 0.35)',
+      border: 'rgba(239, 68, 68, 0.4)',
       glow: 'rgba(239, 68, 68, 0.25)',
       badge: 'mono-badge-ai',
       icon: AlertTriangle
@@ -71,7 +72,7 @@ export default function AnalysisResult({
     real: {
       primary: '#10b981',
       bg: 'rgba(16, 185, 129, 0.1)',
-      border: 'rgba(16, 185, 129, 0.35)',
+      border: 'rgba(16, 185, 129, 0.4)',
       glow: 'rgba(16, 185, 129, 0.25)',
       badge: 'mono-badge-real',
       icon: CheckCircle2
@@ -79,7 +80,7 @@ export default function AnalysisResult({
     inconclusive: {
       primary: '#f59e0b',
       bg: 'rgba(245, 158, 11, 0.1)',
-      border: 'rgba(245, 158, 11, 0.35)',
+      border: 'rgba(245, 158, 11, 0.4)',
       glow: 'rgba(245, 158, 11, 0.25)',
       badge: 'mono-badge-warn',
       icon: HelpCircle
@@ -95,7 +96,7 @@ export default function AnalysisResult({
       <div className="glass-panel" style={{
         padding: '32px 28px',
         marginBottom: '24px',
-        background: 'rgba(15, 23, 42, 0.82)',
+        background: 'rgba(15, 23, 42, 0.85)',
         borderColor: currentTheme.border,
         boxShadow: `0 14px 45px -10px rgba(0, 0, 0, 0.7), 0 0 35px -5px ${currentTheme.glow}`,
         position: 'relative',
@@ -106,8 +107,8 @@ export default function AnalysisResult({
           position: 'absolute',
           top: '-40px',
           right: '-40px',
-          width: '160px',
-          height: '160px',
+          width: '180px',
+          height: '180px',
           borderRadius: '50%',
           background: currentTheme.glow,
           filter: 'blur(50px)',
@@ -126,7 +127,7 @@ export default function AnalysisResult({
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span className={`mono-badge ${currentTheme.badge}`}>
               <VerdictIcon size={13} />
-              <span>FORENSIC VERDICT</span>
+              <span>FORENSIC ASSESSMENT</span>
             </span>
             <span style={{
               fontSize: '0.72rem',
@@ -145,8 +146,10 @@ export default function AnalysisResult({
             fontFamily: 'var(--font-mono)',
             color: '#94a3b8'
           }}>
-            <span>MODE:</span>
-            <span style={{ color: '#00f0ff' }}>{result.modeLabel}</span>
+            <span>ENGINE:</span>
+            <span style={{ color: result.isRealEngine ? '#00f0ff' : '#c084fc' }}>
+              {result.isRealEngine ? 'Multi-Signal Forensic Engine' : 'Client-Side Signal Engine'}
+            </span>
           </div>
         </div>
 
@@ -154,13 +157,13 @@ export default function AnalysisResult({
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '18px',
+          gap: '20px',
           marginBottom: '24px',
           flexWrap: 'wrap'
         }}>
           <div style={{
-            width: '64px',
-            height: '64px',
+            width: '68px',
+            height: '68px',
             borderRadius: '16px',
             background: currentTheme.bg,
             border: `1px solid ${currentTheme.border}`,
@@ -170,27 +173,52 @@ export default function AnalysisResult({
             boxShadow: `0 0 25px ${currentTheme.glow}`,
             flexShrink: 0
           }}>
-            <VerdictIcon size={36} color={currentTheme.primary} />
+            <VerdictIcon size={38} color={currentTheme.primary} />
           </div>
 
           <div>
-            <h2 style={{
-              fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)',
-              fontWeight: '800',
-              color: '#ffffff',
-              letterSpacing: '-0.02em',
-              lineHeight: 1.2
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              flexWrap: 'wrap'
             }}>
-              {result.verdict}
-            </h2>
+              <h2 style={{
+                fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)',
+                fontWeight: '800',
+                color: '#ffffff',
+                letterSpacing: '-0.02em',
+                lineHeight: 1.2
+              }}>
+                {result.verdict}
+              </h2>
+
+              <span style={{
+                fontSize: '0.72rem',
+                fontFamily: 'var(--font-mono)',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                background: 'rgba(15, 23, 42, 0.8)',
+                border: `1px solid ${currentTheme.border}`,
+                color: currentTheme.primary,
+                fontWeight: '700'
+              }}>
+                CONFIDENCE: {result.confidenceLevel || 'Calibrated'} ({result.confidence || 0}%)
+              </span>
+            </div>
+
             <div style={{
               fontSize: '0.88rem',
               color: 'var(--text-secondary)',
               marginTop: '4px'
             }}>
-              Confidence Assessment: <strong style={{ color: currentTheme.primary }}>
-                {isAi ? `${result.aiScore}% Synthetic Markers` : isReal ? `${result.realScore}% Authentic Markers` : 'Borderline Metrics'}
-              </strong>
+              {isInconclusive ? (
+                <span>Evidence is ambiguous or insufficient to categorize image with certainty.</span>
+              ) : isAi ? (
+                <span>Synthetic generative patterns detected with <strong>{result.confidence}% calibrated confidence</strong>.</span>
+              ) : (
+                <span>Optical camera signatures detected with <strong>{result.confidence}% calibrated confidence</strong>.</span>
+              )}
             </div>
           </div>
         </div>
@@ -214,16 +242,31 @@ export default function AnalysisResult({
           }}>
             <div>
               <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#f87171', fontWeight: '600' }}>
-                AI-GENERATED LIKELIHOOD
+                AI SYNTHESIS LIKELIHOOD
               </div>
               <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
                 {result.aiScore}%
               </div>
             </div>
 
+            {isInconclusive && (
+              <div style={{
+                textAlign: 'center',
+                padding: '4px 12px',
+                borderRadius: '6px',
+                background: 'rgba(245, 158, 11, 0.15)',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                color: '#fbbf24',
+                fontSize: '0.72rem',
+                fontFamily: 'var(--font-mono)'
+              }}>
+                UNCERTAINTY SYSTEM TRIGGERED (AMBIGUOUS ZONE)
+              </div>
+            )}
+
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#34d399', fontWeight: '600' }}>
-                REAL-IMAGE LIKELIHOOD
+                AUTHENTIC CAPTURE LIKELIHOOD
               </div>
               <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
                 {result.realScore}%
@@ -263,12 +306,12 @@ export default function AnalysisResult({
             color: 'var(--text-muted)',
             marginTop: '6px'
           }}>
-            <span>SYNTHETIC SPECTRUM</span>
-            <span>PHYSICAL CAPTURE SPECTRUM</span>
+            <span>SYNTHETIC FREQUENCY SPECTRUM</span>
+            <span>PHYSICAL CMOS SILICON SPECTRUM</span>
           </div>
         </div>
 
-        {/* Short Explanation of the Result */}
+        {/* Short Explanation & Model Assessment */}
         <div style={{
           padding: '16px 20px',
           borderRadius: '10px',
@@ -287,80 +330,82 @@ export default function AnalysisResult({
             gap: '6px'
           }}>
             <Info size={14} color="#38bdf8" />
-            <span>ANALYSIS SUMMARY &amp; EXPLANATION</span>
+            <span>MODEL ASSESSMENT &amp; EXPLANATION</span>
           </div>
           <p style={{
             fontSize: '0.94rem',
             color: '#f1f5f9',
             lineHeight: 1.6
           }}>
-            {result.explanation}
+            {result.summary}
           </p>
         </div>
 
-        {/* 4-Pillar Evaluation Matrix */}
-        <div style={{ marginTop: '24px' }}>
-          <div style={{
-            fontSize: '0.82rem',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: '600',
-            color: '#94a3b8',
-            marginBottom: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <Layers size={14} color="#00f0ff" />
-            <span>FORENSIC PILLAR BREAKDOWN</span>
-          </div>
+        {/* 4-Pillar Multi-Signal Breakdown Matrix */}
+        {result.pillars && (
+          <div style={{ marginTop: '24px' }}>
+            <div style={{
+              fontSize: '0.82rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '600',
+              color: '#94a3b8',
+              marginBottom: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <Layers size={14} color="#00f0ff" />
+              <span>MULTI-SIGNAL FORENSIC DOMAINS</span>
+            </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '12px'
-          }}>
-            {result.pillars.map((pillar, idx) => (
-              <div 
-                key={idx}
-                style={{
-                  background: 'rgba(7, 11, 20, 0.65)',
-                  padding: '14px',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(56, 189, 248, 0.1)'
-                }}
-              >
-                <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#cbd5e1', marginBottom: '4px' }}>
-                  {pillar.name}
-                </div>
-                <div style={{
-                  fontSize: '0.72rem',
-                  fontFamily: 'var(--font-mono)',
-                  color: pillar.color === 'red' ? '#f87171' : pillar.color === 'emerald' ? '#34d399' : '#fbbf24',
-                  fontWeight: '600'
-                }}>
-                  {pillar.status}
-                </div>
-                <div style={{
-                  width: '100%',
-                  height: '4px',
-                  background: 'rgba(30, 41, 59, 0.7)',
-                  borderRadius: '2px',
-                  marginTop: '8px',
-                  overflow: 'hidden'
-                }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '12px'
+            }}>
+              {result.pillars.map((pillar, idx) => (
+                <div 
+                  key={idx}
+                  style={{
+                    background: 'rgba(7, 11, 20, 0.65)',
+                    padding: '14px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(56, 189, 248, 0.1)'
+                  }}
+                >
+                  <div style={{ fontSize: '0.8rem', fontWeight: '600', color: '#cbd5e1', marginBottom: '4px' }}>
+                    {pillar.name}
+                  </div>
                   <div style={{
-                    width: `${pillar.score}%`,
-                    height: '100%',
-                    background: pillar.color === 'red' ? '#ef4444' : pillar.color === 'emerald' ? '#10b981' : '#f59e0b'
-                  }} />
+                    fontSize: '0.72rem',
+                    fontFamily: 'var(--font-mono)',
+                    color: pillar.color === 'red' ? '#f87171' : pillar.color === 'emerald' ? '#34d399' : '#fbbf24',
+                    fontWeight: '600'
+                  }}>
+                    {pillar.status}
+                  </div>
+                  <div style={{
+                    width: '100%',
+                    height: '4px',
+                    background: 'rgba(30, 41, 59, 0.7)',
+                    borderRadius: '2px',
+                    marginTop: '8px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      width: `${pillar.score}%`,
+                      height: '100%',
+                      background: pillar.color === 'red' ? '#ef4444' : pillar.color === 'emerald' ? '#10b981' : '#f59e0b'
+                    }} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Irregularities Detected Accordion */}
+      {/* Detected Irregularities & Indicators Accordion */}
       <div className="glass-panel" style={{
         padding: '24px',
         marginBottom: '24px',
@@ -391,10 +436,10 @@ export default function AnalysisResult({
             </div>
             <div>
               <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#ffffff' }}>
-                Possible Irregularities Detected ({result.anomalies.length})
+                Detected Indicators &amp; Anomaly Signals ({result.anomalies?.length || 0})
               </h3>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                Structural frequency, texture, and container inspection logs
+                Frequency spectrum peaks, sensor grain floor, and container provenance logs
               </p>
             </div>
           </div>
@@ -412,79 +457,96 @@ export default function AnalysisResult({
 
         {expandedAnomalies && (
           <div style={{ marginTop: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {result.anomalies.map((ano) => (
-              <div 
-                key={ano.id}
-                style={{
-                  background: 'rgba(7, 11, 20, 0.55)',
-                  padding: '16px',
-                  borderRadius: '10px',
-                  border: '1px solid rgba(56, 189, 248, 0.1)'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '8px',
-                  marginBottom: '6px'
-                }}>
+            {result.anomalies?.map((ano, idx) => {
+              const isAnomaly = ano.type === 'ANOMALY' || ano.type === 'DEFINITIVE_ANOMALY';
+              const isAuthentic = ano.type === 'AUTHENTIC';
+
+              return (
+                <div 
+                  key={idx}
+                  style={{
+                    background: 'rgba(7, 11, 20, 0.55)',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(56, 189, 248, 0.1)'
+                  }}
+                >
                   <div style={{
-                    fontSize: '0.92rem',
-                    fontWeight: '600',
-                    color: '#f1f5f9',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    marginBottom: '6px'
                   }}>
-                    <span style={{
-                      width: '6px',
-                      height: '6px',
-                      borderRadius: '50%',
-                      background: ano.severity === 'HIGH' ? '#ef4444' : ano.severity === 'MEDIUM' ? '#f59e0b' : '#10b981'
-                    }} />
-                    <span>{ano.title}</span>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{
-                      fontSize: '0.65rem',
-                      fontFamily: 'var(--font-mono)',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      background: 'rgba(30, 41, 59, 0.7)',
-                      color: '#94a3b8'
+                    <div style={{
+                      fontSize: '0.92rem',
+                      fontWeight: '600',
+                      color: '#f1f5f9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
                     }}>
-                      {ano.category}
-                    </span>
+                      <span style={{
+                        width: '7px',
+                        height: '7px',
+                        borderRadius: '50%',
+                        background: isAnomaly ? '#ef4444' : isAuthentic ? '#10b981' : '#f59e0b'
+                      }} />
+                      <span>{ano.name || ano.title}</span>
+                    </div>
+
                     <span style={{
                       fontSize: '0.65rem',
                       fontFamily: 'var(--font-mono)',
-                      padding: '2px 6px',
+                      padding: '2px 8px',
                       borderRadius: '4px',
-                      background: ano.severity === 'HIGH' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                      color: ano.severity === 'HIGH' ? '#f87171' : '#fbbf24',
+                      background: isAnomaly ? 'rgba(239, 68, 68, 0.15)' : isAuthentic ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                      color: isAnomaly ? '#f87171' : isAuthentic ? '#34d399' : '#fbbf24',
                       fontWeight: '700'
                     }}>
-                      {ano.severity} PRIORITY
+                      {isAnomaly ? 'ANOMALY MARKER' : isAuthentic ? 'AUTHENTIC SIGNAL' : 'NEUTRAL NOTE'}
                     </span>
                   </div>
-                </div>
 
-                <p style={{
-                  fontSize: '0.84rem',
-                  color: 'var(--text-secondary)',
-                  lineHeight: 1.5,
-                  paddingLeft: '14px'
-                }}>
-                  {ano.description}
-                </p>
-              </div>
-            ))}
+                  <p style={{
+                    fontSize: '0.84rem',
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.5,
+                    paddingLeft: '15px'
+                  }}>
+                    {ano.detail || ano.description}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
+
+      {/* Limitations of Analysis & Reliability Notice */}
+      {result.limitations && result.limitations.length > 0 && (
+        <div className="glass-panel" style={{
+          padding: '20px 24px',
+          marginBottom: '24px',
+          background: 'rgba(15, 23, 42, 0.65)',
+          borderLeft: '4px solid #38bdf8'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <AlertCircle size={16} color="#38bdf8" />
+            <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
+              LIMITATIONS OF THIS ANALYSIS
+            </span>
+          </div>
+          <ul style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {result.limitations.map((lim, idx) => (
+              <li key={idx} style={{ fontSize: '0.82rem', color: '#94a3b8', lineHeight: 1.5 }}>
+                {lim}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Action Buttons Toolbar */}
       <div style={{
@@ -495,7 +557,6 @@ export default function AnalysisResult({
         gap: '12px',
         marginBottom: '24px'
       }}>
-        {/* Try Another Image Button */}
         <button
           onClick={onReset}
           className="btn-secondary"
@@ -505,12 +566,11 @@ export default function AnalysisResult({
           <span>Try Another Image</span>
         </button>
 
-        {/* Download & Export Group */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             onClick={handleExportJson}
             className="btn-secondary"
-            title="Export raw JSON forensic schema"
+            title="Export raw forensic schema"
             style={{ padding: '12px 18px' }}
           >
             <FileText size={16} />
@@ -529,35 +589,35 @@ export default function AnalysisResult({
         </div>
       </div>
 
-      {/* Scientific Transparency Notice & Privacy Notice */}
+      {/* Reliability & Privacy Standards Guarantee */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '16px',
         marginTop: '16px'
       }}>
-        {/* Transparency Mode Disclaimer */}
+        {/* Scientific Reliability Notice */}
         <div style={{
           padding: '16px 20px',
           borderRadius: '12px',
           background: 'rgba(15, 23, 42, 0.6)',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
+          border: '1px solid rgba(56, 189, 248, 0.2)',
           display: 'flex',
           gap: '12px',
           alignItems: 'flex-start'
         }}>
-          <Sparkles size={18} color="#c084fc" style={{ flexShrink: 0, marginTop: '2px' }} />
+          <Activity size={18} color="#38bdf8" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
-            <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#c084fc', marginBottom: '4px' }}>
-              TRANSPARENCY &amp; METHODOLOGY NOTICE
+            <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#38bdf8', marginBottom: '4px' }}>
+              RELIABILITY &amp; INTEGRITY INFORMATION
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Running in <strong>Demo Heuristic Mode</strong>. These percentages reflect deterministic visual signal processing (sensor grain floor, frequency DCT, and micro-texture gradients). Real-world production APIs can be attached in the API settings panel.
+              No AI detector is 100% accurate. Advanced generative models evolve continuously, and aggressive compression can mask signatures. These findings are probabilistic indicators and must never be treated as definitive legal proof.
             </p>
           </div>
         </div>
 
-        {/* Privacy Notice Requirement */}
+        {/* Privacy Safeguard Notice */}
         <div style={{
           padding: '16px 20px',
           borderRadius: '12px',
@@ -570,10 +630,10 @@ export default function AnalysisResult({
           <Lock size={18} color="#34d399" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div>
             <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#34d399', marginBottom: '4px' }}>
-              PRIVACY SAFEGUARD GUARANTEE
+              ZERO DISK RETENTION POLICY
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Uploaded images are rendered client-side in your local browser memory and are <strong>not stored permanently</strong> or transferred to remote training servers during this demo inspection.
+              Uploaded images are processed ephemerally in RAM buffers to extract mathematical frequency and noise residuals, and are immediately flushed without permanent server disk storage.
             </p>
           </div>
         </div>
