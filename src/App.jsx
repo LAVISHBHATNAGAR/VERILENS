@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ImageUploader from './components/ImageUploader';
@@ -11,7 +11,7 @@ import PrivacyGuide from './components/PrivacyGuide';
 import AboutSection from './components/AboutSection';
 import ApiConfigModal from './components/ApiConfigModal';
 import Footer from './components/Footer';
-import { analyzeImage, DETECTION_MODES } from './services/detectionService';
+import { analyzeImage, checkBackendHealth, DETECTION_MODES } from './services/detectionService';
 
 const SESSION_HISTORY_KEY = 'verilens_audit_history';
 
@@ -22,6 +22,7 @@ export default function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [scanStep, setScanStep] = useState('');
+  const [isBackendOnline, setIsBackendOnline] = useState(false);
 
   // Session History State
   const [history, setHistory] = useState(() => {
@@ -37,10 +38,44 @@ export default function App() {
   // API Config State
   const [apiConfigOpen, setApiConfigOpen] = useState(false);
   const [apiConfig, setApiConfig] = useState({
-    mode: DETECTION_MODES.DEMO,
+    mode: DETECTION_MODES.REAL_ENGINE,
     apiEndpoint: '',
     apiKey: ''
   });
+
+  // Verify backend connectivity
+  const probeBackend = useCallback(async (customUrl = '') => {
+    const health = await checkBackendHealth(customUrl || apiConfig.apiEndpoint);
+    setIsBackendOnline(health.online);
+    if (health.online) {
+      setApiConfig((prev) => ({
+        ...prev,
+        mode: DETECTION_MODES.REAL_ENGINE,
+        apiEndpoint: health.apiEndpoint
+      }));
+    } else {
+      setApiConfig((prev) => ({
+        ...prev,
+        mode: DETECTION_MODES.DEMO
+      }));
+    }
+    return health;
+  }, [apiConfig.apiEndpoint]);
+
+  // Initial and periodic backend health probe
+  useEffect(() => {
+    let isMounted = true;
+    probeBackend();
+
+    const interval = setInterval(() => {
+      if (isMounted) probeBackend();
+    }, 8000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [probeBackend]);
 
   // Sync history to sessionStorage
   useEffect(() => {
@@ -78,7 +113,7 @@ export default function App() {
         currentImage.element,
         {
           mode: apiConfig.mode,
-          apiEndpoint: apiConfig.apiEndpoint,
+          apiEndpoint: apiConfig.apiEndpoint || '/api/detect',
           apiKey: apiConfig.apiKey,
           onProgress: (pct, msg) => {
             setScanProgress(pct);
@@ -88,6 +123,11 @@ export default function App() {
       );
 
       setAnalysisResult(result);
+
+      // If result came from real backend, update status
+      if (result.isRealEngine) {
+        setIsBackendOnline(true);
+      }
 
       // Save to session history (capped at 20 items)
       const historyItem = {
@@ -114,7 +154,6 @@ export default function App() {
   // Select item from history to review
   const handleSelectHistoryItem = (item) => {
     setAnalysisResult(item.result);
-    // Construct mock image item for preview
     const img = new Image();
     img.src = item.previewUrl;
     img.onload = () => {
@@ -148,7 +187,7 @@ export default function App() {
         historyCount={history.length}
         onOpenHistory={() => setHistoryOpen(true)}
         onOpenApiConfig={() => setApiConfigOpen(true)}
-        isDemoMode={apiConfig.mode === DETECTION_MODES.DEMO}
+        isDemoMode={!isBackendOnline}
       />
 
       {/* Main Content Area */}
@@ -240,9 +279,15 @@ export default function App() {
       {/* API Configuration Modal */}
       <ApiConfigModal
         isOpen={apiConfigOpen}
-        onClose={() => setApiConfigOpen(false)}
+        onClose={() => {
+          setApiConfigOpen(false);
+          probeBackend();
+        }}
         config={apiConfig}
-        onSaveConfig={(newConfig) => setApiConfig(newConfig)}
+        onSaveConfig={(newConfig) => {
+          setApiConfig(newConfig);
+          probeBackend(newConfig.apiEndpoint);
+        }}
       />
 
       {/* Footer */}

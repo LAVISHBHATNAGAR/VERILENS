@@ -195,15 +195,16 @@ export default function Navbar({
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              background: 'rgba(12, 51, 85, 0.8)',
-              border: isDemoMode ? '1px solid rgba(248, 248, 255, 0.14)' : '1px solid rgba(210, 245, 0, 0.4)',
+              background: isDemoMode ? 'rgba(12, 51, 85, 0.8)' : 'rgba(210, 245, 0, 0.12)',
+              border: isDemoMode ? '1px solid rgba(248, 248, 255, 0.14)' : '1px solid rgba(210, 245, 0, 0.45)',
               color: isDemoMode ? 'var(--ghost-white-subtle)' : '#D2F500',
               padding: '7px 13px',
               borderRadius: '8px',
               fontSize: '0.76rem',
               fontFamily: 'var(--font-mono)',
               cursor: 'pointer',
-              fontWeight: '600',
+              fontWeight: '700',
+              boxShadow: isDemoMode ? 'none' : '0 0 16px rgba(210, 245, 0, 0.2)',
               transition: 'all 0.2s'
             }}
           >

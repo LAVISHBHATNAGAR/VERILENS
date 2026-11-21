@@ -4,7 +4,8 @@
 
 export const DETECTION_MODES = {
   REAL_ENGINE: 'GENUINE_MULTI_SIGNAL',
-  API: 'CUSTOM_API'
+  DEMO: 'DEMO_HEURISTICS',
+  CUSTOM_API: 'CUSTOM_API'
 };
 
 // Calculate real cryptographic SHA-256 hash using Web Crypto API
@@ -20,14 +21,80 @@ export async function calculateImageHash(fileOrBlob) {
 }
 
 /**
+ * Check backend server health across possible endpoints
+ * Checks relative /api/health and local http://localhost:3001/api/health
+ */
+export async function checkBackendHealth(customBaseUrl = '') {
+  const candidates = [];
+  
+  if (customBaseUrl && customBaseUrl.trim()) {
+    const cleanCustom = customBaseUrl.trim().replace(/\/+$/, '');
+    candidates.push({ url: `${cleanCustom}/api/health`, base: cleanCustom });
+  }
+
+  // 1. Try relative endpoint (works with Vite proxy or co-hosted server)
+  candidates.push({ url: '/api/health', base: '' });
+
+  // 2. Try direct localhost:3001 if in a browser on localhost / 127.0.0.1
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      candidates.push({ url: 'http://localhost:3001/api/health', base: 'http://localhost:3001' });
+    }
+  }
+
+  for (const candidate of candidates) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+      const res = await fetch(candidate.url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        // Ensure response is actually JSON and not index.html rewrite
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          if (data && data.status === 'online') {
+            return {
+              online: true,
+              baseUrl: candidate.base,
+              apiEndpoint: candidate.base ? `${candidate.base}/api/detect` : '/api/detect',
+              data
+            };
+          }
+        }
+      }
+    } catch {
+      // Try next candidate
+    }
+  }
+
+  return {
+    online: false,
+    baseUrl: '',
+    apiEndpoint: '/api/detect',
+    data: null
+  };
+}
+
+/**
  * Main Analysis Entry Point
  * Sends the real uploaded image to the multi-signal detection engine
  */
 export async function analyzeImage(imageItem, imageElement, options = {}) {
-  const {
-    apiEndpoint = '/api/detect',
+  let {
+    apiEndpoint,
     onProgress = () => {}
   } = options;
+
+  // Sanitize apiEndpoint: if null, empty string, or undefined, default to '/api/detect'
+  if (!apiEndpoint || typeof apiEndpoint !== 'string' || apiEndpoint.trim() === '') {
+    apiEndpoint = '/api/detect';
+  } else {
+    apiEndpoint = apiEndpoint.trim();
+  }
 
   const startTime = Date.now();
 
@@ -43,7 +110,6 @@ export async function analyzeImage(imageItem, imageElement, options = {}) {
   } else if (imageItem.file instanceof File || imageItem.file instanceof Blob) {
     fileBlob = imageItem.file;
   } else if (imageItem.dataUrl) {
-    // Convert dataUrl to blob
     const res = await fetch(imageItem.dataUrl);
     fileBlob = await res.blob();
   }
@@ -57,24 +123,63 @@ export async function analyzeImage(imageItem, imageElement, options = {}) {
   onProgress(85, 'Running optical chromatic dispersion & neural vision classifier...');
 
   try {
-    // Send to genuine backend forensic endpoint
     const formData = new FormData();
     formData.append('image', fileBlob, fileName);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+    let response = null;
+    let fetchError = null;
 
-    const response = await fetch(apiEndpoint, {
-      method: 'POST',
-      body: formData,
-      signal: controller.signal
-    });
+    // Helper to attempt fetch with timeout
+    const tryFetch = async (targetUrl) => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
+      try {
+        const res = await fetch(targetUrl, {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return res;
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
+    };
 
-    clearTimeout(timeoutId);
+    // First attempt: try configured or default apiEndpoint
+    try {
+      response = await tryFetch(apiEndpoint);
+      // Verify we received JSON and not an HTML 404 page
+      const contentType = response.headers.get('content-type') || '';
+      if (!response.ok || !contentType.includes('application/json')) {
+        throw new Error(`HTTP ${response.status}: Non-JSON or error response`);
+      }
+    } catch (err1) {
+      fetchError = err1;
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Server returned HTTP ${response.status}: ${errText}`);
+      // Automatic Fallback for localhost:
+      // If relative endpoint '/api/detect' failed, try direct 'http://localhost:3001/api/detect'
+      if (typeof window !== 'undefined') {
+        const host = window.location.hostname;
+        if ((host === 'localhost' || host === '127.0.0.1') && !apiEndpoint.startsWith('http://localhost:3001')) {
+          try {
+            console.info('[VERILENS] Retrying detection directly on http://localhost:3001/api/detect...');
+            const directRes = await tryFetch('http://localhost:3001/api/detect');
+            const ct = directRes.headers.get('content-type') || '';
+            if (directRes.ok && ct.includes('application/json')) {
+              response = directRes;
+              fetchError = null;
+            }
+          } catch (err2) {
+            fetchError = err2;
+          }
+        }
+      }
+    }
+
+    if (!response || !response.ok) {
+      throw fetchError || new Error('Backend server did not respond with valid forensic telemetry.');
     }
 
     onProgress(100, 'Synthesizing calibrated multi-signal forensic verdict...');
