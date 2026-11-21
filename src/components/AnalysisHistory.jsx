@@ -68,10 +68,10 @@ export default function AnalysisHistory({
               <History size={18} color="#2563EB" />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
                 Session History
               </h3>
-              <p style={{ fontSize: '0.74rem', color: '#64748B' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', fontWeight: '400', color: '#64748B' }}>
                 {history.length} {history.length === 1 ? 'image' : 'images'} audited in this session
               </p>
             </div>
@@ -108,10 +108,10 @@ export default function AnalysisHistory({
               color: '#64748B'
             }}>
               <FileImage size={42} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
-              <h4 style={{ fontSize: '0.95rem', color: '#172B4D', marginBottom: '6px', fontWeight: '700' }}>
+              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.95rem', color: '#172B4D', marginBottom: '6px', fontWeight: '700' }}>
                 No Scans Conducted Yet
               </h4>
-              <p style={{ fontSize: '0.82rem', lineHeight: 1.5, maxWidth: '260px', margin: '0 auto', color: '#64748B' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', fontWeight: '400', lineHeight: 1.5, maxWidth: '260px', margin: '0 auto', color: '#64748B' }}>
                 Upload and analyze an image to track your inspection chain-of-custody in this session.
               </p>
             </div>
@@ -167,8 +167,9 @@ export default function AnalysisHistory({
 
                   <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{
+                      fontFamily: 'var(--font-heading)',
                       fontSize: '0.86rem',
-                      fontWeight: '700',
+                      fontWeight: '600',
                       color: '#172B4D',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
@@ -186,7 +187,7 @@ export default function AnalysisHistory({
                       <span style={{
                         fontSize: '0.66rem',
                         fontFamily: 'var(--font-mono)',
-                        fontWeight: '800',
+                        fontWeight: '500',
                         padding: '1px 6px',
                         borderRadius: '4px',
                         background: isAi ? '#FEF2F2' : isReal ? '#F0FDF4' : '#FFFBEB',
@@ -195,13 +196,14 @@ export default function AnalysisHistory({
                       }}>
                         {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
                       </span>
-                      <span style={{ fontSize: '0.68rem', color: '#64748B' }}>
+                      <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', fontWeight: '400', color: '#64748B' }}>
                         {item.result.confidence}% conf
                       </span>
                     </div>
 
                     <div style={{
                       fontSize: '0.68rem',
+                      fontFamily: 'var(--font-mono)',
                       color: '#94A3B8',
                       marginTop: '3px',
                       display: 'flex',
@@ -233,12 +235,12 @@ export default function AnalysisHistory({
             <button
               onClick={onClearHistory}
               className="btn-danger-outline"
-              style={{ fontSize: '0.82rem', padding: '6px 12px' }}
+              style={{ fontSize: '0.82rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
             >
               <Trash2 size={13} />
               <span>Clear History</span>
             </button>
-            <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
+            <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: '#64748B' }}>
               Ephemeral Session Storage
             </span>
           </div>

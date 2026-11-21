@@ -68,14 +68,14 @@ export default function PrivacyGuide() {
           marginBottom: '16px'
         }}>
           <Lock size={14} color="#2563EB" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: '700' }}>
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
             DIGITAL PRIVACY &amp; SECURITY PROTOCOLS
           </span>
         </div>
-        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
           Privacy, Provenance &amp; Media Safety Guide
         </h2>
-        <p style={{ color: '#475569', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: '#475569', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
           Essential practices to safeguard personal information, protect your online identity, and evaluate digital media critically.
         </p>
       </div>
@@ -104,10 +104,10 @@ export default function PrivacyGuide() {
               }}>
                 <Icon size={22} color="#2563EB" />
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: '600', color: '#172B4D', marginBottom: '8px' }}>
                 {card.title}
               </h3>
-              <p style={{ fontSize: '0.86rem', color: '#64748B', lineHeight: 1.6 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.86rem', fontWeight: '400', color: '#64748B', lineHeight: 1.6 }}>
                 {card.description}
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function PrivacyGuide() {
       <div className="glass-panel" style={{ padding: '30px', background: '#FFFFFF' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
           <Sparkles size={20} color="#2563EB" />
-          <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#172B4D' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D' }}>
             Practical Visual Anomaly Checklist for Everyday Users
           </h3>
         </div>
@@ -137,10 +137,10 @@ export default function PrivacyGuide() {
             }}>
               <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
               <div>
-                <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#172B4D', marginBottom: '2px' }}>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: '600', color: '#172B4D', marginBottom: '2px' }}>
                   {tip.title}
                 </div>
-                <div style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: 1.55 }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>
                   {tip.desc}
                 </div>
               </div>

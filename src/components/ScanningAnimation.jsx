@@ -54,30 +54,49 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           </svg>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{
-              fontSize: '1.55rem', fontWeight: '800',
-              fontFamily: 'var(--font-mono)', color: '#172B4D', letterSpacing: '-0.02em'
+              fontSize: '1.55rem',
+              fontWeight: '500',
+              fontFamily: 'var(--font-mono)',
+              color: '#172B4D',
+              letterSpacing: '-0.02em'
             }}>
               {Math.round(progress)}%
             </span>
             <span style={{
-              fontSize: '0.6rem', fontFamily: 'var(--font-mono)',
-              color: '#2563EB', fontWeight: '700', letterSpacing: '0.06em'
+              fontSize: '0.62rem',
+              fontFamily: 'var(--font-mono)',
+              color: '#2563EB',
+              fontWeight: '500',
+              letterSpacing: '0.06em'
             }}>
               SCANNING
             </span>
           </div>
         </div>
 
-        {/* Title */}
-        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '8px', color: '#172B4D' }}>
+        {/* Title (Plus Jakarta Sans, 700) */}
+        <h3 style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: '1.2rem',
+          fontWeight: '700',
+          marginBottom: '8px',
+          color: '#172B4D'
+        }}>
           Running Forensic Analysis
         </h3>
 
-        {/* Current step */}
+        {/* Current step (IBM Plex Mono, 400) */}
         <p style={{
-          fontSize: '0.88rem', fontFamily: 'var(--font-mono)', color: '#2563EB',
-          marginBottom: '22px', minHeight: '24px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+          fontSize: '0.88rem',
+          fontFamily: 'var(--font-mono)',
+          fontWeight: '400',
+          color: '#2563EB',
+          marginBottom: '22px',
+          minHeight: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px'
         }}>
           <span style={{
             width: '7px', height: '7px', borderRadius: '50%',
@@ -99,7 +118,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           }} />
         </div>
 
-        {/* Phase indicators */}
+        {/* Phase indicators (IBM Plex Mono, 500) */}
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', textAlign: 'center'
         }}>
@@ -117,7 +136,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
               fontSize: '0.68rem',
               fontFamily: 'var(--font-mono)',
               color: phase.active ? '#2563EB' : '#94A3B8',
-              fontWeight: phase.active ? '700' : '500',
+              fontWeight: '500',
               transition: 'all 0.2s ease'
             }}>
               {phase.label}

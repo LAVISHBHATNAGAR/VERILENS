@@ -37,24 +37,24 @@ export default function Footer({ onNavigate }) {
               }}>
                 <ShieldCheck size={18} color="#2563EB" />
               </div>
-              <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#172B4D', letterSpacing: '0.03em' }}>
+              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '800', color: '#172B4D', letterSpacing: '-0.02em' }}>
                 VERILENS
               </span>
             </div>
-            <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: 1.6, maxWidth: '340px' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: '400', color: '#64748B', lineHeight: 1.6, maxWidth: '340px' }}>
               Digital Truth &amp; Safety Assistant. Protecting information integrity, auditing synthetic imagery, and verifying digital media provenance.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#2563EB', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-heading)', color: '#2563EB', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: '600' }}>
               Truth Suite Modules
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <button
                 onClick={() => onNavigate('checker')}
-                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
                 onMouseEnter={(e) => e.target.style.color = '#2563EB'}
                 onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
@@ -62,7 +62,7 @@ export default function Footer({ onNavigate }) {
               </button>
               <button
                 onClick={() => onNavigate('fakenews')}
-                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
                 onMouseEnter={(e) => e.target.style.color = '#2563EB'}
                 onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
@@ -70,7 +70,7 @@ export default function Footer({ onNavigate }) {
               </button>
               <button
                 onClick={() => onNavigate('privacy')}
-                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
                 onMouseEnter={(e) => e.target.style.color = '#2563EB'}
                 onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
@@ -78,7 +78,7 @@ export default function Footer({ onNavigate }) {
               </button>
               <button
                 onClick={() => onNavigate('about')}
-                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
                 onMouseEnter={(e) => e.target.style.color = '#2563EB'}
                 onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
@@ -89,7 +89,7 @@ export default function Footer({ onNavigate }) {
 
           {/* Security Telemetry Status */}
           <div>
-            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#172B4D', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-heading)', color: '#172B4D', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: '600' }}>
               System Integrity Status
             </h4>
             <div style={{
@@ -100,11 +100,11 @@ export default function Footer({ onNavigate }) {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#16A34A', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }} />
-                <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '800' }}>
+                <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '500' }}>
                   OPERATIONAL · SECURE
                 </span>
               </div>
-              <p style={{ fontSize: '0.76rem', color: '#64748B', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#64748B', lineHeight: 1.5 }}>
                 Multi-signal forensic analysis active. Zero persistent image telemetry logged.
               </p>
             </div>
@@ -121,14 +121,14 @@ export default function Footer({ onNavigate }) {
           flexWrap: 'wrap',
           gap: '12px'
         }}>
-          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>
+          <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-body)', color: '#64748B', fontWeight: '400' }}>
             © {new Date().getFullYear()} VERILENS – Digital Truth &amp; Safety Assistant. Academic College Demonstration.
           </div>
 
           <button
             onClick={scrollToTop}
             className="btn-secondary"
-            style={{ fontSize: '0.76rem', padding: '6px 12px' }}
+            style={{ fontSize: '0.76rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
           >
             <span>Back to top</span>
             <ArrowUp size={12} color="#2563EB" />

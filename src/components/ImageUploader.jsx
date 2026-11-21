@@ -121,17 +121,29 @@ export default function ImageUploader({ onImageSelected }) {
           <UploadCloud size={32} color={isDragOver ? '#2563EB' : '#94A3B8'} />
         </div>
 
-        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
+        <h3 style={{
+          fontFamily: 'var(--font-heading)',
+          fontSize: '1.15rem',
+          fontWeight: '700',
+          color: '#172B4D',
+          marginBottom: '8px'
+        }}>
           {isDragOver ? 'Drop your image here' : 'Drag & drop an image to verify'}
         </h3>
-        <p style={{ fontSize: '0.88rem', color: '#64748B', marginBottom: '22px' }}>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '0.88rem',
+          color: '#64748B',
+          marginBottom: '22px',
+          fontWeight: '400'
+        }}>
           Supported formats: JPG, JPEG, PNG, WEBP · Maximum size: 15 MB
         </p>
 
         <button
           onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
           className="btn-primary"
-          style={{ pointerEvents: 'none' }}
+          style={{ pointerEvents: 'none', fontFamily: 'var(--font-body)', fontWeight: '600' }}
         >
           <FileImage size={16} />
           <span>Browse Image</span>
@@ -143,15 +155,16 @@ export default function ImageUploader({ onImageSelected }) {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
-          fontSize: '0.76rem',
+          fontSize: '0.78rem',
           color: '#64748B',
-          fontFamily: 'var(--font-mono)',
+          fontFamily: 'var(--font-body)',
+          fontWeight: '400',
           padding: '5px 14px',
           borderRadius: '20px',
           background: '#F8FAFC',
           border: '1px solid #E2E8F0'
         }}>
-          <CheckCircle2 size={12} color="#16A34A" />
+          <CheckCircle2 size={13} color="#16A34A" />
           <span>Images are not stored. Analyzed locally or discarded after processing.</span>
         </div>
       </div>
@@ -168,7 +181,8 @@ export default function ImageUploader({ onImageSelected }) {
           alignItems: 'center',
           gap: '10px',
           color: '#DC2626',
-          fontSize: '0.88rem'
+          fontSize: '0.88rem',
+          fontFamily: 'var(--font-body)'
         }}>
           <AlertCircle size={17} color="#DC2626" style={{ flexShrink: 0 }} />
           <span>{errorMessage}</span>
@@ -187,11 +201,13 @@ export default function ImageUploader({ onImageSelected }) {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Layers size={15} color="#2563EB" />
-            <span style={{ fontSize: '0.88rem', fontWeight: '700', color: '#172B4D' }}>
+            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.92rem', fontWeight: '600', color: '#172B4D' }}>
               Or test with benchmark reference images:
             </span>
           </div>
-          <span style={{ fontSize: '0.74rem', color: '#64748B' }}>One-click instant analysis</span>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: '#64748B' }}>
+            One-click instant analysis
+          </span>
         </div>
 
         <div style={{
@@ -237,8 +253,9 @@ export default function ImageUploader({ onImageSelected }) {
                 </div>
                 <div style={{ overflow: 'hidden', flex: 1 }}>
                   <div style={{
-                    fontSize: '0.83rem',
-                    fontWeight: '700',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.85rem',
+                    fontWeight: '600',
                     color: '#172B4D',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
@@ -248,10 +265,10 @@ export default function ImageUploader({ onImageSelected }) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
                     <span style={{
-                      fontSize: '0.65rem',
+                      fontSize: '0.66rem',
                       fontFamily: 'var(--font-mono)',
                       color: isAi ? '#DC2626' : '#16A34A',
-                      fontWeight: '800',
+                      fontWeight: '500',
                       padding: '1px 6px',
                       borderRadius: '4px',
                       background: isAi ? '#FEF2F2' : '#F0FDF4',
@@ -259,7 +276,7 @@ export default function ImageUploader({ onImageSelected }) {
                     }}>
                       {isAi ? 'AI-GEN' : 'REAL'}
                     </span>
-                    <span style={{ fontSize: '0.66rem', color: '#94A3B8' }}>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: '#94A3B8', fontWeight: '400' }}>
                       {sample.dimensions.width}×{sample.dimensions.height}
                     </span>
                   </div>

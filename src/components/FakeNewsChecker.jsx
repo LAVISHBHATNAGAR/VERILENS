@@ -145,21 +145,21 @@ export default function FakeNewsChecker() {
           marginBottom: '16px'
         }}>
           <Newspaper size={14} color="#2563EB" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: '700' }}>
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
             VERILENS INFORMATION INTEGRITY SUITE
           </span>
         </div>
-        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
           Fake News &amp; Claim Credibility Scanner
         </h2>
-        <p style={{ color: '#475569', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: '#475569', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
           Inspect news headlines, claims, and social media posts for linguistic manipulation, emotional triggers, and signs of deceptive media.
         </p>
       </div>
 
       {/* Main Input Box */}
       <div className="glass-panel" style={{ padding: '28px', marginBottom: '24px' }}>
-        <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
+        <label style={{ display: 'block', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: '#172B4D', marginBottom: '8px' }}>
           Enter Headline, Claim, or Statement to Audit:
         </label>
         <textarea
@@ -175,7 +175,8 @@ export default function FakeNewsChecker() {
             borderRadius: '8px',
             color: '#172B4D',
             fontSize: '0.95rem',
-            fontFamily: 'inherit',
+            fontFamily: 'var(--font-body)',
+            fontWeight: '400',
             resize: 'vertical',
             outline: 'none',
             marginBottom: '14px',
@@ -187,7 +188,7 @@ export default function FakeNewsChecker() {
 
         {/* Optional Source URL */}
         <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '600', color: '#475569', marginBottom: '6px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
             <Link2 size={13} color="#64748B" />
             <span>Source URL (Optional):</span>
           </label>
@@ -204,6 +205,7 @@ export default function FakeNewsChecker() {
               borderRadius: '8px',
               color: '#172B4D',
               fontSize: '0.88rem',
+              fontFamily: 'var(--font-body)',
               outline: 'none'
             }}
             onFocus={(e) => e.target.style.borderColor = '#2563EB'}
@@ -213,7 +215,7 @@ export default function FakeNewsChecker() {
 
         {/* Preset quick buttons */}
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '0.76rem', color: '#64748B', marginBottom: '8px', fontWeight: '600' }}>
+          <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: '#64748B', marginBottom: '8px', fontWeight: '500' }}>
             Or try a reference headline:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -230,7 +232,9 @@ export default function FakeNewsChecker() {
                   border: '1px solid #E2E8F0',
                   color: '#475569',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: '500'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = '#EFF6FF';
@@ -252,6 +256,7 @@ export default function FakeNewsChecker() {
             <button
               onClick={() => { setHeadline(''); setAnalysis(null); }}
               className="btn-secondary"
+              style={{ fontFamily: 'var(--font-body)', fontWeight: '500' }}
             >
               <RotateCcw size={15} />
               <span>Reset</span>
@@ -261,7 +266,7 @@ export default function FakeNewsChecker() {
             onClick={handleAnalyze}
             disabled={!headline.trim() || analyzing}
             className="btn-primary"
-            style={{ padding: '12px 24px' }}
+            style={{ padding: '12px 24px', fontFamily: 'var(--font-body)', fontWeight: '600' }}
           >
             <Search size={16} />
             <span>{analyzing ? 'Scanning Linguistic Patterns...' : 'Audit Credibility'}</span>
@@ -290,7 +295,7 @@ export default function FakeNewsChecker() {
               <span style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.74rem',
-                fontWeight: '800',
+                fontWeight: '500',
                 padding: '4px 10px',
                 borderRadius: '6px',
                 background: analysis.verdictBg,
@@ -301,16 +306,16 @@ export default function FakeNewsChecker() {
               </span>
             </div>
 
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: '#64748B' }}>
-              Credibility Index: <strong style={{ color: '#2563EB' }}>{analysis.credibilityScore}%</strong>
+            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#64748B' }}>
+              Credibility Index: <strong style={{ color: '#2563EB', fontWeight: '500' }}>{analysis.credibilityScore}%</strong>
             </div>
           </div>
 
-          <h3 style={{ fontSize: '1.3rem', fontWeight: '800', color: '#172B4D', marginBottom: '8px' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
             {analysis.verdict}
           </h3>
 
-          <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, marginBottom: '20px' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, marginBottom: '20px', fontWeight: '400' }}>
             {analysis.detailedVerdict}
           </p>
 
@@ -328,17 +333,17 @@ export default function FakeNewsChecker() {
                 borderRadius: '8px',
                 border: '1px solid #E2E8F0'
               }}>
-                <div style={{ fontSize: '0.76rem', color: '#64748B', marginBottom: '4px', fontWeight: '600' }}>
+                <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: '#64748B', marginBottom: '4px', fontWeight: '500' }}>
                   {m.name}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '1.2rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                     {m.score}%
                   </span>
                   <span style={{
                     fontSize: '0.68rem',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: '700',
+                    fontWeight: '500',
                     color: m.flag === 'High' ? '#DC2626' : '#16A34A',
                     padding: '2px 6px',
                     borderRadius: '4px',
@@ -361,12 +366,12 @@ export default function FakeNewsChecker() {
               border: '1px solid #FDE68A',
               marginBottom: '20px'
             }}>
-              <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#92400E', marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#92400E', marginBottom: '6px' }}>
                 DETECTED LINGUISTIC SIGNALS:
               </div>
               <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {analysis.evidenceFlags.map((flag, idx) => (
-                  <li key={idx} style={{ fontSize: '0.82rem', color: '#78350F' }}>
+                  <li key={idx} style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#78350F' }}>
                     {flag}
                   </li>
                 ))}
@@ -384,7 +389,7 @@ export default function FakeNewsChecker() {
             flexWrap: 'wrap',
             gap: '12px'
           }}>
-            <span style={{ fontSize: '0.82rem', color: '#64748B' }}>
+            <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', color: '#64748B', fontWeight: '400' }}>
               Cross-verify claim in reputable global registries:
             </span>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -393,7 +398,7 @@ export default function FakeNewsChecker() {
                 target="_blank"
                 rel="noreferrer"
                 className="btn-secondary"
-                style={{ fontSize: '0.78rem', padding: '6px 12px' }}
+                style={{ fontSize: '0.78rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
               >
                 <span>Google Fact Check</span>
                 <ExternalLink size={13} color="#2563EB" />
@@ -403,7 +408,7 @@ export default function FakeNewsChecker() {
                 target="_blank"
                 rel="noreferrer"
                 className="btn-secondary"
-                style={{ fontSize: '0.78rem', padding: '6px 12px' }}
+                style={{ fontSize: '0.78rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
               >
                 <span>Reuters</span>
                 <ExternalLink size={13} color="#2563EB" />

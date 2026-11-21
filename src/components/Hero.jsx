@@ -37,7 +37,7 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
       maxWidth: '1040px',
       margin: '0 auto'
     }}>
-      {/* Top badge */}
+      {/* Top badge (IBM Plex Mono, 500) */}
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -52,8 +52,8 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         <span style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.74rem',
-          letterSpacing: '0.07em',
-          fontWeight: '700',
+          letterSpacing: '0.05em',
+          fontWeight: '500',
           color: '#2563EB',
           textTransform: 'uppercase'
         }}>
@@ -61,9 +61,10 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         </span>
       </div>
 
-      {/* Main Heading */}
+      {/* Main Heading (Plus Jakarta Sans, 800) */}
       <h1 style={{
-        fontSize: 'clamp(2rem, 5vw, 3.6rem)',
+        fontFamily: 'var(--font-heading)',
+        fontSize: 'clamp(2.1rem, 5vw, 3.6rem)',
         fontWeight: '800',
         letterSpacing: '-0.03em',
         lineHeight: 1.15,
@@ -74,9 +75,10 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         <span style={{ color: '#2563EB' }}>What Looks Real.</span>
       </h1>
 
-      {/* Subtitle */}
+      {/* Subtitle (Inter, 400) */}
       <p style={{
-        fontSize: 'clamp(1rem, 2vw, 1.18rem)',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'clamp(1rem, 2vw, 1.15rem)',
         color: '#475569',
         maxWidth: '660px',
         margin: '0 auto 32px auto',
@@ -87,7 +89,7 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         identify misleading information, and protect your digital privacy.
       </p>
 
-      {/* CTA Buttons */}
+      {/* CTA Buttons (Inter, 600) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -99,7 +101,7 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         <button
           onClick={scrollToUpload}
           className="btn-primary"
-          style={{ padding: '14px 32px', fontSize: '1rem' }}
+          style={{ padding: '14px 32px', fontSize: '1rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
         >
           <span>Check an Image</span>
           <ArrowRight size={18} />
@@ -115,14 +117,14 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
             }
           }}
           className="btn-secondary"
-          style={{ padding: '14px 24px', fontSize: '0.98rem' }}
+          style={{ padding: '14px 24px', fontSize: '0.98rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
         >
           <Activity size={16} color="#2563EB" />
           <span>Explore Digital Safety</span>
         </button>
       </div>
 
-      {/* Feature Cards */}
+      {/* Feature Cards (Plus Jakarta Sans 600 headings, Inter 400 body) */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
@@ -147,17 +149,20 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
                 <Icon size={22} color="#2563EB" />
               </div>
               <h3 style={{
-                fontSize: '0.95rem',
-                fontWeight: '700',
+                fontFamily: 'var(--font-heading)',
+                fontSize: '1rem',
+                fontWeight: '600',
                 color: '#172B4D',
                 marginBottom: '7px'
               }}>
                 {f.title}
               </h3>
               <p style={{
-                fontSize: '0.84rem',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.86rem',
                 color: '#64748B',
-                lineHeight: 1.6
+                lineHeight: 1.6,
+                fontWeight: '400'
               }}>
                 {f.desc}
               </p>

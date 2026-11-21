@@ -99,7 +99,7 @@ export default function AnalysisResult({
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Header with Verdict & Reference Tag */}
+        {/* Header with Verdict & Reference Tag (IBM Plex Mono for technical ID) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -116,6 +116,7 @@ export default function AnalysisResult({
             <span style={{
               fontSize: '0.74rem',
               fontFamily: 'var(--font-mono)',
+              fontWeight: '500',
               color: '#64748B'
             }}>
               ID: {result.id}
@@ -128,16 +129,17 @@ export default function AnalysisResult({
             gap: '8px',
             fontSize: '0.78rem',
             fontFamily: 'var(--font-mono)',
+            fontWeight: '500',
             color: '#64748B'
           }}>
             <span>ENGINE:</span>
-            <span style={{ color: '#2563EB', fontWeight: '700' }}>
+            <span style={{ color: '#2563EB', fontWeight: '500' }}>
               {result.isRealEngine ? 'Multi-Signal Forensic Engine' : 'Client-Side Signal Engine'}
             </span>
           </div>
         </div>
 
-        {/* Main Verdict Display */}
+        {/* Main Verdict Display (Plus Jakarta Sans, 800) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -167,10 +169,11 @@ export default function AnalysisResult({
               flexWrap: 'wrap'
             }}>
               <h2 style={{
+                fontFamily: 'var(--font-heading)',
                 fontSize: 'clamp(1.7rem, 3.8vw, 2.3rem)',
                 fontWeight: '800',
                 color: '#172B4D',
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.025em',
                 lineHeight: 1.2
               }}>
                 {result.verdict}
@@ -179,12 +182,12 @@ export default function AnalysisResult({
               <span style={{
                 fontSize: '0.74rem',
                 fontFamily: 'var(--font-mono)',
+                fontWeight: '500',
                 padding: '4px 10px',
                 borderRadius: '6px',
                 background: currentTheme.bg,
                 border: `1px solid ${currentTheme.border}`,
-                color: currentTheme.primary,
-                fontWeight: '800'
+                color: currentTheme.primary
               }}>
                 CONFIDENCE: {result.confidenceLevel || 'Calibrated'} ({result.confidence || 0}%)
               </span>
@@ -192,8 +195,10 @@ export default function AnalysisResult({
 
             <div style={{
               fontSize: '0.92rem',
+              fontFamily: 'var(--font-body)',
               color: '#475569',
-              marginTop: '5px'
+              marginTop: '5px',
+              fontWeight: '400'
             }}>
               {isInconclusive ? (
                 <span>Evidence is ambiguous or insufficient to categorize image with certainty.</span>
@@ -214,7 +219,7 @@ export default function AnalysisResult({
           border: '1px solid #E2E8F0',
           marginBottom: '26px'
         }}>
-          {/* Percentages Bar Headings */}
+          {/* Percentages Bar Headings (IBM Plex Mono) */}
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -224,10 +229,10 @@ export default function AnalysisResult({
             gap: '8px'
           }}>
             <div>
-              <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#DC2626', fontWeight: '700' }}>
+              <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#DC2626', fontWeight: '500' }}>
                 AI SYNTHESIS LIKELIHOOD
               </div>
-              <div style={{ fontSize: '1.9rem', fontWeight: '800', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.9rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                 {result.aiScore}%
               </div>
             </div>
@@ -242,17 +247,17 @@ export default function AnalysisResult({
                 color: '#D97706',
                 fontSize: '0.74rem',
                 fontFamily: 'var(--font-mono)',
-                fontWeight: '700'
+                fontWeight: '500'
               }}>
                 UNCERTAINTY SYSTEM TRIGGERED (AMBIGUOUS ZONE)
               </div>
             )}
 
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '700' }}>
+              <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '500' }}>
                 AUTHENTIC CAPTURE LIKELIHOOD
               </div>
-              <div style={{ fontSize: '1.9rem', fontWeight: '800', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.9rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                 {result.realScore}%
               </div>
             </div>
@@ -284,6 +289,7 @@ export default function AnalysisResult({
             justifyContent: 'space-between',
             fontSize: '0.7rem',
             fontFamily: 'var(--font-mono)',
+            fontWeight: '400',
             color: '#64748B',
             marginTop: '8px'
           }}>
@@ -306,7 +312,7 @@ export default function AnalysisResult({
           <div style={{
             fontSize: '0.82rem',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '700',
+            fontWeight: '500',
             color: '#172B4D',
             marginBottom: '6px',
             display: 'flex',
@@ -318,6 +324,8 @@ export default function AnalysisResult({
           </div>
           <p style={{
             fontSize: '0.94rem',
+            fontFamily: 'var(--font-body)',
+            fontWeight: '400',
             color: '#475569',
             lineHeight: 1.65
           }}>
@@ -330,8 +338,8 @@ export default function AnalysisResult({
           <div style={{ marginTop: '26px' }}>
             <div style={{
               fontSize: '0.84rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: '700',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: '600',
               color: '#172B4D',
               marginBottom: '14px',
               display: 'flex',
@@ -357,14 +365,20 @@ export default function AnalysisResult({
                     border: '1px solid #E2E8F0'
                   }}
                 >
-                  <div style={{ fontSize: '0.82rem', fontWeight: '700', color: '#172B4D', marginBottom: '4px' }}>
+                  <div style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.82rem',
+                    fontWeight: '600',
+                    color: '#172B4D',
+                    marginBottom: '4px'
+                  }}>
                     {pillar.name}
                   </div>
                   <div style={{
                     fontSize: '0.74rem',
                     fontFamily: 'var(--font-mono)',
                     color: pillar.color === 'red' ? '#DC2626' : pillar.color === 'emerald' ? '#16A34A' : '#D97706',
-                    fontWeight: '700'
+                    fontWeight: '500'
                   }}>
                     {pillar.status}
                   </div>
@@ -419,10 +433,10 @@ export default function AnalysisResult({
               <ShieldAlert size={19} color="#2563EB" />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
                 Detected Indicators &amp; Anomaly Signals ({result.anomalies?.length || 0})
               </h3>
-              <p style={{ fontSize: '0.76rem', color: '#64748B' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: '#64748B', fontWeight: '400' }}>
                 Frequency spectrum peaks, sensor grain floor, and container provenance logs
               </p>
             </div>
@@ -464,8 +478,9 @@ export default function AnalysisResult({
                     marginBottom: '6px'
                   }}>
                     <div style={{
+                      fontFamily: 'var(--font-heading)',
                       fontSize: '0.92rem',
-                      fontWeight: '700',
+                      fontWeight: '600',
                       color: '#172B4D',
                       display: 'flex',
                       alignItems: 'center',
@@ -488,7 +503,7 @@ export default function AnalysisResult({
                       background: isAnomaly ? '#FEF2F2' : isAuthentic ? '#F0FDF4' : '#FFFBEB',
                       color: isAnomaly ? '#DC2626' : isAuthentic ? '#16A34A' : '#D97706',
                       border: `1px solid ${isAnomaly ? '#FECACA' : isAuthentic ? '#BBF7D0' : '#FDE68A'}`,
-                      fontWeight: '800'
+                      fontWeight: '500'
                     }}>
                       {isAnomaly ? 'ANOMALY MARKER' : isAuthentic ? 'AUTHENTIC SIGNAL' : 'NEUTRAL NOTE'}
                     </span>
@@ -496,6 +511,8 @@ export default function AnalysisResult({
 
                   <p style={{
                     fontSize: '0.86rem',
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: '400',
                     color: '#475569',
                     lineHeight: 1.55,
                     paddingLeft: '16px'
@@ -520,13 +537,13 @@ export default function AnalysisResult({
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
             <AlertCircle size={17} color="#D97706" />
-            <span style={{ fontSize: '0.86rem', fontWeight: '800', color: '#92400E', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '0.86rem', fontWeight: '600', color: '#92400E', fontFamily: 'var(--font-heading)' }}>
               LIMITATIONS OF THIS ANALYSIS
             </span>
           </div>
           <ul style={{ paddingLeft: '22px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {result.limitations.map((lim, idx) => (
-              <li key={idx} style={{ fontSize: '0.84rem', color: '#78350F', lineHeight: 1.55 }}>
+              <li key={idx} style={{ fontSize: '0.84rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#78350F', lineHeight: 1.55 }}>
                 {lim}
               </li>
             ))}
@@ -546,7 +563,7 @@ export default function AnalysisResult({
         <button
           onClick={onReset}
           className="btn-secondary"
-          style={{ padding: '12px 22px', fontSize: '0.92rem' }}
+          style={{ padding: '12px 22px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
         >
           <RefreshCw size={15} />
           <span>Try Another Image</span>
@@ -557,7 +574,7 @@ export default function AnalysisResult({
             onClick={handleExportJson}
             className="btn-secondary"
             title="Export raw forensic schema"
-            style={{ padding: '12px 18px', fontSize: '0.92rem' }}
+            style={{ padding: '12px 18px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
           >
             <FileText size={15} />
             <span>Export JSON</span>
@@ -567,7 +584,7 @@ export default function AnalysisResult({
             onClick={handleDownloadPdf}
             disabled={downloading}
             className="btn-primary"
-            style={{ padding: '12px 26px', fontSize: '0.94rem' }}
+            style={{ padding: '12px 26px', fontSize: '0.94rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
           >
             <Download size={16} />
             <span>{downloading ? 'Compiling PDF...' : 'Download Analysis Report'}</span>
@@ -606,10 +623,10 @@ export default function AnalysisResult({
             <Activity size={18} color="#2563EB" />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#172B4D', marginBottom: '4px' }}>
+            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
               RELIABILITY &amp; INTEGRITY INFORMATION
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#64748B', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>
               No AI detector is 100% accurate. Advanced generative models evolve continuously, and aggressive compression can mask signatures. Findings are probabilistic indicators.
             </p>
           </div>
@@ -639,10 +656,10 @@ export default function AnalysisResult({
             <Lock size={18} color="#2563EB" />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#172B4D', marginBottom: '4px' }}>
+            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
               ZERO DISK RETENTION POLICY
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#64748B', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>
               Uploaded images are processed in ephemeral memory buffers to extract mathematical frequency and noise residuals, and are immediately discarded without permanent disk storage.
             </p>
           </div>

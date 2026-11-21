@@ -35,35 +35,35 @@ export default function AboutSection() {
           marginBottom: '16px'
         }}>
           <GraduationCap size={15} color="#2563EB" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: '700' }}>
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
             PROJECT SPECIFICATION &amp; ARCHITECTURE
           </span>
         </div>
-        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
           About VERILENS
         </h2>
-        <p style={{ color: '#475569', maxWidth: '680px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.65 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: '#475569', maxWidth: '680px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.65 }}>
           <strong>VERILENS – Digital Truth &amp; Safety Assistant</strong> is an academic media forensics and cybersecurity platform designed to detect synthetic imagery, identify generative AI anomalies, and promote digital provenance literacy.
         </p>
       </div>
 
       {/* Mission & Scope */}
       <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#172B4D', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <ShieldCheck size={22} color="#2563EB" />
           <span>Mission &amp; Scope</span>
         </h3>
-        <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.7, marginBottom: '14px' }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.92rem', fontWeight: '400', color: '#475569', lineHeight: 1.7, marginBottom: '14px' }}>
           The exponential growth of generative diffusion models (Midjourney, DALL-E 3, Stable Diffusion, FLUX) and real-time deepfakes has created an urgent need for accessible forensic verification tools. VERILENS combines physical camera sensor modeling, 2D Fourier frequency domain analysis, chromatic lens physics, and pretrained deep learning detectors into an ensemble forensic pipeline.
         </p>
-        <p style={{ fontSize: '0.92rem', color: '#64748B', lineHeight: 1.7 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.92rem', fontWeight: '400', color: '#64748B', lineHeight: 1.7 }}>
           In accordance with ethical academic and scientific standards, VERILENS incorporates an uncertainty protocol: images with compressed, edited, or ambiguous signatures are marked as INCONCLUSIVE with calibrated confidence intervals rather than forcing fabricated certainty.
         </p>
       </div>
 
       {/* Technical Stack Overview */}
       <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#172B4D', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Code size={22} color="#2563EB" />
           <span>System Architecture &amp; Tech Stack</span>
         </h3>
@@ -80,10 +80,10 @@ export default function AboutSection() {
               borderRadius: '8px',
               border: '1px solid #E2E8F0'
             }}>
-              <div style={{ fontSize: '0.74rem', color: '#2563EB', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+              <div style={{ fontSize: '0.74rem', color: '#2563EB', fontFamily: 'var(--font-mono)', fontWeight: '500' }}>
                 {item.label}
               </div>
-              <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#172B4D', marginTop: '4px', lineHeight: 1.45 }}>
+              <div style={{ fontSize: '0.9rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: '#172B4D', marginTop: '4px', lineHeight: 1.45 }}>
                 {item.val}
               </div>
             </div>
@@ -99,10 +99,10 @@ export default function AboutSection() {
         border: '1px dashed rgba(37,99,235,0.3)',
         textAlign: 'center'
       }}>
-        <div style={{ fontSize: '0.88rem', fontWeight: '700', color: '#172B4D' }}>
+        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.92rem', fontWeight: '600', color: '#172B4D' }}>
           VERILENS: AI-Powered Digital Truth &amp; Safety Assistant
         </div>
-        <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '4px' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', fontWeight: '400', color: '#64748B', marginTop: '4px' }}>
           Developed as a Cybersecurity &amp; Computer Science capstone demonstration.
         </div>
       </div>

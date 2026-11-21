@@ -41,7 +41,7 @@ export default function Navbar({
         justifyContent: 'space-between',
         height: '72px'
       }}>
-        {/* Brand Logo */}
+        {/* Brand Logo (Plus Jakarta Sans, 800) */}
         <div
           onClick={() => handleTabClick('checker')}
           style={{
@@ -68,40 +68,41 @@ export default function Navbar({
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
-                fontFamily: 'var(--font-main)',
+                fontFamily: 'var(--font-heading)',
                 fontWeight: '800',
                 fontSize: '1.3rem',
-                letterSpacing: '0.03em',
+                letterSpacing: '-0.02em',
                 color: '#172B4D'
               }}>
                 VERILENS
               </span>
               <span style={{
-                fontSize: '0.6rem',
+                fontSize: '0.62rem',
                 fontFamily: 'var(--font-mono)',
                 padding: '2px 6px',
                 borderRadius: '4px',
                 background: '#EFF6FF',
                 color: '#2563EB',
                 border: '1px solid rgba(37,99,235,0.2)',
-                fontWeight: '700'
+                fontWeight: '500'
               }}>
                 v2.4
               </span>
             </div>
             <div style={{
-              fontSize: '0.65rem',
+              fontSize: '0.68rem',
+              fontFamily: 'var(--font-body)',
               color: '#64748B',
-              letterSpacing: '0.07em',
+              letterSpacing: '0.04em',
               textTransform: 'uppercase',
-              fontWeight: '600'
+              fontWeight: '500'
             }}>
               Digital Truth & Safety Assistant
             </div>
           </div>
         </div>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation (Inter font, 500-600) */}
         <nav style={{
           display: 'none',
           alignItems: 'center',
@@ -124,10 +125,10 @@ export default function Navbar({
                   padding: '8px 14px',
                   borderRadius: '8px',
                   fontSize: '0.86rem',
-                  fontWeight: isActive ? '700' : '500',
+                  fontWeight: isActive ? '600' : '500',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  fontFamily: 'var(--font-main)'
+                  fontFamily: 'var(--font-body)'
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
@@ -152,7 +153,7 @@ export default function Navbar({
         {/* Right side actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
 
-          {/* System status badge — read-only, not clickable by users */}
+          {/* System status badge (IBM Plex Mono font, 500) */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -161,9 +162,9 @@ export default function Navbar({
             borderRadius: '20px',
             background: isDemoMode ? '#F1F5F9' : '#F0FDF4',
             border: `1px solid ${isDemoMode ? '#E2E8F0' : '#BBF7D0'}`,
-            fontSize: '0.75rem',
+            fontSize: '0.74rem',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '600',
+            fontWeight: '500',
             color: isDemoMode ? '#64748B' : '#16A34A',
             userSelect: 'none'
           }}>
@@ -180,7 +181,7 @@ export default function Navbar({
             </span>
           </div>
 
-          {/* History Button */}
+          {/* History Button (Inter font, 500) */}
           <button
             onClick={onOpenHistory}
             title="View Analysis History"
@@ -189,7 +190,9 @@ export default function Navbar({
               position: 'relative',
               padding: '8px 14px',
               fontSize: '0.84rem',
-              gap: '6px'
+              gap: '6px',
+              fontFamily: 'var(--font-body)',
+              fontWeight: '500'
             }}
           >
             <History size={15} color="#2563EB" />
@@ -198,8 +201,8 @@ export default function Navbar({
               <span style={{
                 background: '#2563EB',
                 color: '#FFFFFF',
-                fontSize: '0.65rem',
-                fontWeight: '800',
+                fontSize: '0.66rem',
+                fontWeight: '500',
                 padding: '1px 6px',
                 borderRadius: '10px',
                 minWidth: '18px',
@@ -211,7 +214,7 @@ export default function Navbar({
             )}
           </button>
 
-          {/* Hamburger */}
+          {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{
@@ -231,7 +234,7 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer (Inter font) */}
       {mobileMenuOpen && (
         <div style={{
           background: '#FFFFFF',
@@ -255,10 +258,10 @@ export default function Navbar({
                   background: isActive ? '#EFF6FF' : 'transparent',
                   color: isActive ? '#2563EB' : '#475569',
                   border: 'none',
-                  fontSize: '0.95rem',
-                  fontWeight: isActive ? '700' : '500',
+                  fontSize: '0.94rem',
+                  fontWeight: isActive ? '600' : '500',
                   cursor: 'pointer',
-                  fontFamily: 'var(--font-main)'
+                  fontFamily: 'var(--font-body)'
                 }}
               >
                 {item.label}
