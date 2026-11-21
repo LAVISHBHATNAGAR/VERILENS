@@ -86,9 +86,8 @@ export default function ApiConfigModal({
         maxHeight: '90vh',
         overflowY: 'auto',
         background: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.12)',
-        borderRadius: '16px',
+        boxShadow: '0 20px 50px rgba(15, 23, 42, 0.12)',
+        borderRadius: '24px',
         padding: '28px'
       }}>
         {/* Header */}
@@ -97,19 +96,18 @@ export default function ApiConfigModal({
           alignItems: 'center',
           justifyContent: 'space-between',
           marginBottom: '20px',
-          paddingBottom: '14px',
-          borderBottom: '1px solid #E2E8F0'
+          paddingBottom: '14px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '36px',
               height: '36px',
-              borderRadius: '8px',
+              borderRadius: '12px',
               background: '#EFF6FF',
-              border: '1px solid rgba(37,99,235,0.2)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
             }}>
               <Server size={18} color="#2563EB" />
             </div>
@@ -141,9 +139,9 @@ export default function ApiConfigModal({
         {/* Backend Status Section */}
         <div style={{
           padding: '16px',
-          borderRadius: '10px',
+          borderRadius: '18px',
           background: backendStatus?.status === 'online' ? '#F0FDF4' : '#FEF2F2',
-          border: `1px solid ${backendStatus?.status === 'online' ? '#BBF7D0' : '#FECACA'}`,
+          boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
           marginBottom: '20px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
@@ -205,18 +203,17 @@ export default function ApiConfigModal({
               placeholder="Auto-detect (/api/detect or http://localhost:3001/api/detect)"
               style={{
                 flex: 1,
-                padding: '10px 14px',
+                padding: '10px 16px',
                 background: '#F8FAFC',
-                border: '1px solid #CBD5E1',
-                borderRadius: '8px',
+                border: 'none',
+                borderRadius: '14px',
                 color: '#172B4D',
                 fontSize: '0.86rem',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '400',
-                outline: 'none'
+                outline: 'none',
+                boxShadow: 'inset 0 1px 3px rgba(15, 23, 42, 0.05)'
               }}
-              onFocus={(e) => e.target.style.borderColor = '#2563EB'}
-              onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
             />
             <button
               onClick={handleUseLocalhost}
@@ -233,10 +230,10 @@ export default function ApiConfigModal({
 
         {/* Privacy Note */}
         <div style={{
-          padding: '12px 14px',
-          borderRadius: '8px',
+          padding: '12px 16px',
+          borderRadius: '14px',
           background: '#EFF6FF',
-          border: '1px solid rgba(37,99,235,0.2)',
+          boxShadow: '0 2px 8px rgba(37,99,235,0.06)',
           display: 'flex',
           gap: '8px',
           alignItems: 'center',
@@ -253,7 +250,7 @@ export default function ApiConfigModal({
           <button onClick={onClose} className="btn-secondary" style={{ padding: '9px 18px', fontFamily: 'var(--font-body)', fontWeight: '500' }}>
             Cancel
           </button>
-          <button onClick={handleSave} className="btn-primary" style={{ padding: '9px 22px', fontFamily: 'var(--font-body)', fontWeight: '600' }}>
+          <button onClick={handleSave} className="btn-primary" style={{ padding: '9px 22px', fontFamily: 'var(--font-body)', fontWeight: '600', color: '#FFFFFF' }}>
             Save &amp; Apply
           </button>
         </div>

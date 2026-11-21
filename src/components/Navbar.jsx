@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Scan, Newspaper, Lock, Info, History, Menu, X } from 'lucide-react';
+import { ShieldCheck, Scan, Newspaper, Lock, Info, History, Menu, X, Sun, Moon } from 'lucide-react';
 
 export default function Navbar({
   activeTab,
@@ -28,18 +28,18 @@ export default function Navbar({
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'rgba(255, 255, 255, 0.96)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      borderBottom: '1px solid #E2E8F0',
-      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+      background: 'rgba(255, 255, 255, 0.85)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderBottom: 'none',
+      boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.03)',
       transition: 'all 0.3s ease'
     }}>
       <div className="verilens-container" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '72px'
+        height: '74px'
       }}>
         {/* Brand Logo (Plus Jakarta Sans, 800) */}
         <div
@@ -53,38 +53,38 @@ export default function Navbar({
           }}
         >
           <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            background: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
+            width: '42px',
+            height: '42px',
+            borderRadius: '14px',
+            background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 2px 10px rgba(37, 99, 235, 0.3)',
+            boxShadow: '0 4px 14px rgba(37, 99, 235, 0.32)',
             flexShrink: 0
           }}>
-            <ShieldCheck size={22} color="#FFFFFF" />
+            <ShieldCheck size={24} color="#FFFFFF" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: '800',
-                fontSize: '1.3rem',
-                letterSpacing: '-0.02em',
+                fontSize: '1.35rem',
+                letterSpacing: '-0.025em',
                 color: '#172B4D'
               }}>
                 VERILENS
               </span>
               <span style={{
-                fontSize: '0.62rem',
+                fontSize: '0.65rem',
                 fontFamily: 'var(--font-mono)',
-                padding: '2px 6px',
-                borderRadius: '4px',
+                padding: '2px 8px',
+                borderRadius: '9999px',
                 background: '#EFF6FF',
                 color: '#2563EB',
-                border: '1px solid rgba(37,99,235,0.2)',
-                fontWeight: '500'
+                fontWeight: '600',
+                boxShadow: '0 1px 4px rgba(37, 99, 235, 0.08)'
               }}>
                 v2.4
               </span>
@@ -97,16 +97,19 @@ export default function Navbar({
               textTransform: 'uppercase',
               fontWeight: '500'
             }}>
-              Digital Truth & Safety Assistant
+              Digital Truth &amp; Safety Assistant
             </div>
           </div>
         </div>
 
-        {/* Desktop Navigation (Inter font, 500-600) */}
+        {/* Desktop Navigation (Pill shapes, borderless) */}
         <nav style={{
           display: 'none',
           alignItems: 'center',
-          gap: '4px'
+          gap: '6px',
+          background: 'rgba(241, 245, 249, 0.65)',
+          padding: '4px',
+          borderRadius: '9999px'
         }} className="desktop-nav">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -119,26 +122,25 @@ export default function Navbar({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: isActive ? '#EFF6FF' : 'transparent',
-                  border: isActive ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                  background: isActive ? '#FFFFFF' : 'transparent',
+                  border: 'none',
                   color: isActive ? '#2563EB' : '#475569',
-                  padding: '8px 14px',
-                  borderRadius: '8px',
+                  padding: '8px 16px',
+                  borderRadius: '9999px',
                   fontSize: '0.86rem',
                   fontWeight: isActive ? '600' : '500',
                   cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  fontFamily: 'var(--font-body)'
+                  transition: 'all 0.2s ease',
+                  fontFamily: 'var(--font-body)',
+                  boxShadow: isActive ? '0 2px 8px rgba(0, 0, 0, 0.05)' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.background = '#F8FAFC';
                     e.currentTarget.style.color = '#172B4D';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'transparent';
                     e.currentTarget.style.color = '#475569';
                   }
                 }}
@@ -151,22 +153,22 @@ export default function Navbar({
         </nav>
 
         {/* Right side actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 
-          {/* System status badge (IBM Plex Mono font, 500) */}
+          {/* System status badge (pill rounded, borderless) */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            padding: '6px 12px',
-            borderRadius: '20px',
+            padding: '7px 14px',
+            borderRadius: '9999px',
             background: isDemoMode ? '#F1F5F9' : '#F0FDF4',
-            border: `1px solid ${isDemoMode ? '#E2E8F0' : '#BBF7D0'}`,
             fontSize: '0.74rem',
             fontFamily: 'var(--font-mono)',
             fontWeight: '500',
             color: isDemoMode ? '#64748B' : '#16A34A',
-            userSelect: 'none'
+            userSelect: 'none',
+            boxShadow: isDemoMode ? 'none' : '0 2px 8px rgba(22, 163, 74, 0.12)'
           }}>
             <span style={{
               width: '7px',
@@ -181,30 +183,33 @@ export default function Navbar({
             </span>
           </div>
 
-          {/* History Button (Inter font, 500) */}
+          {/* History Button (Soft pill, borderless) */}
           <button
             onClick={onOpenHistory}
             title="View Analysis History"
             className="btn-secondary"
             style={{
               position: 'relative',
-              padding: '8px 14px',
+              padding: '8px 16px',
               fontSize: '0.84rem',
               gap: '6px',
               fontFamily: 'var(--font-body)',
-              fontWeight: '500'
+              fontWeight: '500',
+              borderRadius: '9999px',
+              border: 'none',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
             }}
           >
-            <History size={15} color="#2563EB" />
+            <History size={16} color="#2563EB" />
             <span className="hide-on-mobile">History</span>
             {historyCount > 0 && (
               <span style={{
                 background: '#2563EB',
                 color: '#FFFFFF',
                 fontSize: '0.66rem',
-                fontWeight: '500',
+                fontWeight: '600',
                 padding: '1px 6px',
-                borderRadius: '10px',
+                borderRadius: '9999px',
                 minWidth: '18px',
                 textAlign: 'center',
                 fontFamily: 'var(--font-mono)'
@@ -219,31 +224,33 @@ export default function Navbar({
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{
               display: 'none',
-              background: 'transparent',
+              background: '#FFFFFF',
               border: 'none',
-              color: '#475569',
-              padding: '6px',
+              color: '#172B4D',
+              padding: '8px',
               cursor: 'pointer',
-              borderRadius: '6px'
+              borderRadius: '9999px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
             }}
             className="mobile-toggle"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={22} color="#172B4D" /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} color="#2563EB" /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer (Inter font) */}
+      {/* Mobile Drawer (Smooth rounded, borderless) */}
       {mobileMenuOpen && (
         <div style={{
-          background: '#FFFFFF',
-          borderBottom: '1px solid #E2E8F0',
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(16px)',
           padding: '14px 20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '4px',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
+          gap: '6px',
+          borderRadius: '0 0 20px 20px',
+          boxShadow: '0 12px 30px rgba(0,0,0,0.08)'
         }}>
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
@@ -253,8 +260,8 @@ export default function Navbar({
                 onClick={() => handleTabClick(item.id)}
                 style={{
                   textAlign: 'left',
-                  padding: '12px 14px',
-                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  borderRadius: '9999px',
                   background: isActive ? '#EFF6FF' : 'transparent',
                   color: isActive ? '#2563EB' : '#475569',
                   border: 'none',

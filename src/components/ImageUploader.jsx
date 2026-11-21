@@ -76,7 +76,7 @@ export default function ImageUploader({ onImageSelected }) {
 
   return (
     <div id="image-uploader-section" style={{ maxWidth: '920px', margin: '0 auto' }}>
-      {/* Drag & Drop Zone */}
+      {/* Drag & Drop Zone (Soft, subtle dashed border, rounded 24px) */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -88,13 +88,13 @@ export default function ImageUploader({ onImageSelected }) {
           cursor: 'pointer',
           borderWidth: '2px',
           borderStyle: 'dashed',
-          borderColor: isDragOver ? '#2563EB' : '#CBD5E1',
-          borderRadius: '16px',
+          borderColor: isDragOver ? '#2563EB' : 'rgba(37, 99, 235, 0.22)',
+          borderRadius: '24px',
           backgroundColor: isDragOver ? '#EFF6FF' : '#FFFFFF',
-          boxShadow: isDragOver ? '0 0 0 4px rgba(37,99,235,0.1)' : '0 1px 3px rgba(0,0,0,0.07)',
+          boxShadow: isDragOver ? '0 12px 35px -4px rgba(37, 99, 235, 0.2)' : '0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03)',
           position: 'relative',
           overflow: 'hidden',
-          transition: 'all 0.2s ease'
+          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
       >
         <input
@@ -105,25 +105,25 @@ export default function ImageUploader({ onImageSelected }) {
           style={{ display: 'none' }}
         />
 
-        {/* Upload Icon */}
+        {/* Upload Icon (Soft circular glow, borderless) */}
         <div style={{
-          width: '72px',
-          height: '72px',
+          width: '74px',
+          height: '74px',
           borderRadius: '50%',
           margin: '0 auto 20px auto',
-          background: isDragOver ? '#EFF6FF' : '#F1F5F9',
-          border: `2px solid ${isDragOver ? '#2563EB' : '#E2E8F0'}`,
+          background: isDragOver ? '#DBEAFE' : '#EFF6FF',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 0.2s ease'
+          transition: 'all 0.2s ease',
+          boxShadow: '0 4px 16px rgba(37, 99, 235, 0.12)'
         }}>
-          <UploadCloud size={32} color={isDragOver ? '#2563EB' : '#94A3B8'} />
+          <UploadCloud size={34} color="#2563EB" />
         </div>
 
         <h3 style={{
           fontFamily: 'var(--font-heading)',
-          fontSize: '1.15rem',
+          fontSize: '1.2rem',
           fontWeight: '700',
           color: '#172B4D',
           marginBottom: '8px'
@@ -134,24 +134,25 @@ export default function ImageUploader({ onImageSelected }) {
           fontFamily: 'var(--font-body)',
           fontSize: '0.88rem',
           color: '#64748B',
-          marginBottom: '22px',
+          marginBottom: '24px',
           fontWeight: '400'
         }}>
           Supported formats: JPG, JPEG, PNG, WEBP · Maximum size: 15 MB
         </p>
 
+        {/* Browse Button (Pill, white text and white icon) */}
         <button
           onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
           className="btn-primary"
-          style={{ pointerEvents: 'none', fontFamily: 'var(--font-body)', fontWeight: '600' }}
+          style={{ pointerEvents: 'none', fontFamily: 'var(--font-body)', fontWeight: '600', padding: '13px 30px' }}
         >
-          <FileImage size={16} />
-          <span>Browse Image</span>
+          <FileImage size={17} color="#FFFFFF" strokeWidth={2.2} />
+          <span style={{ color: '#FFFFFF' }}>Browse Image</span>
         </button>
 
-        {/* Privacy note */}
+        {/* Privacy note (Borderless soft pill) */}
         <div style={{
-          marginTop: '20px',
+          marginTop: '22px',
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
@@ -159,10 +160,10 @@ export default function ImageUploader({ onImageSelected }) {
           color: '#64748B',
           fontFamily: 'var(--font-body)',
           fontWeight: '400',
-          padding: '5px 14px',
-          borderRadius: '20px',
+          padding: '6px 16px',
+          borderRadius: '9999px',
           background: '#F8FAFC',
-          border: '1px solid #E2E8F0'
+          boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)'
         }}>
           <CheckCircle2 size={13} color="#16A34A" />
           <span>Images are not stored. Analyzed locally or discarded after processing.</span>
@@ -173,35 +174,35 @@ export default function ImageUploader({ onImageSelected }) {
       {errorMessage && (
         <div style={{
           marginTop: '14px',
-          padding: '13px 16px',
-          borderRadius: '10px',
+          padding: '14px 18px',
+          borderRadius: '16px',
           background: '#FEF2F2',
-          border: '1px solid #FECACA',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
           color: '#DC2626',
           fontSize: '0.88rem',
-          fontFamily: 'var(--font-body)'
+          fontFamily: 'var(--font-body)',
+          boxShadow: '0 4px 14px rgba(220, 38, 38, 0.08)'
         }}>
-          <AlertCircle size={17} color="#DC2626" style={{ flexShrink: 0 }} />
+          <AlertCircle size={18} color="#DC2626" style={{ flexShrink: 0 }} />
           <span>{errorMessage}</span>
         </div>
       )}
 
-      {/* Sample Images */}
-      <div style={{ marginTop: '36px' }}>
+      {/* Sample Images (Borderless floating cards) */}
+      <div style={{ marginTop: '38px' }}>
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '14px',
+          marginBottom: '16px',
           flexWrap: 'wrap',
           gap: '8px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Layers size={15} color="#2563EB" />
-            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.92rem', fontWeight: '600', color: '#172B4D' }}>
+            <Layers size={16} color="#2563EB" />
+            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.94rem', fontWeight: '600', color: '#172B4D' }}>
               Or test with benchmark reference images:
             </span>
           </div>
@@ -213,7 +214,7 @@ export default function ImageUploader({ onImageSelected }) {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '10px'
+          gap: '12px'
         }}>
           {SAMPLE_IMAGES.map((sample) => {
             const isAi = sample.category === 'ai';
@@ -223,38 +224,34 @@ export default function ImageUploader({ onImageSelected }) {
                 onClick={() => handleSelectSample(sample)}
                 className="glass-panel"
                 style={{
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
                   cursor: 'pointer',
-                  borderRadius: '10px',
+                  borderRadius: '18px',
+                  background: '#FFFFFF',
+                  border: 'none',
+                  boxShadow: '0 4px 16px -2px rgba(0, 0, 0, 0.05)',
                   transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#CBD5E1';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#E2E8F0';
-                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.07)';
                 }}
               >
                 <div style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '8px',
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '12px',
                   overflow: 'hidden',
                   background: '#F1F5F9',
-                  border: '1px solid #E2E8F0',
-                  flexShrink: 0
+                  border: 'none',
+                  flexShrink: 0,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
                 }}>
                   <img src={sample.dataUrl} alt={sample.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ overflow: 'hidden', flex: 1 }}>
                   <div style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: '0.85rem',
+                    fontSize: '0.86rem',
                     fontWeight: '600',
                     color: '#172B4D',
                     whiteSpace: 'nowrap',
@@ -263,16 +260,15 @@ export default function ImageUploader({ onImageSelected }) {
                   }}>
                     {sample.title}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
                     <span style={{
                       fontSize: '0.66rem',
                       fontFamily: 'var(--font-mono)',
                       color: isAi ? '#DC2626' : '#16A34A',
-                      fontWeight: '500',
-                      padding: '1px 6px',
-                      borderRadius: '4px',
-                      background: isAi ? '#FEF2F2' : '#F0FDF4',
-                      border: `1px solid ${isAi ? '#FECACA' : '#BBF7D0'}`
+                      fontWeight: '600',
+                      padding: '2px 8px',
+                      borderRadius: '9999px',
+                      background: isAi ? '#FEF2F2' : '#F0FDF4'
                     }}>
                       {isAi ? 'AI-GEN' : 'REAL'}
                     </span>

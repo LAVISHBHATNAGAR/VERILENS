@@ -37,18 +37,18 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
       maxWidth: '1040px',
       margin: '0 auto'
     }}>
-      {/* Top badge (IBM Plex Mono, 500) */}
+      {/* Top badge (Pill rounded, borderless with subtle glow) */}
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '6px 16px',
-        borderRadius: '24px',
-        background: '#EFF6FF',
-        border: '1px solid rgba(37, 99, 235, 0.2)',
-        marginBottom: '22px'
+        padding: '7px 18px',
+        borderRadius: '9999px',
+        background: 'rgba(239, 246, 255, 0.9)',
+        marginBottom: '24px',
+        boxShadow: '0 4px 16px rgba(37, 99, 235, 0.08)'
       }}>
-        <Zap size={13} color="#2563EB" />
+        <Zap size={14} color="#2563EB" />
         <span style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.74rem',
@@ -64,11 +64,11 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
       {/* Main Heading (Plus Jakarta Sans, 800) */}
       <h1 style={{
         fontFamily: 'var(--font-heading)',
-        fontSize: 'clamp(2.1rem, 5vw, 3.6rem)',
+        fontSize: 'clamp(2.2rem, 5.2vw, 3.8rem)',
         fontWeight: '800',
-        letterSpacing: '-0.03em',
-        lineHeight: 1.15,
-        marginBottom: '18px',
+        letterSpacing: '-0.035em',
+        lineHeight: 1.14,
+        marginBottom: '20px',
         color: '#172B4D'
       }}>
         See Beyond<br />
@@ -78,10 +78,10 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
       {/* Subtitle (Inter, 400) */}
       <p style={{
         fontFamily: 'var(--font-body)',
-        fontSize: 'clamp(1rem, 2vw, 1.15rem)',
+        fontSize: 'clamp(1rem, 2vw, 1.16rem)',
         color: '#475569',
         maxWidth: '660px',
-        margin: '0 auto 32px auto',
+        margin: '0 auto 34px auto',
         lineHeight: 1.7,
         fontWeight: '400'
       }}>
@@ -89,22 +89,22 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         identify misleading information, and protect your digital privacy.
       </p>
 
-      {/* CTA Buttons (Inter, 600) */}
+      {/* CTA Buttons (Pills, pure white text & icons on blue button) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '12px',
+        gap: '14px',
         flexWrap: 'wrap',
-        marginBottom: '52px'
+        marginBottom: '56px'
       }}>
         <button
           onClick={scrollToUpload}
           className="btn-primary"
-          style={{ padding: '14px 32px', fontSize: '1rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
+          style={{ padding: '14px 34px', fontSize: '1rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
         >
-          <span>Check an Image</span>
-          <ArrowRight size={18} />
+          <span style={{ color: '#FFFFFF' }}>Check an Image</span>
+          <ArrowRight size={18} color="#FFFFFF" strokeWidth={2.5} />
         </button>
 
         <button
@@ -117,43 +117,53 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
             }
           }}
           className="btn-secondary"
-          style={{ padding: '14px 24px', fontSize: '0.98rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+          style={{ padding: '14px 28px', fontSize: '0.98rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
         >
           <Activity size={16} color="#2563EB" />
           <span>Explore Digital Safety</span>
         </button>
       </div>
 
-      {/* Feature Cards (Plus Jakarta Sans 600 headings, Inter 400 body) */}
+      {/* Feature Cards (Border-free, smooth 20px rounded corners, soft shadows) */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '16px',
+        gap: '18px',
         textAlign: 'left'
       }}>
         {features.map((f, i) => {
           const Icon = f.icon;
           return (
-            <div key={i} className="glass-panel" style={{ padding: '24px 22px' }}>
+            <div
+              key={i}
+              className="glass-panel"
+              style={{
+                padding: '28px 24px',
+                borderRadius: '20px',
+                border: 'none',
+                background: '#FFFFFF',
+                boxShadow: '0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 8px -2px rgba(0, 0, 0, 0.03)'
+              }}
+            >
               <div style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '10px',
+                width: '46px',
+                height: '46px',
+                borderRadius: '14px',
                 background: '#EFF6FF',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '14px',
-                border: '1px solid rgba(37,99,235,0.15)'
+                marginBottom: '16px',
+                boxShadow: '0 2px 8px rgba(37, 99, 235, 0.08)'
               }}>
                 <Icon size={22} color="#2563EB" />
               </div>
               <h3 style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '1rem',
+                fontSize: '1.02rem',
                 fontWeight: '600',
                 color: '#172B4D',
-                marginBottom: '7px'
+                marginBottom: '8px'
               }}>
                 {f.title}
               </h3>

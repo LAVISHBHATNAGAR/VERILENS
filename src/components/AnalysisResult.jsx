@@ -61,7 +61,6 @@ export default function AnalysisResult({
     ai: {
       primary: '#DC2626',
       bg: '#FEF2F2',
-      border: '#FECACA',
       glow: 'rgba(220, 38, 38, 0.08)',
       badge: 'mono-badge-ai',
       icon: AlertTriangle
@@ -69,7 +68,6 @@ export default function AnalysisResult({
     real: {
       primary: '#16A34A',
       bg: '#F0FDF4',
-      border: '#BBF7D0',
       glow: 'rgba(22, 163, 74, 0.08)',
       badge: 'mono-badge-real',
       icon: CheckCircle2
@@ -77,7 +75,6 @@ export default function AnalysisResult({
     inconclusive: {
       primary: '#D97706',
       bg: '#FFFBEB',
-      border: '#FDE68A',
       glow: 'rgba(217, 119, 6, 0.08)',
       badge: 'mono-badge-warn',
       icon: HelpCircle
@@ -89,13 +86,14 @@ export default function AnalysisResult({
 
   return (
     <div style={{ maxWidth: '980px', margin: '0 auto', animation: 'fadeIn 0.3s ease' }}>
-      {/* Top Main Result Hero Card */}
+      {/* Top Main Result Hero Card (Smooth 24px, borderless, elevated shadow) */}
       <div className="glass-panel" style={{
-        padding: '36px 30px',
+        padding: '38px 32px',
         marginBottom: '24px',
         background: '#FFFFFF',
-        borderColor: currentTheme.border,
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06)',
+        borderRadius: '24px',
+        border: 'none',
+        boxShadow: '0 14px 45px -4px rgba(37, 99, 235, 0.08)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -106,11 +104,11 @@ export default function AnalysisResult({
           justifyContent: 'space-between',
           flexWrap: 'wrap',
           gap: '12px',
-          marginBottom: '20px'
+          marginBottom: '22px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span className={`mono-badge ${currentTheme.badge}`}>
-              <VerdictIcon size={13} />
+            <span className={`mono-badge ${currentTheme.badge}`} style={{ borderRadius: '9999px', border: 'none' }}>
+              <VerdictIcon size={14} />
               <span>FORENSIC ASSESSMENT</span>
             </span>
             <span style={{
@@ -143,22 +141,23 @@ export default function AnalysisResult({
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
-          marginBottom: '26px',
+          gap: '22px',
+          marginBottom: '28px',
           flexWrap: 'wrap'
         }}>
           <div style={{
-            width: '70px',
-            height: '70px',
-            borderRadius: '16px',
+            width: '74px',
+            height: '74px',
+            borderRadius: '20px',
             background: currentTheme.bg,
-            border: `1px solid ${currentTheme.border}`,
+            border: 'none',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            flexShrink: 0
+            flexShrink: 0,
+            boxShadow: `0 8px 24px ${currentTheme.glow}`
           }}>
-            <VerdictIcon size={38} color={currentTheme.primary} />
+            <VerdictIcon size={40} color={currentTheme.primary} />
           </div>
 
           <div>
@@ -170,7 +169,7 @@ export default function AnalysisResult({
             }}>
               <h2 style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: 'clamp(1.7rem, 3.8vw, 2.3rem)',
+                fontSize: 'clamp(1.75rem, 3.8vw, 2.35rem)',
                 fontWeight: '800',
                 color: '#172B4D',
                 letterSpacing: '-0.025em',
@@ -183,10 +182,10 @@ export default function AnalysisResult({
                 fontSize: '0.74rem',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '500',
-                padding: '4px 10px',
-                borderRadius: '6px',
+                padding: '4px 12px',
+                borderRadius: '9999px',
                 background: currentTheme.bg,
-                border: `1px solid ${currentTheme.border}`,
+                border: 'none',
                 color: currentTheme.primary
               }}>
                 CONFIDENCE: {result.confidenceLevel || 'Calibrated'} ({result.confidence || 0}%)
@@ -194,10 +193,10 @@ export default function AnalysisResult({
             </div>
 
             <div style={{
-              fontSize: '0.92rem',
+              fontSize: '0.94rem',
               fontFamily: 'var(--font-body)',
               color: '#475569',
-              marginTop: '5px',
+              marginTop: '6px',
               fontWeight: '400'
             }}>
               {isInconclusive ? (
@@ -211,12 +210,12 @@ export default function AnalysisResult({
           </div>
         </div>
 
-        {/* Dual Likelihood Progress Bar & Metrics */}
+        {/* Dual Likelihood Progress Bar & Metrics (Smooth 18px rounded, borderless) */}
         <div style={{
           background: '#F8FAFC',
-          padding: '22px',
-          borderRadius: '12px',
-          border: '1px solid #E2E8F0',
+          padding: '24px',
+          borderRadius: '18px',
+          border: 'none',
           marginBottom: '26px'
         }}>
           {/* Percentages Bar Headings (IBM Plex Mono) */}
@@ -232,7 +231,7 @@ export default function AnalysisResult({
               <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#DC2626', fontWeight: '500' }}>
                 AI SYNTHESIS LIKELIHOOD
               </div>
-              <div style={{ fontSize: '1.9rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.95rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                 {result.aiScore}%
               </div>
             </div>
@@ -240,10 +239,10 @@ export default function AnalysisResult({
             {isInconclusive && (
               <div style={{
                 textAlign: 'center',
-                padding: '4px 14px',
-                borderRadius: '6px',
+                padding: '5px 16px',
+                borderRadius: '9999px',
                 background: '#FFFBEB',
-                border: '1px solid #FDE68A',
+                border: 'none',
                 color: '#D97706',
                 fontSize: '0.74rem',
                 fontFamily: 'var(--font-mono)',
@@ -257,17 +256,17 @@ export default function AnalysisResult({
               <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '500' }}>
                 AUTHENTIC CAPTURE LIKELIHOOD
               </div>
-              <div style={{ fontSize: '1.9rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+              <div style={{ fontSize: '1.95rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                 {result.realScore}%
               </div>
             </div>
           </div>
 
-          {/* Split Visual Progress Bar */}
+          {/* Split Visual Progress Bar (Pill rounded) */}
           <div style={{
             width: '100%',
             height: '14px',
-            borderRadius: '7px',
+            borderRadius: '9999px',
             background: '#E2E8F0',
             overflow: 'hidden',
             display: 'flex'
@@ -298,16 +297,13 @@ export default function AnalysisResult({
           </div>
         </div>
 
-        {/* Short Explanation & Model Assessment */}
+        {/* Short Explanation & Model Assessment (Clean left-accent, borderless box) */}
         <div style={{
           padding: '18px 22px',
-          borderRadius: '10px',
+          borderRadius: '16px',
           background: '#F8FAFC',
           borderLeft: `4px solid ${currentTheme.primary}`,
-          borderTop: '1px solid #E2E8F0',
-          borderRight: '1px solid #E2E8F0',
-          borderBottom: '1px solid #E2E8F0',
-          marginBottom: '24px'
+          marginBottom: '26px'
         }}>
           <div style={{
             fontSize: '0.82rem',
@@ -335,13 +331,13 @@ export default function AnalysisResult({
 
         {/* 4-Pillar Multi-Signal Breakdown Matrix */}
         {result.pillars && (
-          <div style={{ marginTop: '26px' }}>
+          <div style={{ marginTop: '28px' }}>
             <div style={{
-              fontSize: '0.84rem',
+              fontSize: '0.86rem',
               fontFamily: 'var(--font-heading)',
               fontWeight: '600',
               color: '#172B4D',
-              marginBottom: '14px',
+              marginBottom: '16px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
@@ -360,14 +356,15 @@ export default function AnalysisResult({
                   key={idx}
                   style={{
                     background: '#F8FAFC',
-                    padding: '16px',
-                    borderRadius: '10px',
-                    border: '1px solid #E2E8F0'
+                    padding: '18px',
+                    borderRadius: '16px',
+                    border: 'none',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
                   }}
                 >
                   <div style={{
                     fontFamily: 'var(--font-heading)',
-                    fontSize: '0.82rem',
+                    fontSize: '0.84rem',
                     fontWeight: '600',
                     color: '#172B4D',
                     marginBottom: '4px'
@@ -386,14 +383,15 @@ export default function AnalysisResult({
                     width: '100%',
                     height: '5px',
                     background: '#E2E8F0',
-                    borderRadius: '3px',
+                    borderRadius: '9999px',
                     marginTop: '10px',
                     overflow: 'hidden'
                   }}>
                     <div style={{
                       width: `${pillar.score}%`,
                       height: '100%',
-                      background: pillar.color === 'red' ? '#DC2626' : pillar.color === 'emerald' ? '#16A34A' : '#D97706'
+                      background: pillar.color === 'red' ? '#DC2626' : pillar.color === 'emerald' ? '#16A34A' : '#D97706',
+                      borderRadius: '9999px'
                     }} />
                   </div>
                 </div>
@@ -405,9 +403,12 @@ export default function AnalysisResult({
 
       {/* Detected Irregularities & Indicators Accordion */}
       <div className="glass-panel" style={{
-        padding: '26px',
+        padding: '28px',
         marginBottom: '24px',
-        background: '#FFFFFF'
+        background: '#FFFFFF',
+        borderRadius: '24px',
+        border: 'none',
+        boxShadow: '0 10px 30px -4px rgba(37, 99, 235, 0.06)'
       }}>
         <div 
           onClick={() => setExpandedAnomalies(!expandedAnomalies)}
@@ -421,22 +422,22 @@ export default function AnalysisResult({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '9px',
+              width: '38px',
+              height: '38px',
+              borderRadius: '12px',
               background: '#EFF6FF',
-              border: '1px solid rgba(37,99,235,0.2)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.08)'
             }}>
-              <ShieldAlert size={19} color="#2563EB" />
+              <ShieldAlert size={20} color="#2563EB" />
             </div>
             <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.08rem', fontWeight: '700', color: '#172B4D' }}>
                 Detected Indicators &amp; Anomaly Signals ({result.anomalies?.length || 0})
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: '#64748B', fontWeight: '400' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: '#64748B', fontWeight: '400' }}>
                 Frequency spectrum peaks, sensor grain floor, and container provenance logs
               </p>
             </div>
@@ -447,14 +448,14 @@ export default function AnalysisResult({
             border: 'none',
             color: '#64748B',
             cursor: 'pointer',
-            padding: '4px'
+            padding: '6px'
           }}>
-            {expandedAnomalies ? <ChevronUp size={20} color="#2563EB" /> : <ChevronDown size={20} />}
+            {expandedAnomalies ? <ChevronUp size={22} color="#2563EB" /> : <ChevronDown size={22} />}
           </button>
         </div>
 
         {expandedAnomalies && (
-          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ marginTop: '22px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {result.anomalies?.map((ano, idx) => {
               const isAnomaly = ano.type === 'ANOMALY' || ano.type === 'DEFINITIVE_ANOMALY';
               const isAuthentic = ano.type === 'AUTHENTIC';
@@ -464,9 +465,9 @@ export default function AnalysisResult({
                   key={idx}
                   style={{
                     background: '#F8FAFC',
-                    padding: '16px 18px',
-                    borderRadius: '10px',
-                    border: '1px solid #E2E8F0'
+                    padding: '16px 20px',
+                    borderRadius: '16px',
+                    border: 'none'
                   }}
                 >
                   <div style={{
@@ -498,11 +499,10 @@ export default function AnalysisResult({
                     <span style={{
                       fontSize: '0.66rem',
                       fontFamily: 'var(--font-mono)',
-                      padding: '3px 8px',
-                      borderRadius: '5px',
+                      padding: '3px 10px',
+                      borderRadius: '9999px',
                       background: isAnomaly ? '#FEF2F2' : isAuthentic ? '#F0FDF4' : '#FFFBEB',
                       color: isAnomaly ? '#DC2626' : isAuthentic ? '#16A34A' : '#D97706',
-                      border: `1px solid ${isAnomaly ? '#FECACA' : isAuthentic ? '#BBF7D0' : '#FDE68A'}`,
                       fontWeight: '500'
                     }}>
                       {isAnomaly ? 'ANOMALY MARKER' : isAuthentic ? 'AUTHENTIC SIGNAL' : 'NEUTRAL NOTE'}
@@ -528,16 +528,17 @@ export default function AnalysisResult({
 
       {/* Limitations of Analysis & Reliability Notice */}
       {result.limitations && result.limitations.length > 0 && (
-        <div className="glass-panel" style={{
-          padding: '22px 26px',
+        <div style={{
+          padding: '24px 28px',
           marginBottom: '24px',
           background: '#FFFBEB',
-          border: '1px solid #FDE68A',
-          borderLeft: '4px solid #D97706'
+          borderRadius: '18px',
+          borderLeft: '4px solid #D97706',
+          boxShadow: '0 4px 16px rgba(217, 119, 6, 0.06)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-            <AlertCircle size={17} color="#D97706" />
-            <span style={{ fontSize: '0.86rem', fontWeight: '600', color: '#92400E', fontFamily: 'var(--font-heading)' }}>
+            <AlertCircle size={18} color="#D97706" />
+            <span style={{ fontSize: '0.88rem', fontWeight: '600', color: '#92400E', fontFamily: 'var(--font-heading)' }}>
               LIMITATIONS OF THIS ANALYSIS
             </span>
           </div>
@@ -551,32 +552,32 @@ export default function AnalysisResult({
         </div>
       )}
 
-      {/* Action Buttons Toolbar */}
+      {/* Action Buttons Toolbar (Pills, pure white text & icons on primary button) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '12px',
-        marginBottom: '26px'
+        gap: '14px',
+        marginBottom: '28px'
       }}>
         <button
           onClick={onReset}
           className="btn-secondary"
-          style={{ padding: '12px 22px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+          style={{ padding: '13px 24px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
         >
-          <RefreshCw size={15} />
+          <RefreshCw size={15} color="#2563EB" />
           <span>Try Another Image</span>
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             onClick={handleExportJson}
             className="btn-secondary"
             title="Export raw forensic schema"
-            style={{ padding: '12px 18px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+            style={{ padding: '13px 20px', fontSize: '0.92rem', fontFamily: 'var(--font-body)', fontWeight: '500' }}
           >
-            <FileText size={15} />
+            <FileText size={15} color="#2563EB" />
             <span>Export JSON</span>
           </button>
 
@@ -584,15 +585,15 @@ export default function AnalysisResult({
             onClick={handleDownloadPdf}
             disabled={downloading}
             className="btn-primary"
-            style={{ padding: '12px 26px', fontSize: '0.94rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
+            style={{ padding: '13px 28px', fontSize: '0.95rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
           >
-            <Download size={16} />
-            <span>{downloading ? 'Compiling PDF...' : 'Download Analysis Report'}</span>
+            <Download size={17} color="#FFFFFF" strokeWidth={2.2} />
+            <span style={{ color: '#FFFFFF' }}>{downloading ? 'Compiling PDF...' : 'Download Analysis Report'}</span>
           </button>
         </div>
       </div>
 
-      {/* Reliability & Privacy Standards Guarantee */}
+      {/* Reliability & Privacy Standards Guarantee (Smooth 20px, borderless) */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -601,19 +602,19 @@ export default function AnalysisResult({
       }}>
         {/* Scientific Reliability Notice */}
         <div style={{
-          padding: '20px 22px',
-          borderRadius: '12px',
+          padding: '22px 24px',
+          borderRadius: '20px',
           background: '#FFFFFF',
-          border: '1px solid #E2E8F0',
+          border: 'none',
           display: 'flex',
-          gap: '12px',
+          gap: '14px',
           alignItems: 'flex-start',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+          boxShadow: '0 6px 20px -2px rgba(0,0,0,0.04)'
         }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
+            width: '38px',
+            height: '38px',
+            borderRadius: '12px',
             background: '#EFF6FF',
             display: 'flex',
             alignItems: 'center',
@@ -623,7 +624,7 @@ export default function AnalysisResult({
             <Activity size={18} color="#2563EB" />
           </div>
           <div>
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
+            <div style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
               RELIABILITY &amp; INTEGRITY INFORMATION
             </div>
             <p style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>
@@ -634,19 +635,19 @@ export default function AnalysisResult({
 
         {/* Privacy Safeguard Notice */}
         <div style={{
-          padding: '20px 22px',
-          borderRadius: '12px',
+          padding: '22px 24px',
+          borderRadius: '20px',
           background: '#FFFFFF',
-          border: '1px solid #E2E8F0',
+          border: 'none',
           display: 'flex',
-          gap: '12px',
+          gap: '14px',
           alignItems: 'flex-start',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+          boxShadow: '0 6px 20px -2px rgba(0,0,0,0.04)'
         }}>
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
+            width: '38px',
+            height: '38px',
+            borderRadius: '12px',
             background: '#EFF6FF',
             display: 'flex',
             alignItems: 'center',
@@ -656,7 +657,7 @@ export default function AnalysisResult({
             <Lock size={18} color="#2563EB" />
           </div>
           <div>
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
+            <div style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: '#172B4D', marginBottom: '4px' }}>
               ZERO DISK RETENTION POLICY
             </div>
             <p style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>

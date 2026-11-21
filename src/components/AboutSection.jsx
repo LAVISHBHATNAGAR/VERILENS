@@ -29,10 +29,10 @@ export default function AboutSection() {
           alignItems: 'center',
           gap: '8px',
           padding: '6px 16px',
-          borderRadius: '24px',
+          borderRadius: '9999px',
           background: '#EFF6FF',
-          border: '1px solid rgba(37,99,235,0.2)',
-          marginBottom: '16px'
+          marginBottom: '16px',
+          boxShadow: '0 2px 8px rgba(37, 99, 235, 0.06)'
         }}>
           <GraduationCap size={15} color="#2563EB" />
           <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
@@ -48,7 +48,7 @@ export default function AboutSection() {
       </div>
 
       {/* Mission & Scope */}
-      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 10px 30px rgba(37,99,235,0.05)' }}>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <ShieldCheck size={22} color="#2563EB" />
           <span>Mission &amp; Scope</span>
@@ -62,7 +62,7 @@ export default function AboutSection() {
       </div>
 
       {/* Technical Stack Overview */}
-      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 10px 30px rgba(37,99,235,0.05)' }}>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Code size={22} color="#2563EB" />
           <span>System Architecture &amp; Tech Stack</span>
@@ -77,8 +77,8 @@ export default function AboutSection() {
             <div key={idx} style={{
               background: '#F8FAFC',
               padding: '16px 18px',
-              borderRadius: '8px',
-              border: '1px solid #E2E8F0'
+              borderRadius: '16px',
+              boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
             }}>
               <div style={{ fontSize: '0.74rem', color: '#2563EB', fontFamily: 'var(--font-mono)', fontWeight: '500' }}>
                 {item.label}
@@ -94,9 +94,9 @@ export default function AboutSection() {
       {/* College Project Credit Footer */}
       <div style={{
         padding: '22px',
-        borderRadius: '12px',
+        borderRadius: '20px',
         background: '#EFF6FF',
-        border: '1px dashed rgba(37,99,235,0.3)',
+        boxShadow: '0 4px 16px rgba(37,99,235,0.05)',
         textAlign: 'center'
       }}>
         <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.92rem', fontWeight: '600', color: '#172B4D' }}>

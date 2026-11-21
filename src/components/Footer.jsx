@@ -8,8 +8,8 @@ export default function Footer({ onNavigate }) {
 
   return (
     <footer style={{
-      borderTop: '1px solid #E2E8F0',
       background: '#FFFFFF',
+      boxShadow: '0 -4px 24px rgba(15, 23, 42, 0.02)',
       padding: '48px 0 32px 0',
       marginTop: '60px',
       position: 'relative',
@@ -26,14 +26,14 @@ export default function Footer({ onNavigate }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <div style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: '8px',
+                width: '36px',
+                height: '36px',
+                borderRadius: '12px',
                 background: '#EFF6FF',
-                border: '1px solid rgba(37,99,235,0.2)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
               }}>
                 <ShieldCheck size={18} color="#2563EB" />
               </div>
@@ -94,9 +94,9 @@ export default function Footer({ onNavigate }) {
             </h4>
             <div style={{
               background: '#F0FDF4',
-              padding: '14px 16px',
-              borderRadius: '10px',
-              border: '1px solid #BBF7D0'
+              padding: '14px 18px',
+              borderRadius: '18px',
+              boxShadow: '0 2px 10px rgba(22, 163, 74, 0.06)'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#16A34A', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }} />
@@ -113,7 +113,6 @@ export default function Footer({ onNavigate }) {
 
         {/* Bottom bar */}
         <div style={{
-          borderTop: '1px solid #E2E8F0',
           paddingTop: '20px',
           display: 'flex',
           alignItems: 'center',

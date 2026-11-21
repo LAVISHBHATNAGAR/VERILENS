@@ -1,12 +1,18 @@
 /* ==========================================================================
    VERILENS – Digital Truth & Safety Assistant
-   Theme 02: Clean Intelligence — Premium Minimal SaaS Light Theme
+   Theme 02: Clean Intelligence — Minimal Modern SaaS Refinement
+   - Theme-only refinement:
+     * Unnecessary square boundaries & rectangular outlines removed
+     * Smooth rounded corners (16px–24px & pill shapes)
+     * Soft floating shadows & subtle luminous blue background gradients
+     * All blue buttons have 100% pure white text (#FFFFFF) & white icons
+     * Clean, modern, borderless visual elegance
    Typography System:
    - Headings:         Plus Jakarta Sans (500, 600, 700, 800)
    - Body & UI Text:   Inter (400, 500, 600, 700)
    - Technical Text:   IBM Plex Mono (400, 500)
    Colour System:
-   - Main bg:          #F7F9FC
+   - Main bg:          #F8FAFC
    - Secondary bg:     #FFFFFF
    - Primary text:     #172B4D
    - Body text:        #334155
@@ -19,9 +25,9 @@
    - Success:          #16A34A / #F0FDF4
    - Warning:          #D97706 / #FFFBEB
    - Error:            #DC2626 / #FEF2F2
-   - Border:           #E2E8F0
-   - Surface:          #F1F5F9
-   - Hover surface:    #F8FAFC
+   - Border:           transparent
+   - Surface:          #F8FAFC
+   - Hover surface:    #F1F5F9
    ========================================================================== */
 
 :root {
@@ -32,10 +38,10 @@
   --font-main: var(--font-body);
 
   /* Background System */
-  --bg-main: #F7F9FC;
+  --bg-main: #F8FAFC;
   --bg-secondary: #FFFFFF;
-  --bg-surface: #F1F5F9;
-  --bg-hover: #F8FAFC;
+  --bg-surface: #F8FAFC;
+  --bg-hover: #F1F5F9;
   --bg-blue-light: #EFF6FF;
 
   /* Text System */
@@ -50,34 +56,30 @@
   --blue-light: #60A5FA;
   --blue-dark: #1E40AF;
   --blue-faint: rgba(37, 99, 235, 0.08);
-  --blue-border: rgba(37, 99, 235, 0.25);
+  --blue-border: transparent;
 
   /* Status Colors */
   --success: #16A34A;
   --success-bg: #F0FDF4;
-  --success-border: #BBF7D0;
+  --success-border: transparent;
   --warning: #D97706;
   --warning-bg: #FFFBEB;
-  --warning-border: #FDE68A;
+  --warning-border: transparent;
   --error: #DC2626;
   --error-bg: #FEF2F2;
-  --error-border: #FECACA;
+  --error-border: transparent;
 
-  /* Borders */
-  --border: #E2E8F0;
-  --border-secondary: #CBD5E1;
-  --border-focus: #2563EB;
+  /* Smooth Rounded Radii */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
 
-  /* Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
-  --shadow-blue: 0 4px 14px rgba(37, 99, 235, 0.25);
+  /* Soft Elegant Floating Shadows */
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 18px 45px -6px rgba(37, 99, 235, 0.09), 0 4px 16px -2px rgba(0, 0, 0, 0.03);
+  --shadow-blue: 0 8px 24px -4px rgba(37, 99, 235, 0.38), 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 /* Reset & Base */
@@ -92,7 +94,13 @@ html {
 }
 
 body {
-  background-color: var(--bg-main);
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(circle at 12% 14%, rgba(219, 234, 254, 0.65) 0%, transparent 45%),
+    radial-gradient(circle at 88% 18%, rgba(191, 219, 254, 0.5) 0%, transparent 42%),
+    radial-gradient(circle at 50% 55%, rgba(239, 246, 255, 0.85) 0%, transparent 60%),
+    linear-gradient(to bottom, #F8FAFC, #FFFFFF 65%, #F1F5F9 100%);
+  background-attachment: fixed;
   color: var(--text-body);
   font-family: var(--font-body);
   font-weight: 400;
@@ -164,66 +172,73 @@ code, pre, .font-mono, .technical-text {
   word-break: break-all;
 }
 
-/* Light subtle dot grid background */
+/* Soft luminous sky-blue ambient overlay (no harsh dots) */
 .cyber-grid-bg {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 600px;
-  background-image: radial-gradient(circle, #CBD5E1 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(219, 234, 254, 0.4) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.45;
 }
 
-/* Card / Panel */
+/* Seamless, Boundary-Free Cards (No square borders, soft floating shadows, smooth 20px corners) */
 .glass-panel {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none !important;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .glass-panel:hover {
-  border-color: var(--border-secondary);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .glass-panel-glow {
-  border-color: var(--blue-border);
-  box-shadow: var(--shadow-blue);
+  box-shadow: 0 14px 40px -4px rgba(37, 99, 235, 0.16), 0 4px 14px -2px rgba(37, 99, 235, 0.08);
 }
 
-/* Primary Button — Blue (Inter font, 600 weight) */
+/* Primary Button — Blue with pure white text and icons (Requirement 2) */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 13px 28px;
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: #FFFFFF;
-  background-color: var(--blue);
-  border: none;
-  border-radius: var(--radius-sm);
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  border: none !important;
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-blue);
   font-family: var(--font-body);
 }
 
+.btn-primary,
+.btn-primary *,
+.btn-primary span,
+.btn-primary svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+  fill: none;
+}
+
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--blue-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(37, 99, 235, 0.48), 0 4px 12px rgba(37, 99, 235, 0.25);
+  color: #FFFFFF !important;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -231,109 +246,106 @@ code, pre, .font-mono, .technical-text {
 }
 
 .btn-primary:disabled {
-  opacity: 0.45;
+  opacity: 0.55;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-/* Secondary Button — White outline (Inter font, 500-600 weight) */
+/* Secondary Button — Soft white pill with subtle shadow (no boxy borders) */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: 13px 24px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: #FFFFFF;
+  border: none !important;
+  border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: var(--font-body);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--bg-hover);
-  border-color: var(--border-secondary);
-  color: var(--text-primary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  background: #F8FAFC;
+  color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -2px rgba(37, 99, 235, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .btn-secondary:active:not(:disabled) {
   transform: translateY(0);
 }
 
-/* Danger Button */
+/* Danger Button — Soft rounded pill (no harsh borders) */
 .btn-danger-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 9px 18px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--error);
   background: var(--error-bg);
-  border: 1px solid var(--error-border);
-  border-radius: var(--radius-sm);
+  border: none !important;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: var(--font-body);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
 }
 
 .btn-danger-outline:hover {
   background: #FEE2E2;
-  border-color: #FCA5A5;
   color: #B91C1C;
+  transform: translateY(-1px);
 }
 
-/* Badges (IBM Plex Mono font, 500 weight) */
+/* Badges — Soft pill shape without boxy square borders */
 .mono-badge {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
   letter-spacing: 0.03em;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-weight: 500;
+  border: none !important;
 }
 
 .mono-badge-blue {
-  background: var(--bg-blue-light);
+  background: #EFF6FF;
   color: var(--blue);
-  border: 1px solid var(--blue-border);
 }
 
 .mono-badge-ghost {
-  background: var(--bg-surface);
+  background: #F1F5F9;
   color: var(--text-secondary);
-  border: 1px solid var(--border);
 }
 
 .mono-badge-ai {
-  background: var(--error-bg);
+  background: #FEF2F2;
   color: var(--error);
-  border: 1px solid var(--error-border);
 }
 
 .mono-badge-real {
-  background: var(--success-bg);
+  background: #F0FDF4;
   color: var(--success);
-  border: 1px solid var(--success-border);
 }
 
 .mono-badge-warn {
-  background: var(--warning-bg);
+  background: #FFFBEB;
   color: var(--warning);
-  border: 1px solid var(--warning-border);
 }
 
-/* Scan laser line — blue */
+/* Scan laser line — soft blue */
 @keyframes laserSweep {
   0% { top: 0%; opacity: 0.6; }
   50% { opacity: 1; }
@@ -368,12 +380,12 @@ code, pre, .font-mono, .technical-text {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-surface);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-secondary);
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {

@@ -39,8 +39,7 @@ export default function AnalysisHistory({
         maxWidth: '440px',
         height: '100%',
         background: '#FFFFFF',
-        borderLeft: '1px solid #E2E8F0',
-        boxShadow: '-8px 0 30px rgba(0, 0, 0, 0.12)',
+        boxShadow: '-12px 0 40px rgba(15, 23, 42, 0.1)',
         display: 'flex',
         flexDirection: 'column',
         animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -48,22 +47,22 @@ export default function AnalysisHistory({
         {/* Drawer Header */}
         <div style={{
           padding: '20px 22px',
-          borderBottom: '1px solid #E2E8F0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#FFFFFF'
+          background: '#FFFFFF',
+          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '36px',
               height: '36px',
-              borderRadius: '8px',
+              borderRadius: '12px',
               background: '#EFF6FF',
-              border: '1px solid rgba(37,99,235,0.2)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
             }}>
               <History size={18} color="#2563EB" />
             </div>
@@ -130,32 +129,31 @@ export default function AnalysisHistory({
                   className="glass-panel"
                   style={{
                     padding: '12px 14px',
-                    borderRadius: '10px',
+                    borderRadius: '16px',
                     cursor: 'pointer',
-                    background: '#FFFFFF',
-                    border: '1px solid #E2E8F0',
+                    background: '#F8FAFC',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    transition: 'all 0.15s ease'
+                    boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                    transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#CBD5E1';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+                    e.currentTarget.style.background = '#FFFFFF';
+                    e.currentTarget.style.boxShadow = '0 6px 18px rgba(37,99,235,0.08)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#E2E8F0';
-                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
+                    e.currentTarget.style.background = '#F8FAFC';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(15, 23, 42, 0.03)';
                   }}
                 >
                   {/* Thumbnail */}
                   <div style={{
                     width: '48px',
                     height: '48px',
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     overflow: 'hidden',
                     background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
                     flexShrink: 0
                   }}>
                     <img 
@@ -188,11 +186,10 @@ export default function AnalysisHistory({
                         fontSize: '0.66rem',
                         fontFamily: 'var(--font-mono)',
                         fontWeight: '500',
-                        padding: '1px 6px',
-                        borderRadius: '4px',
+                        padding: '2px 8px',
+                        borderRadius: '9999px',
                         background: isAi ? '#FEF2F2' : isReal ? '#F0FDF4' : '#FFFBEB',
-                        color: isAi ? '#DC2626' : isReal ? '#16A34A' : '#D97706',
-                        border: `1px solid ${isAi ? '#FECACA' : isReal ? '#BBF7D0' : '#FDE68A'}`
+                        color: isAi ? '#DC2626' : isReal ? '#16A34A' : '#D97706'
                       }}>
                         {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
                       </span>
@@ -226,8 +223,8 @@ export default function AnalysisHistory({
         {history.length > 0 && (
           <div style={{
             padding: '16px 20px',
-            borderTop: '1px solid #E2E8F0',
             background: '#F8FAFC',
+            boxShadow: '0 -2px 10px rgba(15, 23, 42, 0.03)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'

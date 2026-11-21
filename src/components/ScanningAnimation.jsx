@@ -9,15 +9,16 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
   return (
     <div style={{ maxWidth: '640px', margin: '32px auto 0 auto' }}>
       <div className="glass-panel" style={{
-        padding: '36px 24px',
+        padding: '38px 26px',
         textAlign: 'center',
         background: '#FFFFFF',
-        border: '1px solid #E2E8F0',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+        border: 'none',
+        borderRadius: '24px',
+        boxShadow: '0 14px 40px -4px rgba(37, 99, 235, 0.08)',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Subtle blue tint at top */}
+        {/* Subtle blue accent at top */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
           background: 'linear-gradient(90deg, #2563EB 0%, #60A5FA 50%, #2563EB 100%)'
@@ -34,7 +35,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           justifyContent: 'center'
         }}>
           <svg width="130" height="130" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
-            <circle cx="65" cy="65" r={radius} stroke="#E2E8F0" strokeWidth="6" fill="transparent" />
+            <circle cx="65" cy="65" r={radius} stroke="#F1F5F9" strokeWidth="6" fill="transparent" />
             <circle
               cx="65" cy="65" r={radius}
               stroke="url(#blueGrad)"
@@ -54,7 +55,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           </svg>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{
-              fontSize: '1.55rem',
+              fontSize: '1.6rem',
               fontWeight: '500',
               fontFamily: 'var(--font-mono)',
               color: '#172B4D',
@@ -105,20 +106,20 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           <span>{currentStep}</span>
         </p>
 
-        {/* Linear progress bar */}
+        {/* Linear progress bar (Pill rounded) */}
         <div style={{
           width: '100%', height: '6px', background: '#F1F5F9',
-          borderRadius: '3px', overflow: 'hidden', marginBottom: '20px'
+          borderRadius: '9999px', overflow: 'hidden', marginBottom: '22px'
         }}>
           <div style={{
             width: `${progress}%`, height: '100%',
             background: 'linear-gradient(90deg, #2563EB 0%, #60A5FA 100%)',
             transition: 'width 0.35s ease',
-            borderRadius: '3px'
+            borderRadius: '9999px'
           }} />
         </div>
 
-        {/* Phase indicators (IBM Plex Mono, 500) */}
+        {/* Phase indicators (Pills, borderless) */}
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', textAlign: 'center'
         }}>
@@ -129,15 +130,15 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
             { label: 'Synthesis', active: progress >= 95 }
           ].map((phase, idx) => (
             <div key={idx} style={{
-              padding: '6px 4px',
-              borderRadius: '6px',
+              padding: '7px 6px',
+              borderRadius: '9999px',
               background: phase.active ? '#EFF6FF' : '#F8FAFC',
-              border: `1px solid ${phase.active ? 'rgba(37,99,235,0.3)' : '#E2E8F0'}`,
               fontSize: '0.68rem',
               fontFamily: 'var(--font-mono)',
               color: phase.active ? '#2563EB' : '#94A3B8',
               fontWeight: '500',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              boxShadow: phase.active ? '0 2px 6px rgba(37,99,235,0.1)' : 'none'
             }}>
               {phase.label}
             </div>

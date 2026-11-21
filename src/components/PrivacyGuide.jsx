@@ -62,10 +62,10 @@ export default function PrivacyGuide() {
           alignItems: 'center',
           gap: '8px',
           padding: '6px 16px',
-          borderRadius: '24px',
+          borderRadius: '9999px',
           background: '#EFF6FF',
-          border: '1px solid rgba(37, 99, 235, 0.2)',
-          marginBottom: '16px'
+          marginBottom: '16px',
+          boxShadow: '0 2px 8px rgba(37, 99, 235, 0.06)'
         }}>
           <Lock size={14} color="#2563EB" />
           <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
@@ -90,17 +90,17 @@ export default function PrivacyGuide() {
         {guideCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={idx} className="glass-panel" style={{ padding: '24px', background: '#FFFFFF' }}>
+            <div key={idx} className="glass-panel" style={{ padding: '24px', background: '#FFFFFF', borderRadius: '20px', boxShadow: '0 8px 24px rgba(37, 99, 235, 0.05)' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
-                borderRadius: '10px',
+                borderRadius: '14px',
                 background: '#EFF6FF',
-                border: '1px solid rgba(37,99,235,0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '16px'
+                marginBottom: '16px',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
               }}>
                 <Icon size={22} color="#2563EB" />
               </div>
@@ -116,7 +116,7 @@ export default function PrivacyGuide() {
       </div>
 
       {/* Visual Anomaly Checklist */}
-      <div className="glass-panel" style={{ padding: '30px', background: '#FFFFFF' }}>
+      <div className="glass-panel" style={{ padding: '30px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 10px 30px rgba(37, 99, 235, 0.05)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
           <Sparkles size={20} color="#2563EB" />
           <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D' }}>
@@ -130,10 +130,10 @@ export default function PrivacyGuide() {
               display: 'flex',
               alignItems: 'flex-start',
               gap: '12px',
-              padding: '14px 16px',
-              borderRadius: '8px',
+              padding: '14px 18px',
+              borderRadius: '16px',
               background: '#F8FAFC',
-              border: '1px solid #E2E8F0'
+              boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
             }}>
               <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
               <div>

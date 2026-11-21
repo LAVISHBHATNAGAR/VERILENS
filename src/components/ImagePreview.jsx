@@ -31,26 +31,27 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
 
   return (
     <div style={{ maxWidth: '980px', margin: '0 auto' }}>
-      <div className="glass-panel" style={{ padding: '24px' }}>
+      <div className="glass-panel" style={{ padding: '28px', borderRadius: '24px', border: 'none', boxShadow: '0 12px 35px -4px rgba(37, 99, 235, 0.07)' }}>
         {/* Top bar */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: '12px', marginBottom: '18px',
-          paddingBottom: '14px', borderBottom: '1px solid #E2E8F0'
+          flexWrap: 'wrap', gap: '12px', marginBottom: '20px',
+          paddingBottom: '16px', borderBottom: 'none'
         }}>
           {/* File info */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '36px', height: '36px', borderRadius: '9px',
-              background: '#EFF6FF', border: '1px solid rgba(37,99,235,0.2)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
+              width: '40px', height: '40px', borderRadius: '12px',
+              background: '#EFF6FF',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.08)'
             }}>
-              <FileCheck size={19} color="#2563EB" />
+              <FileCheck size={20} color="#2563EB" />
             </div>
             <div>
               <div style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '0.95rem',
+                fontSize: '0.98rem',
                 fontWeight: '600',
                 color: '#172B4D',
                 maxWidth: '300px',
@@ -71,22 +72,22 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
             </div>
           </div>
 
-          {/* Filter pills (Inter font, 500-600) */}
+          {/* Filter pills (Rounded pills, borderless) */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: '4px',
-            background: '#F1F5F9', padding: '4px', borderRadius: '10px', border: '1px solid #E2E8F0'
+            background: '#F1F5F9', padding: '4px', borderRadius: '9999px'
           }}>
             {filters.map((f) => {
               const isActive = activeFilter === f.id;
               return (
                 <button key={f.id} onClick={() => setActiveFilter(f.id)} style={{
                   background: isActive ? '#FFFFFF' : 'transparent',
-                  border: isActive ? '1px solid #E2E8F0' : '1px solid transparent',
+                  border: 'none',
                   color: isActive ? '#2563EB' : '#64748B',
-                  padding: '6px 11px', borderRadius: '7px', fontSize: '0.76rem',
+                  padding: '7px 14px', borderRadius: '9999px', fontSize: '0.76rem',
                   fontFamily: 'var(--font-body)', fontWeight: isActive ? '600' : '500',
                   cursor: 'pointer', transition: 'all 0.15s ease',
-                  boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.08)' : 'none'
+                  boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
                 }}>
                   {f.label}
                 </button>
@@ -94,26 +95,26 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
             })}
           </div>
 
-          {/* Zoom controls */}
+          {/* Zoom controls (Pills) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <button onClick={() => setZoomLevel(p => Math.min(p + 0.25, 2.5))} title="Zoom In" className="btn-secondary" style={{ padding: '6px 10px' }}>
-              <ZoomIn size={14} />
+            <button onClick={() => setZoomLevel(p => Math.min(p + 0.25, 2.5))} title="Zoom In" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
+              <ZoomIn size={14} color="#172B4D" />
             </button>
-            <button onClick={() => setZoomLevel(p => Math.max(p - 0.25, 0.75))} title="Zoom Out" className="btn-secondary" style={{ padding: '6px 10px' }}>
-              <ZoomOut size={14} />
+            <button onClick={() => setZoomLevel(p => Math.max(p - 0.25, 0.75))} title="Zoom Out" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
+              <ZoomOut size={14} color="#172B4D" />
             </button>
-            <button onClick={() => setZoomLevel(1)} title="Reset Zoom" className="btn-secondary" style={{ padding: '6px 10px' }}>
-              <RotateCcw size={14} />
+            <button onClick={() => setZoomLevel(1)} title="Reset Zoom" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
+              <RotateCcw size={14} color="#172B4D" />
             </button>
           </div>
         </div>
 
-        {/* Canvas viewport */}
+        {/* Canvas viewport (Smooth 20px rounded, borderless) */}
         <div style={{
           position: 'relative', minHeight: '360px', maxHeight: '520px',
-          background: '#F8FAFC', borderRadius: '10px', overflow: 'hidden',
+          background: '#F8FAFC', borderRadius: '20px', overflow: 'hidden',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          border: '1px solid #E2E8F0'
+          boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.03)'
         }}>
           {isAnalyzing && <div className="scan-laser-line" />}
           <div style={{
@@ -122,15 +123,16 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             maxWidth: '100%', maxHeight: '100%'
           }}>
-            <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '480px', objectFit: 'contain', borderRadius: '4px', display: 'block' }} />
+            <canvas ref={canvasRef} style={{ maxWidth: '100%', maxHeight: '480px', objectFit: 'contain', borderRadius: '8px', display: 'block' }} />
           </div>
-          {/* Filter + zoom watermark (IBM Plex Mono font, 400) */}
+          {/* Filter + zoom watermark (Pill, borderless) */}
           <div style={{
-            position: 'absolute', bottom: '10px', left: '10px',
-            background: 'rgba(23, 43, 77, 0.85)', border: '1px solid rgba(37,99,235,0.3)',
-            padding: '4px 10px', borderRadius: '6px', fontFamily: 'var(--font-mono)',
+            position: 'absolute', bottom: '12px', left: '12px',
+            background: 'rgba(23, 43, 77, 0.88)',
+            padding: '5px 14px', borderRadius: '9999px', fontFamily: 'var(--font-mono)',
             fontWeight: '400', fontSize: '0.68rem', color: '#60A5FA',
-            display: 'flex', alignItems: 'center', gap: '6px', backdropFilter: 'blur(8px)'
+            display: 'flex', alignItems: 'center', gap: '8px', backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.12)'
           }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#2563EB' }} />
             <span>FILTER: {activeFilter.toUpperCase()}</span>
@@ -139,18 +141,18 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
           </div>
         </div>
 
-        {/* Action bar */}
+        {/* Action bar (Pill buttons, white text & icon on primary) */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: '12px', marginTop: '20px'
+          flexWrap: 'wrap', gap: '14px', marginTop: '24px'
         }}>
-          <button type="button" onClick={onRemove} disabled={isAnalyzing} className="btn-danger-outline" style={{ fontFamily: 'var(--font-body)', fontWeight: '500' }}>
+          <button type="button" onClick={onRemove} disabled={isAnalyzing} className="btn-danger-outline" style={{ fontFamily: 'var(--font-body)', fontWeight: '500', padding: '10px 20px', borderRadius: '9999px' }}>
             <Trash2 size={16} />
             <span>Remove Image</span>
           </button>
-          <button type="button" onClick={onAnalyze} disabled={isAnalyzing} className="btn-primary" style={{ padding: '13px 32px', fontSize: '1rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}>
-            <Scan size={18} />
-            <span>{isAnalyzing ? 'Analyzing Visual Patterns...' : 'Analyze Image'}</span>
+          <button type="button" onClick={onAnalyze} disabled={isAnalyzing} className="btn-primary" style={{ padding: '14px 34px', fontSize: '1rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}>
+            <Scan size={18} color="#FFFFFF" strokeWidth={2.2} />
+            <span style={{ color: '#FFFFFF' }}>{isAnalyzing ? 'Analyzing Visual Patterns...' : 'Analyze Image'}</span>
           </button>
         </div>
       </div>
