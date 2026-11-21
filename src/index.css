@@ -1,44 +1,78 @@
 /* ==========================================================================
-   VERILENS — Digital Truth & Safety Assistant
-   Complete UI/UX Redesign System
-   Three-Colour Architecture:
-   - Primary: Cyan Navy (#092742)
-   - Secondary: Ghost White (#F8F8FF)
-   - Accent: Acid Green (#D2F500)
+   VERILENS – Digital Truth & Safety Assistant
+   Theme 02: Clean Intelligence — Premium Minimal SaaS Light Theme
+   Colour System:
+   - Main bg:        #F7F9FC
+   - Secondary bg:   #FFFFFF
+   - Primary text:   #172B4D
+   - Secondary text: #475569
+   - Muted text:     #64748B
+   - Brand blue:     #2563EB
+   - Secondary blue: #60A5FA
+   - Light blue bg:  #EFF6FF
+   - Dark blue:      #1E40AF
+   - Success:        #16A34A / #F0FDF4
+   - Warning:        #D97706 / #FFFBEB
+   - Error:          #DC2626 / #FEF2F2
+   - Border:         #E2E8F0
+   - Surface:        #F1F5F9
+   - Hover surface:  #F8FAFC
    ========================================================================== */
 
 :root {
-  /* Brand System */
-  --cyan-navy-deep: #051829;
-  --cyan-navy: #092742;
-  --cyan-navy-surface: #0c3355;
-  --cyan-navy-card: #0e3960;
-  --cyan-navy-elevated: #134673;
+  /* Background System */
+  --bg-main: #F7F9FC;
+  --bg-secondary: #FFFFFF;
+  --bg-surface: #F1F5F9;
+  --bg-hover: #F8FAFC;
+  --bg-blue-light: #EFF6FF;
 
-  --ghost-white: #F8F8FF;
-  --ghost-white-subtle: #DDE3F0;
-  --ghost-white-muted: #95A6BE;
-  --ghost-white-faint: rgba(248, 248, 255, 0.08);
+  /* Text System */
+  --text-primary: #172B4D;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-placeholder: #94A3B8;
 
-  --acid-green: #D2F500;
-  --acid-green-glow: rgba(210, 245, 0, 0.35);
-  --acid-green-faint: rgba(210, 245, 0, 0.1);
-  --acid-green-border: rgba(210, 245, 0, 0.28);
+  /* Brand Colors */
+  --blue: #2563EB;
+  --blue-light: #60A5FA;
+  --blue-dark: #1E40AF;
+  --blue-faint: rgba(37, 99, 235, 0.08);
+  --blue-border: rgba(37, 99, 235, 0.25);
 
-  /* Functional Status Accents */
-  --status-ai: #FF4757;
-  --status-ai-faint: rgba(255, 71, 87, 0.12);
-  --status-real: #D2F500;
-  --status-real-faint: rgba(210, 245, 0, 0.12);
-  --status-warn: #FFB800;
-  --status-warn-faint: rgba(255, 184, 0, 0.12);
+  /* Status Colors */
+  --success: #16A34A;
+  --success-bg: #F0FDF4;
+  --success-border: #BBF7D0;
+  --warning: #D97706;
+  --warning-bg: #FFFBEB;
+  --warning-border: #FDE68A;
+  --error: #DC2626;
+  --error-bg: #FEF2F2;
+  --error-border: #FECACA;
+
+  /* Borders */
+  --border: #E2E8F0;
+  --border-secondary: #CBD5E1;
+  --border-focus: #2563EB;
 
   /* Typography */
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+  --shadow-blue: 0 4px 14px rgba(37, 99, 235, 0.25);
 }
 
-/* Reset & Base Styles */
+/* Reset & Base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -50,74 +84,66 @@ html {
 }
 
 body {
-  background-color: var(--cyan-navy-deep);
-  color: var(--ghost-white);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   font-family: var(--font-main);
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.6;
-  background-image: 
-    radial-gradient(circle at 10% 15%, rgba(13, 52, 86, 0.8) 0%, transparent 45%),
-    radial-gradient(circle at 90% 20%, rgba(210, 245, 0, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 50% 85%, rgba(9, 39, 66, 0.9) 0%, transparent 55%),
-    linear-gradient(to bottom, #051829, #092742 45%, #051829 100%);
-  background-attachment: fixed;
 }
 
-/* Subtle High-Tech Grid Pattern */
+/* Light subtle dot grid background */
 .cyber-grid-bg {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 720px;
-  background-size: 48px 48px;
-  background-image: 
-    linear-gradient(to right, rgba(248, 248, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(248, 248, 255, 0.02) 1px, transparent 1px);
-  mask-image: radial-gradient(ellipse at 50% 15%, black 25%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse at 50% 15%, black 25%, transparent 75%);
+  height: 600px;
+  background-image: radial-gradient(circle, #CBD5E1 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, black 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
+  opacity: 0.45;
 }
 
-/* Structural Card Containers */
+/* Card / Panel */
 .glass-panel {
-  background: var(--cyan-navy-card);
-  border: 1px solid rgba(248, 248, 255, 0.09);
-  border-radius: 14px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.5);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
   position: relative;
 }
 
 .glass-panel:hover {
-  border-color: rgba(210, 245, 0, 0.28);
-  box-shadow: 0 16px 45px -10px rgba(0, 0, 0, 0.6), 0 0 25px -8px var(--acid-green-glow);
+  border-color: var(--border-secondary);
+  box-shadow: var(--shadow-md);
 }
 
 .glass-panel-glow {
-  border: 1px solid var(--acid-green-border);
-  box-shadow: 0 0 30px -5px var(--acid-green-glow);
+  border-color: var(--blue-border);
+  box-shadow: var(--shadow-blue);
 }
 
-/* Typography & Headings */
+/* Typography */
 h1, h2, h3, h4, h5, h6 {
-  color: var(--ghost-white);
+  color: var(--text-primary);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 p, span, label {
-  color: var(--ghost-white-subtle);
+  color: var(--text-secondary);
 }
 
-.heading-acid-accent {
-  color: var(--acid-green);
-  text-shadow: 0 0 16px var(--acid-green-glow);
+.heading-accent {
+  color: var(--blue);
 }
 
-/* Primary CTA Button: Acid Green Background with Cyan Navy Text */
+/* Primary Button — Blue */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -127,19 +153,20 @@ p, span, label {
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: #092742;
-  background-color: var(--acid-green);
+  color: #FFFFFF;
+  background-color: var(--blue);
   border: none;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 18px rgba(210, 245, 0, 0.35);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-blue);
+  font-family: var(--font-main);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  filter: brightness(1.08);
-  box-shadow: 0 6px 26px rgba(210, 245, 0, 0.55);
+  background-color: var(--blue-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -149,11 +176,10 @@ p, span, label {
 .btn-primary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  filter: grayscale(0.6);
   box-shadow: none;
 }
 
-/* Secondary Button: Cyan Navy Surface with Ghost White Text */
+/* Secondary Button — White outline */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -162,26 +188,28 @@ p, span, label {
   padding: 11px 20px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--ghost-white);
-  background: var(--cyan-navy-surface);
-  border: 1px solid rgba(248, 248, 255, 0.14);
-  border-radius: 9px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-main);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--cyan-navy-card);
-  border-color: rgba(210, 245, 0, 0.35);
-  color: #ffffff;
+  background: var(--bg-hover);
+  border-color: var(--border-secondary);
+  color: var(--text-primary);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:active:not(:disabled) {
   transform: translateY(0);
 }
 
-/* Outline / Danger Action Button */
+/* Danger Button */
 .btn-danger-outline {
   display: inline-flex;
   align-items: center;
@@ -190,85 +218,78 @@ p, span, label {
   padding: 8px 16px;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #FF6B6B;
-  background: rgba(255, 71, 87, 0.08);
-  border: 1px solid rgba(255, 71, 87, 0.25);
-  border-radius: 8px;
+  color: var(--error);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-main);
 }
 
 .btn-danger-outline:hover {
-  background: rgba(255, 71, 87, 0.18);
-  border-color: rgba(255, 71, 87, 0.5);
-  color: #FF8787;
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
 }
 
-/* Telemetry & Forensic Badges */
+/* Badges */
 .mono-badge {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   padding: 4px 10px;
   border-radius: 6px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-weight: 600;
 }
 
-.mono-badge-acid {
-  background: var(--acid-green-faint);
-  color: var(--acid-green);
-  border: 1px solid var(--acid-green-border);
+.mono-badge-blue {
+  background: var(--bg-blue-light);
+  color: var(--blue);
+  border: 1px solid var(--blue-border);
 }
 
 .mono-badge-ghost {
-  background: var(--ghost-white-faint);
-  color: var(--ghost-white);
-  border: 1px solid rgba(248, 248, 255, 0.15);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 .mono-badge-ai {
-  background: var(--status-ai-faint);
-  color: var(--status-ai);
-  border: 1px solid rgba(255, 71, 87, 0.35);
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid var(--error-border);
 }
 
 .mono-badge-real {
-  background: var(--acid-green-faint);
-  color: var(--acid-green);
-  border: 1px solid var(--acid-green-border);
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
 }
 
 .mono-badge-warn {
-  background: var(--status-warn-faint);
-  color: var(--status-warn);
-  border: 1px solid rgba(255, 184, 0, 0.35);
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: 1px solid var(--warning-border);
 }
 
-/* Laser Scanline Animation */
+/* Scan laser line — blue */
 @keyframes laserSweep {
-  0% {
-    top: 0%;
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0.7;
-  }
+  0% { top: 0%; opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { top: 100%; opacity: 0.6; }
 }
 
 .scan-laser-line {
   position: absolute;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--acid-green) 40%, #ffffff 50%, var(--acid-green) 60%, transparent);
-  box-shadow: 0 0 15px var(--acid-green), 0 0 25px var(--acid-green);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue) 40%, #60A5FA 50%, var(--blue) 60%, transparent);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
   animation: laserSweep 2s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 10;
@@ -285,20 +306,30 @@ p, span, label {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--cyan-navy-deep);
+  background: var(--bg-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--cyan-navy-surface);
+  background: var(--border-secondary);
   border-radius: 4px;
-  border: 1px solid rgba(248, 248, 255, 0.08);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--acid-green);
+  background: var(--blue);
+}
+
+/* Fade/slide animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }

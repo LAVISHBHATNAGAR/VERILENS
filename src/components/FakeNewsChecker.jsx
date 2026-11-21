@@ -6,13 +6,15 @@ import {
   CheckCircle2, 
   ExternalLink, 
   Sparkles, 
-  HelpCircle,
+  HelpCircle, 
+  RotateCcw,
   ShieldCheck,
-  RotateCcw
+  Link2
 } from 'lucide-react';
 
 export default function FakeNewsChecker() {
   const [headline, setHeadline] = useState('');
+  const [sourceUrl, setSourceUrl] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
 
@@ -39,67 +41,93 @@ export default function FakeNewsChecker() {
       const text = headline.trim();
       const lower = text.toLowerCase();
 
-      // Heuristic linguistic scoring
       let clickbaitSignals = 0;
       let sensationalSignals = 0;
       let urgencySignals = 0;
+      let evidenceFlags = [];
 
       // Clickbait triggers
-      const clickbaitWords = ['shocking', 'secret', 'hiding', 'miracle', 'doctors stunned', 'they don’t want you to know', 'overnight', 'instant'];
+      const clickbaitWords = ['shocking', 'secret', 'hiding', 'miracle', 'doctors stunned', 'they don’t want you to know', 'overnight', 'instant', 'won’t believe'];
       clickbaitWords.forEach(w => {
-        if (lower.includes(w)) clickbaitSignals += 25;
+        if (lower.includes(w)) {
+          clickbaitSignals += 25;
+          evidenceFlags.push(`Clickbait phrasing detected: "${w}"`);
+        }
       });
 
       // Capital letters check
       const capsCount = (text.match(/[A-Z]/g) || []).length;
-      if (capsCount > 15 && capsCount / text.length > 0.25) {
+      if (capsCount > 12 && capsCount / text.length > 0.22) {
         sensationalSignals += 35;
+        evidenceFlags.push('Excessive uppercase text formatting used to induce urgency');
       }
 
-      // Multiple exclamation marks
+      // Multiple exclamation / question marks
       if (/!{2,}/.test(text) || /\?{2,}/.test(text)) {
         sensationalSignals += 30;
+        evidenceFlags.push('Punctuation exaggeration (multiple exclamation or question marks)');
       }
 
       // Fear / urgency words
-      const urgencyWords = ['within 48 hours', 'danger', 'deadly', 'immediately', 'catastrophe', 'imminent'];
+      const urgencyWords = ['within 48 hours', 'danger', 'deadly', 'immediately', 'catastrophe', 'imminent', 'collapse', 'warning'];
       urgencyWords.forEach(w => {
-        if (lower.includes(w)) urgencySignals += 30;
+        if (lower.includes(w)) {
+          urgencySignals += 25;
+          evidenceFlags.push(`High emotional polarity trigger: "${w}"`);
+        }
       });
 
-      const totalRisk = Math.min(95, Math.max(12, clickbaitSignals + sensationalSignals + urgencySignals));
+      const totalRisk = Math.min(95, Math.max(10, clickbaitSignals + sensationalSignals + urgencySignals));
       const credibilityScore = 100 - totalRisk;
 
       let verdict = 'Likely Authentic & Factual Format';
-      let verdictColor = '#D2F500';
+      let verdictStatus = 'supported';
+      let verdictColor = '#16A34A';
+      let verdictBg = '#F0FDF4';
+      let verdictBorder = '#BBF7D0';
       let riskLevel = 'LOW';
+      let detailedVerdict = 'This headline follows objective journalistic formatting with restrained syntax and no sensational clickbait patterns.';
 
-      if (totalRisk >= 65) {
+      if (totalRisk >= 60) {
         verdict = 'High Sensationalism / Probable Deceptive Media';
-        verdictColor = '#FF4757';
+        verdictStatus = 'disputed';
+        verdictColor = '#DC2626';
+        verdictBg = '#FEF2F2';
+        verdictBorder = '#FECACA';
         riskLevel = 'HIGH';
-      } else if (totalRisk >= 40) {
+        detailedVerdict = 'This claim shows severe linguistic red flags including manipulative urgency, emotional distortion, and clickbait syntax.';
+      } else if (totalRisk >= 35) {
         verdict = 'Unverified Claims / Sensationalized Phrasing';
-        verdictColor = '#FFB800';
+        verdictStatus = 'unverified';
+        verdictColor = '#D97706';
+        verdictBg = '#FFFBEB';
+        verdictBorder = '#FDE68A';
         riskLevel = 'MODERATE';
+        detailedVerdict = 'This statement contains exaggerated framing or unsupported assertions that warrant independent cross-checking.';
       }
 
       setAnalysis({
         headline: text,
+        sourceUrl: sourceUrl.trim(),
         credibilityScore,
         riskScore: totalRisk,
         verdict,
+        verdictStatus,
         verdictColor,
+        verdictBg,
+        verdictBorder,
         riskLevel,
+        detailedVerdict,
+        evidenceFlags,
         metrics: [
-          { name: 'Clickbait & Emotional Polarity', score: Math.min(100, clickbaitSignals + 15), flag: clickbaitSignals > 20 ? 'High' : 'Normal' },
-          { name: 'Sensationalism / Syntax Distortion', score: Math.min(100, sensationalSignals + 10), flag: sensationalSignals > 25 ? 'High' : 'Normal' },
+          { name: 'Clickbait & Emotional Polarity', score: Math.min(100, clickbaitSignals + 10), flag: clickbaitSignals > 20 ? 'High' : 'Normal' },
+          { name: 'Sensationalism / Syntax Distortion', score: Math.min(100, sensationalSignals + 10), flag: sensationalSignals > 20 ? 'High' : 'Normal' },
           { name: 'Urgency & Fear Induction Index', score: Math.min(100, urgencySignals + 10), flag: urgencySignals > 20 ? 'High' : 'Normal' }
         ]
       });
 
       setAnalyzing(false);
-    }, 700);
+    }, 600);
   };
 
   return (
@@ -110,28 +138,28 @@ export default function FakeNewsChecker() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '7px 16px',
+          padding: '6px 16px',
           borderRadius: '24px',
-          background: 'rgba(12, 51, 85, 0.7)',
-          border: '1px solid rgba(210, 245, 0, 0.35)',
-          marginBottom: '18px'
+          background: '#EFF6FF',
+          border: '1px solid rgba(37,99,235,0.2)',
+          marginBottom: '16px'
         }}>
-          <Newspaper size={15} color="#D2F500" />
-          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: '#D2F500', fontWeight: '700' }}>
+          <Newspaper size={14} color="#2563EB" />
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: '700' }}>
             VERILENS INFORMATION INTEGRITY SUITE
           </span>
         </div>
-        <h2 style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--ghost-white)', marginBottom: '10px' }}>
+        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
           Fake News &amp; Claim Credibility Scanner
         </h2>
-        <p style={{ color: 'var(--ghost-white-subtle)', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
-          Inspect news headlines, social media posts, and viral claims for linguistic manipulation, hyper-partisan rhetoric, and lack of verified sourcing.
+        <p style={{ color: '#475569', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
+          Inspect news headlines, claims, and social media posts for linguistic manipulation, emotional triggers, and signs of deceptive media.
         </p>
       </div>
 
       {/* Main Input Box */}
-      <div className="glass-panel" style={{ padding: '28px', marginBottom: '24px', background: 'rgba(12, 51, 85, 0.75)' }}>
-        <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '700', color: 'var(--ghost-white)', marginBottom: '10px' }}>
+      <div className="glass-panel" style={{ padding: '28px', marginBottom: '24px' }}>
+        <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
           Enter Headline, Claim, or Statement to Audit:
         </label>
         <textarea
@@ -141,22 +169,51 @@ export default function FakeNewsChecker() {
           placeholder="Paste article title or viral claim here (e.g. 'BREAKING: Secret research reveals miraculous new cure hidden by officials...')"
           style={{
             width: '100%',
-            padding: '16px',
-            background: 'rgba(5, 24, 41, 0.8)',
-            border: '1px solid rgba(248, 248, 255, 0.14)',
-            borderRadius: '10px',
-            color: 'var(--ghost-white)',
-            fontSize: '0.96rem',
+            padding: '14px 16px',
+            background: '#F8FAFC',
+            border: '1px solid #CBD5E1',
+            borderRadius: '8px',
+            color: '#172B4D',
+            fontSize: '0.95rem',
             fontFamily: 'inherit',
             resize: 'vertical',
             outline: 'none',
-            marginBottom: '18px'
+            marginBottom: '14px',
+            transition: 'border-color 0.2s'
           }}
+          onFocus={(e) => e.target.style.borderColor = '#2563EB'}
+          onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
         />
+
+        {/* Optional Source URL */}
+        <div style={{ marginBottom: '16px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontWeight: '600', color: '#475569', marginBottom: '6px' }}>
+            <Link2 size={13} color="#64748B" />
+            <span>Source URL (Optional):</span>
+          </label>
+          <input
+            type="url"
+            value={sourceUrl}
+            onChange={(e) => setSourceUrl(e.target.value)}
+            placeholder="https://example.com/article"
+            style={{
+              width: '100%',
+              padding: '10px 14px',
+              background: '#F8FAFC',
+              border: '1px solid #CBD5E1',
+              borderRadius: '8px',
+              color: '#172B4D',
+              fontSize: '0.88rem',
+              outline: 'none'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#2563EB'}
+            onBlur={(e) => e.target.style.borderColor = '#CBD5E1'}
+          />
+        </div>
 
         {/* Preset quick buttons */}
         <div style={{ marginBottom: '20px' }}>
-          <div style={{ fontSize: '0.76rem', color: 'var(--ghost-white-muted)', marginBottom: '10px' }}>
+          <div style={{ fontSize: '0.76rem', color: '#64748B', marginBottom: '8px', fontWeight: '600' }}>
             Or try a reference headline:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -167,13 +224,21 @@ export default function FakeNewsChecker() {
                 onClick={() => setHeadline(preset.text)}
                 style={{
                   fontSize: '0.76rem',
-                  padding: '6px 14px',
-                  borderRadius: '7px',
-                  background: 'rgba(5, 24, 41, 0.7)',
-                  border: '1px solid rgba(248, 248, 255, 0.12)',
-                  color: 'var(--ghost-white-subtle)',
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  background: '#F1F5F9',
+                  border: '1px solid #E2E8F0',
+                  color: '#475569',
                   cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#EFF6FF';
+                  e.currentTarget.style.color = '#2563EB';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = '#F1F5F9';
+                  e.currentTarget.style.color = '#475569';
                 }}
               >
                 {preset.title}
@@ -182,7 +247,7 @@ export default function FakeNewsChecker() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
           {headline && (
             <button
               onClick={() => { setHeadline(''); setAnalysis(null); }}
@@ -192,14 +257,13 @@ export default function FakeNewsChecker() {
               <span>Reset</span>
             </button>
           )}
-          {/* Audit CTA (Acid Green) */}
           <button
             onClick={handleAnalyze}
             disabled={!headline.trim() || analyzing}
             className="btn-primary"
-            style={{ padding: '12px 26px' }}
+            style={{ padding: '12px 24px' }}
           >
-            <Search size={16} color="#092742" />
+            <Search size={16} />
             <span>{analyzing ? 'Scanning Linguistic Patterns...' : 'Audit Credibility'}</span>
           </button>
         </div>
@@ -210,9 +274,9 @@ export default function FakeNewsChecker() {
         <div className="glass-panel" style={{
           padding: '28px',
           marginBottom: '24px',
-          background: 'rgba(12, 51, 85, 0.85)',
-          borderColor: analysis.verdictColor,
-          boxShadow: `0 0 30px ${analysis.verdictColor}33`
+          background: '#FFFFFF',
+          borderColor: analysis.verdictBorder,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
         }}>
           <div style={{
             display: 'flex',
@@ -220,7 +284,7 @@ export default function FakeNewsChecker() {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '12px',
-            marginBottom: '18px'
+            marginBottom: '16px'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{
@@ -229,23 +293,28 @@ export default function FakeNewsChecker() {
                 fontWeight: '800',
                 padding: '4px 10px',
                 borderRadius: '6px',
-                background: `${analysis.verdictColor}22`,
+                background: analysis.verdictBg,
                 color: analysis.verdictColor,
-                border: `1px solid ${analysis.verdictColor}55`
+                border: `1px solid ${analysis.verdictBorder}`
               }}>
                 RISK LEVEL: {analysis.riskLevel}
               </span>
             </div>
 
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: 'var(--ghost-white-subtle)' }}>
-              Credibility Index: <strong style={{ color: '#D2F500' }}>{analysis.credibilityScore}%</strong>
+            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: '#64748B' }}>
+              Credibility Index: <strong style={{ color: '#2563EB' }}>{analysis.credibilityScore}%</strong>
             </div>
           </div>
 
-          <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--ghost-white)', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: '800', color: '#172B4D', marginBottom: '8px' }}>
             {analysis.verdict}
           </h3>
 
+          <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, marginBottom: '20px' }}>
+            {analysis.detailedVerdict}
+          </p>
+
+          {/* Metric cards */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
@@ -254,21 +323,27 @@ export default function FakeNewsChecker() {
           }}>
             {analysis.metrics.map((m, i) => (
               <div key={i} style={{
-                background: 'rgba(5, 24, 41, 0.7)',
-                padding: '14px',
-                borderRadius: '10px',
-                border: '1px solid rgba(248, 248, 255, 0.08)'
+                background: '#F8FAFC',
+                padding: '14px 16px',
+                borderRadius: '8px',
+                border: '1px solid #E2E8F0'
               }}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--ghost-white-muted)', marginBottom: '4px' }}>{m.name}</div>
+                <div style={{ fontSize: '0.76rem', color: '#64748B', marginBottom: '4px', fontWeight: '600' }}>
+                  {m.name}
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--ghost-white)', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
                     {m.score}%
                   </span>
                   <span style={{
                     fontSize: '0.68rem',
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '700',
-                    color: m.flag === 'High' ? '#FF6B6B' : '#D2F500'
+                    color: m.flag === 'High' ? '#DC2626' : '#16A34A',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    background: m.flag === 'High' ? '#FEF2F2' : '#F0FDF4',
+                    border: `1px solid ${m.flag === 'High' ? '#FECACA' : '#BBF7D0'}`
                   }}>
                     {m.flag}
                   </span>
@@ -277,9 +352,31 @@ export default function FakeNewsChecker() {
             ))}
           </div>
 
+          {/* Evidence flags if any */}
+          {analysis.evidenceFlags && analysis.evidenceFlags.length > 0 && (
+            <div style={{
+              padding: '14px 16px',
+              borderRadius: '8px',
+              background: '#FFFBEB',
+              border: '1px solid #FDE68A',
+              marginBottom: '20px'
+            }}>
+              <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '700', color: '#92400E', marginBottom: '6px' }}>
+                DETECTED LINGUISTIC SIGNALS:
+              </div>
+              <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {analysis.evidenceFlags.map((flag, idx) => (
+                  <li key={idx} style={{ fontSize: '0.82rem', color: '#78350F' }}>
+                    {flag}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Fact Check Resources */}
           <div style={{
-            borderTop: '1px solid rgba(248, 248, 255, 0.1)',
+            borderTop: '1px solid #E2E8F0',
             paddingTop: '18px',
             display: 'flex',
             alignItems: 'center',
@@ -287,29 +384,29 @@ export default function FakeNewsChecker() {
             flexWrap: 'wrap',
             gap: '12px'
           }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--ghost-white-muted)' }}>
+            <span style={{ fontSize: '0.82rem', color: '#64748B' }}>
               Cross-verify claim in reputable global registries:
             </span>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <a
                 href={`https://toolbox.google.com/factcheck/explorer/search/list:57?hl=en&num_results=10&query=${encodeURIComponent(headline)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="btn-secondary"
-                style={{ fontSize: '0.78rem', padding: '7px 14px' }}
+                style={{ fontSize: '0.78rem', padding: '6px 12px' }}
               >
                 <span>Google Fact Check</span>
-                <ExternalLink size={13} color="#D2F500" />
+                <ExternalLink size={13} color="#2563EB" />
               </a>
               <a
                 href={`https://www.reuters.com/fact-check/`}
                 target="_blank"
                 rel="noreferrer"
                 className="btn-secondary"
-                style={{ fontSize: '0.78rem', padding: '7px 14px' }}
+                style={{ fontSize: '0.78rem', padding: '6px 12px' }}
               >
                 <span>Reuters</span>
-                <ExternalLink size={13} color="#D2F500" />
+                <ExternalLink size={13} color="#2563EB" />
               </a>
             </div>
           </div>

@@ -18,33 +18,33 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   const margin = 18;
   const contentW = pageW - margin * 2;
 
-  // Background - Dark theme header banner (Cyan Navy)
-  doc.setFillColor(9, 39, 66);
-  doc.rect(0, 0, pageW, 46, 'F');
+  // Header Banner - Professional Deep Navy / Blue
+  doc.setFillColor(30, 64, 175); // #1E40AF
+  doc.rect(0, 0, pageW, 44, 'F');
 
-  // Acid Green brand accent bar
-  doc.setFillColor(210, 245, 0);
-  doc.rect(0, 44, pageW, 2, 'F');
+  // Blue accent bar
+  doc.setFillColor(37, 99, 235); // #2563EB
+  doc.rect(0, 42, pageW, 2, 'F');
 
   // Header Title
-  doc.setTextColor(248, 248, 255);
+  doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
   doc.text('VERILENS', margin, 18);
 
   doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(210, 245, 0);
+  doc.setTextColor(191, 219, 254);
   doc.text('DIGITAL TRUTH & SAFETY ASSISTANT • FORENSIC INTEGRITY AUDIT', margin, 24);
 
   // Top Right Info
   doc.setFontSize(8);
-  doc.setTextColor(148, 163, 184);
+  doc.setTextColor(226, 232, 240);
   doc.text(`REPORT ID: ${analysisResult.id || 'VRL-SEC-01'}`, pageW - margin, 18, { align: 'right' });
   doc.text(`ISSUED: ${new Date(analysisResult.timestamp).toLocaleString()}`, pageW - margin, 24, { align: 'right' });
   doc.text(`ENGINE: ${analysisResult.isRealEngine ? 'Multi-Signal Engine' : 'Client Signal Engine'}`, pageW - margin, 30, { align: 'right' });
 
-  let y = 56;
+  let y = 54;
 
   // Section 1: Target Media Summary
   doc.setFillColor(248, 250, 252);
@@ -54,7 +54,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
 
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(30, 41, 59);
+  doc.setTextColor(23, 43, 77);
   doc.text('FILE PROVENANCE & IDENTIFICATION', margin + 6, y + 8);
 
   doc.setFont('helvetica', 'normal');
@@ -73,16 +73,16 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
 
   if (isAi) {
     doc.setFillColor(254, 242, 242);
-    doc.setDrawColor(239, 68, 68);
-    doc.setTextColor(185, 28, 28);
+    doc.setDrawColor(254, 202, 202);
+    doc.setTextColor(220, 38, 38);
   } else if (isReal) {
-    doc.setFillColor(236, 253, 245);
-    doc.setDrawColor(16, 185, 129);
-    doc.setTextColor(4, 120, 87);
+    doc.setFillColor(240, 253, 244);
+    doc.setDrawColor(187, 247, 208);
+    doc.setTextColor(22, 163, 74);
   } else {
-    doc.setFillColor(254, 252, 232);
-    doc.setDrawColor(234, 179, 8);
-    doc.setTextColor(161, 98, 7);
+    doc.setFillColor(255, 251, 235);
+    doc.setDrawColor(253, 230, 138);
+    doc.setTextColor(217, 119, 6);
   }
 
   doc.roundedRect(margin, y, contentW, 26, 2, 2, 'FD');
@@ -103,13 +103,13 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   // Section 3: Summary Explanation
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
-  doc.setTextColor(15, 23, 42);
+  doc.setTextColor(23, 43, 77);
   doc.text('FORENSIC SUMMARY & ASSESSMENT', margin, y);
   y += 5;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.setTextColor(51, 65, 85);
+  doc.setTextColor(71, 85, 105);
 
   const summaryText = analysisResult.summary || analysisResult.explanation || 'Assessment completed.';
   const splitExplanation = doc.splitTextToSize(summaryText, contentW);
@@ -119,7 +119,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   // Section 4: Forensic Pillar Evaluation
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
-  doc.setTextColor(15, 23, 42);
+  doc.setTextColor(23, 43, 77);
   doc.text('FORENSIC PILLAR BREAKDOWN', margin, y);
   y += 6;
 
@@ -143,7 +143,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
       doc.text(`${p.score}%`, margin + 80, y + 5);
 
       if (p.color === 'red') doc.setTextColor(220, 38, 38);
-      else if (p.color === 'emerald') doc.setTextColor(5, 150, 105);
+      else if (p.color === 'emerald') doc.setTextColor(22, 163, 74);
       else doc.setTextColor(217, 119, 6);
 
       doc.text(p.status, margin + 115, y + 5);
@@ -158,7 +158,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
   // Section 5: Detected Irregularities & Indicators
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10);
-  doc.setTextColor(15, 23, 42);
+  doc.setTextColor(23, 43, 77);
   doc.text('DETECTED INDICATORS & ANOMALY SIGNALS', margin, y);
   y += 6;
 
@@ -175,7 +175,7 @@ export function downloadPdfReport(analysisResult, imagePreviewUrl) {
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
-      doc.setTextColor(30, 41, 59);
+      doc.setTextColor(23, 43, 77);
       doc.text(`[${type}] ${title}`, margin, y);
       y += 4.5;
 

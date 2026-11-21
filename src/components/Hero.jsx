@@ -1,14 +1,5 @@
 import React from 'react';
-import { 
-  ShieldCheck, 
-  Eye, 
-  Cpu, 
-  Lock, 
-  ArrowRight, 
-  Sparkles, 
-  Layers,
-  Activity
-} from 'lucide-react';
+import { ShieldCheck, Eye, Cpu, Lock, ArrowRight, Layers, Activity, Zap } from 'lucide-react';
 
 export default function Hero({ onExploreSamples, onLearnMore }) {
   const scrollToUpload = () => {
@@ -20,83 +11,97 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
     }
   };
 
+  const features = [
+    {
+      icon: Eye,
+      title: 'AI Image Detection',
+      desc: 'Multi-signal forensic analysis across spectral frequency, sensor noise, and deep learning signals.'
+    },
+    {
+      icon: Cpu,
+      title: 'News Verification',
+      desc: 'Linguistic analysis flags sensational claims, clickbait patterns, and unverified assertions.'
+    },
+    {
+      icon: Lock,
+      title: 'Digital Privacy',
+      desc: 'Learn to protect your EXIF metadata, identity, and digital footprint online.'
+    }
+  ];
+
   return (
     <section style={{
       textAlign: 'center',
-      padding: '52px 0 36px 0',
+      padding: '52px 0 44px 0',
       position: 'relative',
       maxWidth: '1040px',
       margin: '0 auto'
     }}>
-      {/* Top Cyber Badge */}
+      {/* Top badge */}
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '7px 16px',
+        padding: '6px 16px',
         borderRadius: '24px',
-        background: 'rgba(12, 51, 85, 0.7)',
-        border: '1px solid rgba(210, 245, 0, 0.35)',
-        marginBottom: '22px',
-        boxShadow: '0 0 20px rgba(210, 245, 0, 0.12)'
+        background: '#EFF6FF',
+        border: '1px solid rgba(37, 99, 235, 0.2)',
+        marginBottom: '22px'
       }}>
-        <Sparkles size={14} color="#D2F500" />
+        <Zap size={13} color="#2563EB" />
         <span style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.76rem',
-          letterSpacing: '0.08em',
+          fontSize: '0.74rem',
+          letterSpacing: '0.07em',
           fontWeight: '700',
-          color: '#D2F500',
+          color: '#2563EB',
           textTransform: 'uppercase'
         }}>
-          Multi-Spectral Visual Forensics • Digital Truth Platform
+          AI Image Forensics · Digital Truth Platform
         </span>
       </div>
 
       {/* Main Heading */}
       <h1 style={{
-        fontSize: 'clamp(2.2rem, 5.2vw, 3.8rem)',
+        fontSize: 'clamp(2rem, 5vw, 3.6rem)',
         fontWeight: '800',
         letterSpacing: '-0.03em',
-        lineHeight: 1.14,
+        lineHeight: 1.15,
         marginBottom: '18px',
-        color: 'var(--ghost-white)'
+        color: '#172B4D'
       }}>
-        Is This Image Real <br />
-        or <span className="heading-acid-accent">AI Generated?</span>
+        See Beyond<br />
+        <span style={{ color: '#2563EB' }}>What Looks Real.</span>
       </h1>
 
       {/* Subtitle */}
       <p style={{
-        fontSize: 'clamp(1.05rem, 2.1vw, 1.22rem)',
-        color: 'var(--ghost-white-subtle)',
-        maxWidth: '740px',
-        margin: '0 auto 28px auto',
-        lineHeight: 1.65,
+        fontSize: 'clamp(1rem, 2vw, 1.18rem)',
+        color: '#475569',
+        maxWidth: '660px',
+        margin: '0 auto 32px auto',
+        lineHeight: 1.7,
         fontWeight: '400'
       }}>
-        Upload an image and analyze visual patterns to identify possible signs of AI generation. Inspect synthetic frequency residuals, noise floor inconsistencies, and deep learning signatures.
+        Verify digital content with multi-signal forensic analysis. Detect AI-generated imagery,
+        identify misleading information, and protect your digital privacy.
       </p>
 
-      {/* Action CTA Buttons */}
+      {/* CTA Buttons */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '14px',
+        gap: '12px',
         flexWrap: 'wrap',
-        marginBottom: '36px'
+        marginBottom: '52px'
       }}>
         <button
           onClick={scrollToUpload}
           className="btn-primary"
-          style={{
-            padding: '14px 32px',
-            fontSize: '1.02rem',
-            boxShadow: '0 6px 28px rgba(210, 245, 0, 0.4)'
-          }}
+          style={{ padding: '14px 32px', fontSize: '1rem' }}
         >
-          <span>Verify Image Now</span>
+          <span>Check an Image</span>
           <ArrowRight size={18} />
         </button>
 
@@ -110,39 +115,55 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
             }
           }}
           className="btn-secondary"
-          style={{
-            padding: '14px 26px',
-            fontSize: '1rem'
-          }}
+          style={{ padding: '14px 24px', fontSize: '0.98rem' }}
         >
-          <Activity size={17} color="#D2F500" />
-          <span>How Verification Works</span>
+          <Activity size={16} color="#2563EB" />
+          <span>Explore Digital Safety</span>
         </button>
       </div>
 
-      {/* Capabilities Feature Badges */}
+      {/* Feature Cards */}
       <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '12px'
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '16px',
+        textAlign: 'left'
       }}>
-        <div className="mono-badge mono-badge-acid">
-          <Eye size={13} color="#D2F500" />
-          <span>Error Level Analysis (ELA)</span>
-        </div>
-        <div className="mono-badge mono-badge-ghost">
-          <Cpu size={13} color="var(--ghost-white)" />
-          <span>Fourier 2D Frequency FFT</span>
-        </div>
-        <div className="mono-badge mono-badge-acid">
-          <ShieldCheck size={13} color="#D2F500" />
-          <span>PRNU Sensor Grain Analysis</span>
-        </div>
-        <div className="mono-badge mono-badge-ghost">
-          <Lock size={13} color="var(--ghost-white)" />
-          <span>Ephemeral RAM Execution</span>
-        </div>
+        {features.map((f, i) => {
+          const Icon = f.icon;
+          return (
+            <div key={i} className="glass-panel" style={{ padding: '24px 22px' }}>
+              <div style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '10px',
+                background: '#EFF6FF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '14px',
+                border: '1px solid rgba(37,99,235,0.15)'
+              }}>
+                <Icon size={22} color="#2563EB" />
+              </div>
+              <h3 style={{
+                fontSize: '0.95rem',
+                fontWeight: '700',
+                color: '#172B4D',
+                marginBottom: '7px'
+              }}>
+                {f.title}
+              </h3>
+              <p style={{
+                fontSize: '0.84rem',
+                color: '#64748B',
+                lineHeight: 1.6
+              }}>
+                {f.desc}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

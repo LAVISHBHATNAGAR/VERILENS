@@ -26,9 +26,9 @@ export default function AnalysisHistory({
       position: 'fixed',
       inset: 0,
       zIndex: 200,
-      background: 'rgba(5, 24, 41, 0.8)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
+      background: 'rgba(23, 43, 77, 0.45)',
+      backdropFilter: 'blur(4px)',
+      WebkitBackdropFilter: 'blur(4px)',
       display: 'flex',
       justifyContent: 'flex-end',
       animation: 'fadeIn 0.2s ease'
@@ -36,42 +36,42 @@ export default function AnalysisHistory({
       {/* Slide-in Drawer Container */}
       <div style={{
         width: '100%',
-        maxWidth: '460px',
+        maxWidth: '440px',
         height: '100%',
-        background: '#051829',
-        borderLeft: '1px solid rgba(248, 248, 255, 0.12)',
-        boxShadow: '-12px 0 50px rgba(0, 0, 0, 0.85)',
+        background: '#FFFFFF',
+        borderLeft: '1px solid #E2E8F0',
+        boxShadow: '-8px 0 30px rgba(0, 0, 0, 0.12)',
         display: 'flex',
         flexDirection: 'column',
         animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         {/* Drawer Header */}
         <div style={{
-          padding: '22px 24px',
-          borderBottom: '1px solid rgba(248, 248, 255, 0.1)',
+          padding: '20px 22px',
+          borderBottom: '1px solid #E2E8F0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'rgba(9, 39, 66, 0.95)'
+          background: '#FFFFFF'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '36px',
               height: '36px',
-              borderRadius: '9px',
-              background: 'rgba(210, 245, 0, 0.12)',
-              border: '1px solid rgba(210, 245, 0, 0.35)',
+              borderRadius: '8px',
+              background: '#EFF6FF',
+              border: '1px solid rgba(37,99,235,0.2)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <History size={19} color="#D2F500" />
+              <History size={18} color="#2563EB" />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--ghost-white)' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
                 Session History
               </h3>
-              <p style={{ fontSize: '0.74rem', color: 'var(--ghost-white-muted)' }}>
+              <p style={{ fontSize: '0.74rem', color: '#64748B' }}>
                 {history.length} {history.length === 1 ? 'image' : 'images'} audited in this session
               </p>
             </div>
@@ -82,13 +82,13 @@ export default function AnalysisHistory({
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'var(--ghost-white-subtle)',
+              color: '#64748B',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px'
             }}
           >
-            <X size={20} color="#D2F500" />
+            <X size={18} />
           </button>
         </div>
 
@@ -96,22 +96,22 @@ export default function AnalysisHistory({
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '20px 24px',
+          padding: '18px 20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px'
+          gap: '10px'
         }}>
           {history.length === 0 ? (
             <div style={{
               textAlign: 'center',
-              padding: '70px 20px',
-              color: 'var(--ghost-white-muted)'
+              padding: '60px 20px',
+              color: '#64748B'
             }}>
-              <FileImage size={46} color="#0c3355" style={{ margin: '0 auto 14px auto' }} />
-              <h4 style={{ fontSize: '1rem', color: 'var(--ghost-white-subtle)', marginBottom: '8px', fontWeight: '700' }}>
+              <FileImage size={42} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
+              <h4 style={{ fontSize: '0.95rem', color: '#172B4D', marginBottom: '6px', fontWeight: '700' }}>
                 No Scans Conducted Yet
               </h4>
-              <p style={{ fontSize: '0.84rem', lineHeight: 1.55, maxWidth: '280px', margin: '0 auto', color: 'var(--ghost-white-muted)' }}>
+              <p style={{ fontSize: '0.82rem', lineHeight: 1.5, maxWidth: '260px', margin: '0 auto', color: '#64748B' }}>
                 Upload and analyze an image to track your inspection chain-of-custody in this session.
               </p>
             </div>
@@ -129,113 +129,117 @@ export default function AnalysisHistory({
                   }}
                   className="glass-panel"
                   style={{
-                    padding: '14px',
-                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    borderRadius: '10px',
                     cursor: 'pointer',
-                    background: 'rgba(12, 51, 85, 0.7)',
-                    border: '1px solid rgba(248, 248, 255, 0.1)',
+                    background: '#FFFFFF',
+                    border: '1px solid #E2E8F0',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#CBD5E1';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#E2E8F0';
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
                   }}
                 >
                   {/* Thumbnail */}
                   <div style={{
-                    width: '52px',
-                    height: '52px',
+                    width: '48px',
+                    height: '48px',
                     borderRadius: '8px',
                     overflow: 'hidden',
-                    background: '#051829',
-                    border: '1px solid rgba(248, 248, 255, 0.1)',
+                    background: '#F1F5F9',
+                    border: '1px solid #E2E8F0',
                     flexShrink: 0
                   }}>
                     <img 
                       src={item.previewUrl} 
-                      alt="Thumbnail" 
+                      alt="History Preview" 
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                     />
                   </div>
 
-                  {/* Information Details */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '4px'
-                    }}>
-                      <span style={{
-                        fontSize: '0.66rem',
-                        fontFamily: 'var(--font-mono)',
-                        padding: '2px 7px',
-                        borderRadius: '4px',
-                        fontWeight: '800',
-                        background: isAi ? 'rgba(255, 71, 87, 0.15)' : isReal ? 'rgba(210, 245, 0, 0.15)' : 'rgba(255, 184, 0, 0.15)',
-                        color: isAi ? '#FF6B6B' : isReal ? '#D2F500' : '#FFB800'
-                      }}>
-                        {isAi ? 'LIKELY AI' : isReal ? 'LIKELY AUTHENTIC' : 'INCONCLUSIVE'}
-                      </span>
-
-                      <span style={{ fontSize: '0.68rem', color: 'var(--ghost-white-muted)' }}>
-                        {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-
+                  <div style={{ flex: 1, overflow: 'hidden' }}>
                     <div style={{
                       fontSize: '0.86rem',
                       fontWeight: '700',
-                      color: 'var(--ghost-white)',
+                      color: '#172B4D',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis'
                     }}>
-                      {item.imageData?.name || 'Inspected Image'}
+                      {item.imageData?.name || item.result.metadata?.fileName || 'Inspected Image'}
                     </div>
 
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
-                      fontSize: '0.72rem',
-                      fontFamily: 'var(--font-mono)',
-                      color: 'var(--ghost-white-muted)',
+                      gap: '6px',
                       marginTop: '3px'
                     }}>
-                      <span>AI: {item.result.aiScore}%</span>
-                      <span>•</span>
-                      <span>Real: {item.result.realScore}%</span>
+                      <span style={{
+                        fontSize: '0.66rem',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: '800',
+                        padding: '1px 6px',
+                        borderRadius: '4px',
+                        background: isAi ? '#FEF2F2' : isReal ? '#F0FDF4' : '#FFFBEB',
+                        color: isAi ? '#DC2626' : isReal ? '#16A34A' : '#D97706',
+                        border: `1px solid ${isAi ? '#FECACA' : isReal ? '#BBF7D0' : '#FDE68A'}`
+                      }}>
+                        {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
+                      </span>
+                      <span style={{ fontSize: '0.68rem', color: '#64748B' }}>
+                        {item.result.confidence}% conf
+                      </span>
+                    </div>
+
+                    <div style={{
+                      fontSize: '0.68rem',
+                      color: '#94A3B8',
+                      marginTop: '3px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <Clock size={11} />
+                      <span>{new Date(item.timestamp).toLocaleTimeString()}</span>
                     </div>
                   </div>
 
-                  <ArrowRight size={16} color="#D2F500" style={{ flexShrink: 0 }} />
+                  <ArrowRight size={14} color="#94A3B8" />
                 </div>
               );
             })
           )}
         </div>
 
-        {/* Drawer Footer Actions */}
+        {/* Drawer Footer */}
         {history.length > 0 && (
           <div style={{
-            padding: '18px 24px',
-            borderTop: '1px solid rgba(248, 248, 255, 0.1)',
-            background: 'rgba(9, 39, 66, 0.85)',
+            padding: '16px 20px',
+            borderTop: '1px solid #E2E8F0',
+            background: '#F8FAFC',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}>
             <button
               onClick={onClearHistory}
               className="btn-danger-outline"
-              style={{ fontSize: '0.8rem', padding: '8px 14px' }}
+              style={{ fontSize: '0.82rem', padding: '6px 12px' }}
             >
-              <Trash2 size={14} />
+              <Trash2 size={13} />
               <span>Clear History</span>
             </button>
-
-            <span style={{ fontSize: '0.72rem', color: 'var(--ghost-white-muted)' }}>
-              Ephemeral session storage
+            <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
+              Ephemeral Session Storage
             </span>
           </div>
         )}

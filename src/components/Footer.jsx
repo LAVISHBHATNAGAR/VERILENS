@@ -8,10 +8,10 @@ export default function Footer({ onNavigate }) {
 
   return (
     <footer style={{
-      borderTop: '1px solid rgba(248, 248, 255, 0.08)',
-      background: 'rgba(9, 39, 66, 0.98)',
-      padding: '52px 0 36px 0',
-      marginTop: '68px',
+      borderTop: '1px solid #E2E8F0',
+      background: '#FFFFFF',
+      padding: '48px 0 32px 0',
+      marginTop: '60px',
       position: 'relative',
       zIndex: 10
     }}>
@@ -20,68 +20,67 @@ export default function Footer({ onNavigate }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '36px',
-          marginBottom: '40px'
+          marginBottom: '36px'
         }}>
           {/* Brand Col */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
               <div style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #0c3355 0%, #134673 100%)',
-                border: '1px solid rgba(210, 245, 0, 0.4)',
+                width: '34px',
+                height: '34px',
+                borderRadius: '8px',
+                background: '#EFF6FF',
+                border: '1px solid rgba(37,99,235,0.2)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 16px rgba(210, 245, 0, 0.15)'
+                justifyContent: 'center'
               }}>
-                <ShieldCheck size={20} color="#D2F500" />
+                <ShieldCheck size={18} color="#2563EB" />
               </div>
-              <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--ghost-white)', letterSpacing: '0.04em' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#172B4D', letterSpacing: '0.03em' }}>
                 VERILENS
               </span>
             </div>
-            <p style={{ fontSize: '0.86rem', color: 'var(--ghost-white-subtle)', lineHeight: 1.65, maxWidth: '340px' }}>
+            <p style={{ fontSize: '0.84rem', color: '#64748B', lineHeight: 1.6, maxWidth: '340px' }}>
               Digital Truth &amp; Safety Assistant. Protecting information integrity, auditing synthetic imagery, and verifying digital media provenance.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 style={{ fontSize: '0.86rem', fontFamily: 'var(--font-mono)', color: '#D2F500', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#2563EB', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
               Truth Suite Modules
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <button
                 onClick={() => onNavigate('checker')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--ghost-white-subtle)', textAlign: 'left', fontSize: '0.88rem', cursor: 'pointer', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => e.target.style.color = '#D2F500'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--ghost-white-subtle)'}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => e.target.style.color = '#2563EB'}
+                onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
                 AI Image Checker
               </button>
               <button
                 onClick={() => onNavigate('fakenews')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--ghost-white-subtle)', textAlign: 'left', fontSize: '0.88rem', cursor: 'pointer', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => e.target.style.color = '#D2F500'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--ghost-white-subtle)'}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => e.target.style.color = '#2563EB'}
+                onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
                 Fake News Checker
               </button>
               <button
                 onClick={() => onNavigate('privacy')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--ghost-white-subtle)', textAlign: 'left', fontSize: '0.88rem', cursor: 'pointer', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => e.target.style.color = '#D2F500'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--ghost-white-subtle)'}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => e.target.style.color = '#2563EB'}
+                onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
                 Privacy &amp; Media Guide
               </button>
               <button
                 onClick={() => onNavigate('about')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--ghost-white-subtle)', textAlign: 'left', fontSize: '0.88rem', cursor: 'pointer', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => e.target.style.color = '#D2F500'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--ghost-white-subtle)'}
+                style={{ background: 'transparent', border: 'none', color: '#475569', textAlign: 'left', fontSize: '0.86rem', cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => e.target.style.color = '#2563EB'}
+                onMouseLeave={(e) => e.target.style.color = '#475569'}
               >
                 About Project
               </button>
@@ -90,22 +89,22 @@ export default function Footer({ onNavigate }) {
 
           {/* Security Telemetry Status */}
           <div>
-            <h4 style={{ fontSize: '0.86rem', fontFamily: 'var(--font-mono)', color: 'var(--ghost-white)', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
+            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#172B4D', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: '700' }}>
               System Integrity Status
             </h4>
             <div style={{
-              background: 'rgba(12, 51, 85, 0.75)',
+              background: '#F0FDF4',
               padding: '14px 16px',
               borderRadius: '10px',
-              border: '1px solid rgba(248, 248, 255, 0.1)'
+              border: '1px solid #BBF7D0'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#D2F500', boxShadow: '0 0 8px #D2F500' }} />
-                <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: '#D2F500', fontWeight: '800' }}>
-                  OPERATIONAL • SECURE
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#16A34A', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }} />
+                <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#16A34A', fontWeight: '800' }}>
+                  OPERATIONAL · SECURE
                 </span>
               </div>
-              <p style={{ fontSize: '0.76rem', color: 'var(--ghost-white-muted)', lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.76rem', color: '#64748B', lineHeight: 1.5 }}>
                 Multi-signal forensic analysis active. Zero persistent image telemetry logged.
               </p>
             </div>
@@ -114,25 +113,25 @@ export default function Footer({ onNavigate }) {
 
         {/* Bottom bar */}
         <div style={{
-          borderTop: '1px solid rgba(248, 248, 255, 0.08)',
-          paddingTop: '24px',
+          borderTop: '1px solid #E2E8F0',
+          paddingTop: '20px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '14px'
+          gap: '12px'
         }}>
-          <div style={{ fontSize: '0.78rem', color: 'var(--ghost-white-muted)' }}>
+          <div style={{ fontSize: '0.78rem', color: '#64748B' }}>
             © {new Date().getFullYear()} VERILENS – Digital Truth &amp; Safety Assistant. Academic College Demonstration.
           </div>
 
           <button
             onClick={scrollToTop}
             className="btn-secondary"
-            style={{ fontSize: '0.78rem', padding: '7px 14px' }}
+            style={{ fontSize: '0.76rem', padding: '6px 12px' }}
           >
             <span>Back to top</span>
-            <ArrowUp size={13} color="#D2F500" />
+            <ArrowUp size={12} color="#2563EB" />
           </button>
         </div>
       </div>

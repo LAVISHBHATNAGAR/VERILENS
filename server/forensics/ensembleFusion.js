@@ -51,9 +51,9 @@ export function fuseForensicSignals({
     weightedScoreSum += deepLearning.aiProbability * weight;
     activeScores.push({ name: 'Deep Learning ViT', score: deepLearning.aiProbability });
 
-    if (deepLearning.aiProbability >= 0.65) {
+    if (deepLearning.aiProbability >= 0.60) {
       anomalies.push(...deepLearning.indicators);
-    } else if (deepLearning.aiProbability <= 0.35) {
+    } else if (deepLearning.aiProbability <= 0.40) {
       authenticSignals.push(...deepLearning.indicators);
     }
   } else {
@@ -119,20 +119,31 @@ export function fuseForensicSignals({
     weightedScoreSum = Math.min(weightedScoreSum, totalWeight * 0.25);
   }
 
+  // When clear high-frequency sensor noise deficit is present (>0.75) and no camera hardware exists
+  if (noise.isValid && noise.noiseAiScore >= 0.75 && !metadata.hasCameraExif && (!fourier.isValid || fourier.spectralAiScore >= 0.40)) {
+    weightedScoreSum = Math.max(weightedScoreSum, totalWeight * 0.70);
+  }
+
   // Raw fused probability
   let rawProb = totalWeight > 0 ? weightedScoreSum / totalWeight : 0.5;
 
   // Signal Disparity / Conflict Index
+  // Note: Only flag true contradiction when one signal is decisively AI (>= 0.72)
+  // and another is decisively REAL (<= 0.28). Neutral/indeterminate signals (0.35 - 0.65) are NOT conflicts!
+  let hasTrueConflict = false;
   let signalDisparity = 0;
   if (activeScores.length >= 2) {
     const scores = activeScores.map(s => s.score);
     const minScore = Math.min(...scores);
     const maxScore = Math.max(...scores);
     signalDisparity = maxScore - minScore;
+    if (minScore <= 0.25 && maxScore >= 0.75) {
+      hasTrueConflict = true;
+    }
   }
 
   // Resolution & Compression penalty to confidence
-  const isLowResolution = imageMeta.width < 300 || imageMeta.height < 300;
+  const isLowResolution = imageMeta.width < 250 || imageMeta.height < 250;
   if (isLowResolution) {
     limitations.push('Low image resolution degrades fine-grained sensor grain and optical edge detection reliability.');
   }
@@ -142,49 +153,64 @@ export function fuseForensicSignals({
     limitations.push('High JPEG quantization suppresses fine sensor noise, introducing uncertainty into surface smoothness analysis.');
   }
 
-  // 3. UNCERTAINTY SYSTEM EVALUATION
-  // Do not force ambiguous, low-res, heavily compressed, or contradictory images into binary buckets!
-  const isAmbiguousRange = rawProb > 0.35 && rawProb < 0.65;
-  const isHighDisparity = signalDisparity > 0.45;
+  // 3. DECISION & UNCERTAINTY SYSTEM EVALUATION
+  const isAmbiguousMiddle = rawProb >= 0.44 && rawProb <= 0.56;
 
   let verdict = 'Inconclusive';
   let verdictLevel = 'inconclusive';
   let calibratedConfidence = 0;
-  let confidenceLevel = 'Low';
+  let confidenceLevel = 'Moderate';
   let summary = '';
 
-  if (isHeavyJpeg && rawProb >= 0.60) {
+  if (isHeavyJpeg && !metadata.hasCameraExif) {
     // Heavy JPEG compression artificially suppresses noise floor; prevent false positive
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
     calibratedConfidence = 35;
     confidenceLevel = 'Low / Uncertain';
     summary = `Image exhibits prominent 8x8 discrete cosine transform compression artifacts (JPEG blockiness index: ${noise.jpegBlockiness || 'high'}). Compression quantization obscures high-frequency CMOS sensor noise, preventing a definitive determination.`;
-  } else if (isAmbiguousRange || isHighDisparity || isLowResolution) {
+  } else if (isLowResolution && !metadata.hasCameraExif) {
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = Math.round(Math.max(20, (1 - signalDisparity) * 50));
+    calibratedConfidence = 35;
     confidenceLevel = 'Low / Uncertain';
-
-    if (isHighDisparity) {
-      summary = `The analysis produced conflicting signals across forensic domains (Signal discrepancy: ${(signalDisparity * 100).toFixed(0)}%). For example, spatial frequency patterns diverge from noise floor characteristics. Evidence is insufficient for a reliable determination.`;
-    } else if (isAmbiguousRange) {
-      summary = `The image metrics fall into an indeterminate middle band (${(rawProb * 100).toFixed(0)}%). Visual patterns do not provide conclusive proof of either authentic photographic capture or synthetic generative diffusion.`;
-    } else {
-      summary = `Image resolution (${imageMeta.width}×${imageMeta.height}) is too limited to extract unambiguous micro-texture or CMOS sensor noise signatures.`;
-    }
-  } else if (rawProb >= 0.65) {
+    summary = `Image resolution (${imageMeta.width}×${imageMeta.height}) is too limited to extract unambiguous micro-texture or CMOS sensor noise signatures.`;
+  } else if (hasTrueConflict) {
+    verdict = 'Inconclusive';
+    verdictLevel = 'inconclusive';
+    calibratedConfidence = 35;
+    confidenceLevel = 'Low / Uncertain';
+    summary = `The analysis produced conflicting signals across forensic domains (Signal discrepancy: ${(signalDisparity * 100).toFixed(0)}%). Spatial frequency harmonics and noise floor characteristics directly contradict each other. Evidence is insufficient for a reliable determination.`;
+  } else if (isAmbiguousMiddle) {
+    verdict = 'Inconclusive';
+    verdictLevel = 'inconclusive';
+    calibratedConfidence = 45;
+    confidenceLevel = 'Low / Uncertain';
+    summary = `The image metrics fall into an indeterminate middle band (${(rawProb * 100).toFixed(0)}%). Visual patterns do not provide conclusive proof of either authentic photographic capture or synthetic generative diffusion.`;
+  } else if (rawProb >= 0.57) {
     verdict = 'Likely AI-generated';
     verdictLevel = 'ai';
-    calibratedConfidence = Math.round(Math.min(95, 60 + (rawProb - 0.65) * 100 * (1 - signalDisparity * 0.5)));
+    calibratedConfidence = Math.round(Math.min(95, 68 + (rawProb - 0.57) * 75));
     confidenceLevel = calibratedConfidence >= 80 ? 'High' : 'Moderate';
-    summary = `Multiple independent forensic indicators corroborate synthetic image synthesis. Observed markers include ${anomalies.map(a => a.name).slice(0, 2).join(' and ')}.`;
+    
+    const topAnomalies = anomalies.filter(a => a.type === 'ANOMALY');
+    if (topAnomalies.length > 0) {
+      summary = `Multiple forensic indicators corroborate synthetic image synthesis. Observed markers include ${topAnomalies.map(a => a.name).slice(0, 2).join(' and ')}.`;
+    } else {
+      summary = `Synthetic visual patterns detected. Image exhibits characteristic latent diffusion smoothness and lack of organic CMOS sensor grain.`;
+    }
   } else {
     verdict = 'Likely authentic';
     verdictLevel = 'real';
-    calibratedConfidence = Math.round(Math.min(95, 60 + (0.35 - rawProb) * 100 * (1 - signalDisparity * 0.5)));
+    calibratedConfidence = Math.round(Math.min(95, 68 + (0.43 - rawProb) * 75));
     confidenceLevel = calibratedConfidence >= 80 ? 'High' : 'Moderate';
-    summary = `Visual signals and noise floor characteristics are consistent with genuine optical camera capture. Preserved indicators include ${authenticSignals.map(a => a.name).slice(0, 2).join(' and ')}.`;
+
+    const topAuthentic = authenticSignals.filter(a => a.type === 'AUTHENTIC');
+    if (topAuthentic.length > 0) {
+      summary = `Visual signals and noise floor characteristics are consistent with genuine optical camera capture. Preserved indicators include ${topAuthentic.map(a => a.name).slice(0, 2).join(' and ')}.`;
+    } else {
+      summary = `Optical camera signatures detected. Organic Poisson-Gaussian sensor noise floor aligns with physical digital camera sensors.`;
+    }
   }
 
   const aiScore = Math.round(rawProb * 100);

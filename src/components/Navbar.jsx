@@ -1,24 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  ShieldCheck, 
-  Scan, 
-  Newspaper, 
-  Lock, 
-  Info, 
-  History, 
-  Sliders, 
-  Menu, 
-  X,
-  Sparkles
-} from 'lucide-react';
+import { ShieldCheck, Scan, Newspaper, Lock, Info, History, Menu, X } from 'lucide-react';
 
-export default function Navbar({ 
-  activeTab, 
-  setActiveTab, 
-  historyCount = 0, 
-  onOpenHistory, 
-  onOpenApiConfig,
-  isDemoMode = true 
+export default function Navbar({
+  activeTab,
+  setActiveTab,
+  historyCount = 0,
+  onOpenHistory,
+  isDemoMode = true
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -40,121 +28,85 @@ export default function Navbar({
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'rgba(9, 39, 66, 0.94)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(248, 248, 255, 0.08)',
-      boxShadow: '0 4px 20px rgba(5, 24, 41, 0.6)',
+      background: 'rgba(255, 255, 255, 0.96)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderBottom: '1px solid #E2E8F0',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
       transition: 'all 0.3s ease'
     }}>
       <div className="verilens-container" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        height: '76px'
+        height: '72px'
       }}>
         {/* Brand Logo */}
-        <div 
+        <div
           onClick={() => handleTabClick('checker')}
-          style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '12px', 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
             cursor: 'pointer',
             userSelect: 'none'
           }}
         >
           <div style={{
-            position: 'relative',
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #0c3355 0%, #134673 100%)',
-            border: '1px solid rgba(210, 245, 0, 0.4)',
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(210, 245, 0, 0.15)'
+            boxShadow: '0 2px 10px rgba(37, 99, 235, 0.3)',
+            flexShrink: 0
           }}>
-            <ShieldCheck size={24} color="#D2F500" />
-            <div style={{
-              position: 'absolute',
-              top: '-3px',
-              right: '-3px',
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: '#D2F500',
-              boxShadow: '0 0 10px #D2F500'
-            }} />
+            <ShieldCheck size={22} color="#FFFFFF" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ 
-                fontFamily: 'var(--font-main)', 
-                fontWeight: '800', 
-                fontSize: '1.4rem', 
-                letterSpacing: '0.04em',
-                color: 'var(--ghost-white)'
+              <span style={{
+                fontFamily: 'var(--font-main)',
+                fontWeight: '800',
+                fontSize: '1.3rem',
+                letterSpacing: '0.03em',
+                color: '#172B4D'
               }}>
                 VERILENS
               </span>
               <span style={{
-                fontSize: '0.62rem',
+                fontSize: '0.6rem',
                 fontFamily: 'var(--font-mono)',
-                padding: '2px 7px',
-                borderRadius: '5px',
-                background: 'rgba(210, 245, 0, 0.12)',
-                color: '#D2F500',
-                border: '1px solid rgba(210, 245, 0, 0.3)',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                background: '#EFF6FF',
+                color: '#2563EB',
+                border: '1px solid rgba(37,99,235,0.2)',
                 fontWeight: '700'
               }}>
                 v2.4
               </span>
             </div>
-            <div style={{ 
-              fontSize: '0.68rem', 
-              color: 'var(--ghost-white-muted)', 
-              letterSpacing: '0.08em',
+            <div style={{
+              fontSize: '0.65rem',
+              color: '#64748B',
+              letterSpacing: '0.07em',
               textTransform: 'uppercase',
               fontWeight: '600'
             }}>
-              Digital Truth &amp; Safety Assistant
+              Digital Truth & Safety Assistant
             </div>
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <nav style={{
           display: 'none',
           alignItems: 'center',
-          gap: '6px',
-          background: 'rgba(5, 24, 41, 0.65)',
-          padding: '5px 8px',
-          borderRadius: '12px',
-          border: '1px solid rgba(248, 248, 255, 0.08)'
+          gap: '4px'
         }} className="desktop-nav">
-          <button
-            onClick={() => handleTabClick('checker')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: activeTab === 'checker' ? 'rgba(210, 245, 0, 0.12)' : 'transparent',
-              border: activeTab === 'checker' ? '1px solid rgba(210, 245, 0, 0.4)' : '1px solid transparent',
-              color: activeTab === 'checker' ? '#D2F500' : 'var(--ghost-white-subtle)',
-              padding: '8px 14px',
-              borderRadius: '8px',
-              fontSize: '0.86rem',
-              fontWeight: activeTab === 'checker' ? '700' : '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: activeTab === 'checker' ? '0 0 16px rgba(210, 245, 0, 0.15)' : 'none'
-            }}
-          >
-            Home
-          </button>
-          
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -165,166 +117,157 @@ export default function Navbar({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '7px',
-                  background: isActive ? 'rgba(210, 245, 0, 0.12)' : 'transparent',
-                  border: isActive ? '1px solid rgba(210, 245, 0, 0.4)' : '1px solid transparent',
-                  color: isActive ? '#D2F500' : 'var(--ghost-white-subtle)',
+                  gap: '6px',
+                  background: isActive ? '#EFF6FF' : 'transparent',
+                  border: isActive ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                  color: isActive ? '#2563EB' : '#475569',
                   padding: '8px 14px',
                   borderRadius: '8px',
                   fontSize: '0.86rem',
                   fontWeight: isActive ? '700' : '500',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: isActive ? '0 0 16px rgba(210, 245, 0, 0.15)' : 'none'
+                  transition: 'all 0.15s ease',
+                  fontFamily: 'var(--font-main)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = '#F8FAFC';
+                    e.currentTarget.style.color = '#172B4D';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#475569';
+                  }
                 }}
               >
-                <Icon size={15} color={isActive ? '#D2F500' : 'var(--ghost-white-muted)'} />
-                {item.label}
+                <Icon size={15} />
+                <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Right Action Controls */}
+        {/* Right side actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Mode Pill / API Config button */}
-          <button
-            onClick={onOpenApiConfig}
-            title="Configure Forensic Engine / API Mode"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: isDemoMode ? 'rgba(12, 51, 85, 0.8)' : 'rgba(210, 245, 0, 0.12)',
-              border: isDemoMode ? '1px solid rgba(248, 248, 255, 0.14)' : '1px solid rgba(210, 245, 0, 0.45)',
-              color: isDemoMode ? 'var(--ghost-white-subtle)' : '#D2F500',
-              padding: '7px 13px',
-              borderRadius: '8px',
-              fontSize: '0.76rem',
-              fontFamily: 'var(--font-mono)',
-              cursor: 'pointer',
-              fontWeight: '700',
-              boxShadow: isDemoMode ? 'none' : '0 0 16px rgba(210, 245, 0, 0.2)',
-              transition: 'all 0.2s'
-            }}
-          >
+
+          {/* System status badge — read-only, not clickable by users */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            background: isDemoMode ? '#F1F5F9' : '#F0FDF4',
+            border: `1px solid ${isDemoMode ? '#E2E8F0' : '#BBF7D0'}`,
+            fontSize: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: '600',
+            color: isDemoMode ? '#64748B' : '#16A34A',
+            userSelect: 'none'
+          }}>
             <span style={{
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              background: isDemoMode ? 'var(--ghost-white-muted)' : '#D2F500',
-              boxShadow: isDemoMode ? 'none' : '0 0 8px #D2F500'
+              background: isDemoMode ? '#94A3B8' : '#16A34A',
+              boxShadow: isDemoMode ? 'none' : '0 0 6px rgba(22,163,74,0.5)',
+              flexShrink: 0
             }} />
-            <span className="hide-on-mobile">{isDemoMode ? 'Demo Engine' : 'Live Engine Active'}</span>
-            <Sliders size={13} color={isDemoMode ? 'var(--ghost-white-muted)' : '#D2F500'} />
-          </button>
+            <span className="hide-on-mobile">
+              {isDemoMode ? 'Local Mode' : 'System Active'}
+            </span>
+          </div>
 
           {/* History Button */}
           <button
             onClick={onOpenHistory}
             title="View Analysis History"
+            className="btn-secondary"
             style={{
               position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(12, 51, 85, 0.8)',
-              border: '1px solid rgba(248, 248, 255, 0.14)',
-              color: 'var(--ghost-white)',
-              padding: '7px 14px',
-              borderRadius: '8px',
-              fontSize: '0.82rem',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
+              padding: '8px 14px',
+              fontSize: '0.84rem',
+              gap: '6px'
             }}
           >
-            <History size={15} color="#D2F500" />
+            <History size={15} color="#2563EB" />
             <span className="hide-on-mobile">History</span>
             {historyCount > 0 && (
               <span style={{
-                background: '#D2F500',
-                color: '#092742',
-                fontSize: '0.68rem',
+                background: '#2563EB',
+                color: '#FFFFFF',
+                fontSize: '0.65rem',
                 fontWeight: '800',
                 padding: '1px 6px',
                 borderRadius: '10px',
                 minWidth: '18px',
-                textAlign: 'center'
+                textAlign: 'center',
+                fontFamily: 'var(--font-mono)'
               }}>
                 {historyCount}
               </span>
             )}
           </button>
 
-          {/* Mobile Menu Hamburger */}
+          {/* Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{
               display: 'none',
               background: 'transparent',
               border: 'none',
-              color: 'var(--ghost-white)',
+              color: '#475569',
               padding: '6px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderRadius: '6px'
             }}
             className="mobile-toggle"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={24} color="#D2F500" /> : <Menu size={24} />}
+            {mobileMenuOpen ? <X size={22} color="#172B4D" /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div style={{
-          background: 'rgba(5, 24, 41, 0.98)',
-          borderBottom: '1px solid rgba(248, 248, 255, 0.12)',
-          padding: '16px 20px',
+          background: '#FFFFFF',
+          borderBottom: '1px solid #E2E8F0',
+          padding: '14px 20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px'
+          gap: '4px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
         }}>
-          <button
-            onClick={() => handleTabClick('checker')}
-            style={{
-              textAlign: 'left',
-              padding: '12px',
-              borderRadius: '8px',
-              background: activeTab === 'checker' ? 'rgba(210, 245, 0, 0.12)' : 'transparent',
-              color: activeTab === 'checker' ? '#D2F500' : 'var(--ghost-white)',
-              border: activeTab === 'checker' ? '1px solid rgba(210, 245, 0, 0.35)' : 'none',
-              fontSize: '0.95rem',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Home / AI Image Checker
-          </button>
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleTabClick(item.id)}
-              style={{
-                textAlign: 'left',
-                padding: '12px',
-                borderRadius: '8px',
-                background: activeTab === item.id ? 'rgba(210, 245, 0, 0.12)' : 'transparent',
-                color: activeTab === item.id ? '#D2F500' : 'var(--ghost-white)',
-                border: activeTab === item.id ? '1px solid rgba(210, 245, 0, 0.35)' : 'none',
-                fontSize: '0.95rem',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleTabClick(item.id)}
+                style={{
+                  textAlign: 'left',
+                  padding: '12px 14px',
+                  borderRadius: '8px',
+                  background: isActive ? '#EFF6FF' : 'transparent',
+                  color: isActive ? '#2563EB' : '#475569',
+                  border: 'none',
+                  fontSize: '0.95rem',
+                  fontWeight: isActive ? '700' : '500',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-main)'
+                }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       )}
 
-      {/* Responsive Inline CSS helper for mobile view */}
       <style>{`
         @media (min-width: 860px) {
           .desktop-nav { display: flex !important; }

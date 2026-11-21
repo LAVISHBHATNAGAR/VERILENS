@@ -28,43 +28,43 @@ export default function AboutSection() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '7px 16px',
+          padding: '6px 16px',
           borderRadius: '24px',
-          background: 'rgba(12, 51, 85, 0.7)',
-          border: '1px solid rgba(210, 245, 0, 0.35)',
-          marginBottom: '18px'
+          background: '#EFF6FF',
+          border: '1px solid rgba(37,99,235,0.2)',
+          marginBottom: '16px'
         }}>
-          <GraduationCap size={16} color="#D2F500" />
-          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-mono)', color: '#D2F500', fontWeight: '700' }}>
+          <GraduationCap size={15} color="#2563EB" />
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: '700' }}>
             PROJECT SPECIFICATION &amp; ARCHITECTURE
           </span>
         </div>
-        <h2 style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--ghost-white)', marginBottom: '10px' }}>
+        <h2 style={{ fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
           About VERILENS
         </h2>
-        <p style={{ color: 'var(--ghost-white-subtle)', maxWidth: '680px', margin: '0 auto', fontSize: '0.98rem', lineHeight: 1.65 }}>
+        <p style={{ color: '#475569', maxWidth: '680px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.65 }}>
           <strong>VERILENS – Digital Truth &amp; Safety Assistant</strong> is an academic media forensics and cybersecurity platform designed to detect synthetic imagery, identify generative AI anomalies, and promote digital provenance literacy.
         </p>
       </div>
 
       {/* Mission & Scope */}
-      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: 'rgba(12, 51, 85, 0.75)' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--ghost-white)', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <ShieldCheck size={22} color="#D2F500" />
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
+        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#172B4D', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <ShieldCheck size={22} color="#2563EB" />
           <span>Mission &amp; Scope</span>
         </h3>
-        <p style={{ fontSize: '0.94rem', color: 'var(--ghost-white-subtle)', lineHeight: 1.7, marginBottom: '16px' }}>
+        <p style={{ fontSize: '0.92rem', color: '#475569', lineHeight: 1.7, marginBottom: '14px' }}>
           The exponential growth of generative diffusion models (Midjourney, DALL-E 3, Stable Diffusion, FLUX) and real-time deepfakes has created an urgent need for accessible forensic verification tools. VERILENS combines physical camera sensor modeling, 2D Fourier frequency domain analysis, chromatic lens physics, and pretrained deep learning detectors into an ensemble forensic pipeline.
         </p>
-        <p style={{ fontSize: '0.94rem', color: 'var(--ghost-white-muted)', lineHeight: 1.7 }}>
+        <p style={{ fontSize: '0.92rem', color: '#64748B', lineHeight: 1.7 }}>
           In accordance with ethical academic and scientific standards, VERILENS incorporates an uncertainty protocol: images with compressed, edited, or ambiguous signatures are marked as INCONCLUSIVE with calibrated confidence intervals rather than forcing fabricated certainty.
         </p>
       </div>
 
       {/* Technical Stack Overview */}
-      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: 'rgba(12, 51, 85, 0.75)' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: 'var(--ghost-white)', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Code size={22} color="#D2F500" />
+      <div className="glass-panel" style={{ padding: '30px', marginBottom: '24px', background: '#FFFFFF' }}>
+        <h3 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#172B4D', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Code size={22} color="#2563EB" />
           <span>System Architecture &amp; Tech Stack</span>
         </h3>
 
@@ -75,15 +75,15 @@ export default function AboutSection() {
         }}>
           {stackItems.map((item, idx) => (
             <div key={idx} style={{
-              background: 'rgba(5, 24, 41, 0.7)',
+              background: '#F8FAFC',
               padding: '16px 18px',
-              borderRadius: '10px',
-              border: '1px solid rgba(248, 248, 255, 0.08)'
+              borderRadius: '8px',
+              border: '1px solid #E2E8F0'
             }}>
-              <div style={{ fontSize: '0.74rem', color: '#D2F500', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+              <div style={{ fontSize: '0.74rem', color: '#2563EB', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
                 {item.label}
               </div>
-              <div style={{ fontSize: '0.92rem', fontWeight: '600', color: 'var(--ghost-white)', marginTop: '4px', lineHeight: 1.45 }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#172B4D', marginTop: '4px', lineHeight: 1.45 }}>
                 {item.val}
               </div>
             </div>
@@ -95,14 +95,14 @@ export default function AboutSection() {
       <div style={{
         padding: '22px',
         borderRadius: '12px',
-        background: 'rgba(12, 51, 85, 0.5)',
-        border: '1px dashed rgba(210, 245, 0, 0.35)',
+        background: '#EFF6FF',
+        border: '1px dashed rgba(37,99,235,0.3)',
         textAlign: 'center'
       }}>
-        <div style={{ fontSize: '0.88rem', fontWeight: '700', color: 'var(--ghost-white)' }}>
+        <div style={{ fontSize: '0.88rem', fontWeight: '700', color: '#172B4D' }}>
           VERILENS: AI-Powered Digital Truth &amp; Safety Assistant
         </div>
-        <div style={{ fontSize: '0.78rem', color: 'var(--ghost-white-muted)', marginTop: '4px' }}>
+        <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '4px' }}>
           Developed as a Cybersecurity &amp; Computer Science capstone demonstration.
         </div>
       </div>
