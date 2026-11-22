@@ -43,9 +43,10 @@ app.use(cors({
     // Allow wildcard if configured
     if (allowedOrigins.includes('*')) return callback(null, true);
 
-    // Check exact matches or dynamic Vercel preview URLs / localhost ports
+    // Check exact matches, Vercel deployments, Render domains, or localhost
     const isAllowed = allowedOrigins.includes(origin) ||
       /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+      /^https:\/\/.*\.onrender\.com$/.test(origin) ||
       /^http:\/\/localhost(:\d+)?$/.test(origin) ||
       /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
 
@@ -53,13 +54,16 @@ app.use(cors({
       callback(null, true);
     } else {
       console.warn(`[CORS Blocked] Origin not allowed: ${origin}`);
-      callback(new Error(`CORS policy violation: Origin ${origin} not allowed.`));
+      callback(null, false);
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Preflight handler
+app.options('*', cors());
 
 // Request size limits
 app.use(express.json({ limit: '20mb' }));
