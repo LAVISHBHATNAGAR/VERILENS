@@ -82,7 +82,7 @@ export default function App() {
 
   // Verify backend connectivity
   const probeBackend = useCallback(async (customUrl = '') => {
-    const health = await checkBackendHealth(customUrl || apiConfig.apiEndpoint);
+    const health = await checkBackendHealth(customUrl);
     setIsBackendOnline(health.online);
     if (health.online) {
       setApiConfig((prev) => ({
@@ -97,7 +97,7 @@ export default function App() {
       }));
     }
     return health;
-  }, [apiConfig.apiEndpoint]);
+  }, []);
 
   // Initial and periodic backend health probe
   useEffect(() => {

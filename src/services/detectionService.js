@@ -32,17 +32,28 @@ export async function calculateImageHash(fileOrBlob) {
 export async function checkBackendHealth(customBaseUrl = '') {
   const candidates = [];
   
-  // 1. User-specified custom URL (from modal or manual input)
+  // 1. User-specified custom URL (strip trailing paths like /api/detect or /api/health)
   if (customBaseUrl && customBaseUrl.trim()) {
-    const cleanCustom = customBaseUrl.trim().replace(/\/+$/, '');
-    candidates.push({ url: `${cleanCustom}/api/health`, base: cleanCustom });
-    candidates.push({ url: `${cleanCustom}/health`, base: cleanCustom });
+    let cleanCustom = customBaseUrl.trim().replace(/\/+$/, '');
+    cleanCustom = cleanCustom
+      .replace(/\/api\/detect\/?$/i, '')
+      .replace(/\/api\/health\/?$/i, '')
+      .replace(/\/health\/?$/i, '');
+    
+    if (cleanCustom) {
+      candidates.push({ url: `${cleanCustom}/api/health`, base: cleanCustom });
+      candidates.push({ url: `${cleanCustom}/health`, base: cleanCustom });
+    }
   }
 
   // 2. Production Render backend configured via VITE_API_URL or VITE_BACKEND_URL
   if (CONFIGURED_BACKEND_URL) {
-    candidates.push({ url: `${CONFIGURED_BACKEND_URL}/api/health`, base: CONFIGURED_BACKEND_URL });
-    candidates.push({ url: `${CONFIGURED_BACKEND_URL}/health`, base: CONFIGURED_BACKEND_URL });
+    const cleanConfigured = CONFIGURED_BACKEND_URL
+      .replace(/\/api\/detect\/?$/i, '')
+      .replace(/\/api\/health\/?$/i, '')
+      .replace(/\/health\/?$/i, '');
+    candidates.push({ url: `${cleanConfigured}/api/health`, base: cleanConfigured });
+    candidates.push({ url: `${cleanConfigured}/health`, base: cleanConfigured });
   }
 
   // 3. Try relative endpoint (works with Vite proxy, custom domain rewrite, or co-hosted server)

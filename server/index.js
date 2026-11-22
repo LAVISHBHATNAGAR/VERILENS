@@ -17,46 +17,13 @@ import { fuseForensicSignals } from './forensics/ensembleFusion.js';
 dotenv.config();
 
 const app = express();
-const PORT = parseInt(process.env.PORT, 10) || 3001;
+// Default to 10000 on Render or production; fallback to 3001 for local dev
+const PORT = parseInt(process.env.PORT, 10) || (process.env.RENDER ? 10000 : 3001);
 const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_FILE_SIZE_MB || '15', 10);
 
-// Configure CORS for production Vercel frontend, local development, and Render
-const defaultAllowedOrigins = [
-  'https://verilens-alpha.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:4173',
-  'http://localhost:3000',
-  'http://localhost:3001'
-];
-
-const envAllowed = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim()).filter(Boolean)
-  : [];
-
-const allowedOrigins = [...defaultAllowedOrigins, ...envAllowed];
-
+// Universal CORS configuration — allows Vercel deployments, custom domains, and localhost
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow non-browser requests (e.g. mobile apps, curl, uptime monitors, server-to-server)
-    if (!origin) return callback(null, true);
-
-    // Allow wildcard if configured
-    if (allowedOrigins.includes('*')) return callback(null, true);
-
-    // Check exact matches, Vercel deployments, Render domains, or localhost
-    const isAllowed = allowedOrigins.includes(origin) ||
-      /^https:\/\/.*\.vercel\.app$/.test(origin) ||
-      /^https:\/\/.*\.onrender\.com$/.test(origin) ||
-      /^http:\/\/localhost(:\d+)?$/.test(origin) ||
-      /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
-
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      console.warn(`[CORS Blocked] Origin not allowed: ${origin}`);
-      callback(null, false);
-    }
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -84,6 +51,22 @@ const upload = multer({
       cb(new Error(`Unsupported file type: ${file.mimetype}. Allowed formats: JPG, PNG, WEBP.`));
     }
   }
+});
+
+// Root informational endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    service: 'VERILENS Forensic Detection Backend',
+    version: '2.4.0',
+    status: 'online',
+    uptime: Math.floor(process.uptime()),
+    endpoints: {
+      health: 'GET /health',
+      apiHealth: 'GET /api/health',
+      detect: 'POST /api/detect'
+    },
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Primary Health-check endpoint for Render web service monitoring
@@ -338,10 +321,22 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Bind to 0.0.0.0 for containerized environments (Render, Docker, Linux)
+// Primary HTTP listener (0.0.0.0 is mandatory for Render and container environments)
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[VERILENS Engine] Forensic Detection Backend active on port ${PORT}`);
+  console.log(`[VERILENS Engine] Forensic Detection Backend active on port ${PORT} (0.0.0.0)`);
 });
+
+// If PORT is 3001 (e.g. from local .env), also listen on 10000 so Render's internal router can route requests
+if (PORT !== 10000) {
+  try {
+    const renderProxyServer = app.listen(10000, '0.0.0.0', () => {
+      console.log(`[VERILENS Engine] Secondary Render listener active on port 10000 (0.0.0.0)`);
+    });
+    renderProxyServer.on('error', (err) => {
+      if (err.code !== 'EADDRINUSE') console.warn('Port 10000 notice:', err.message);
+    });
+  } catch (e) {}
+}
 
 // Graceful shutdown handling for Render service lifecycles
 process.on('SIGTERM', () => {
