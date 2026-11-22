@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: verilens-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MAX_FILE_SIZE_MB
+        value: "15"
+      - key: ALLOWED_ORIGINS
+        value: "https://verilens-alpha.vercel.app,http://localhost:5173,http://localhost:4173"
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+      - key: SIGHTENGINE_API_USER
+        sync: false
+      - key: SIGHTENGINE_API_SECRET
+        sync: false
+      - key: HIVE_API_KEY
+        sync: false
+      - key: CUSTOM_DETECTION_API_URL
+        sync: false

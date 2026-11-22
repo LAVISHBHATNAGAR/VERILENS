@@ -17,11 +17,53 @@ import { fuseForensicSignals } from './forensics/ensembleFusion.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT, 10) || 3001;
 const MAX_FILE_SIZE_MB = parseInt(process.env.MAX_FILE_SIZE_MB || '15', 10);
 
-app.use(cors());
+// Configure CORS for production Vercel frontend, local development, and Render
+const defaultAllowedOrigins = [
+  'https://verilens-alpha.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'http://localhost:3000',
+  'http://localhost:3001'
+];
+
+const envAllowed = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim()).filter(Boolean)
+  : [];
+
+const allowedOrigins = [...defaultAllowedOrigins, ...envAllowed];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, curl, uptime monitors, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // Allow wildcard if configured
+    if (allowedOrigins.includes('*')) return callback(null, true);
+
+    // Check exact matches or dynamic Vercel preview URLs / localhost ports
+    const isAllowed = allowedOrigins.includes(origin) ||
+      /^https:\/\/.*\.vercel\.app$/.test(origin) ||
+      /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+      /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS Blocked] Origin not allowed: ${origin}`);
+      callback(new Error(`CORS policy violation: Origin ${origin} not allowed.`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Request size limits
 app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // In-memory cache for duplicate request prevention (SHA-256 keyed)
 const analysisCache = new Map();
@@ -38,16 +80,28 @@ const upload = multer({
     if (allowed.includes(file.mimetype) || file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
-      cb(new Error(`Unsupported file type: ${file.mimetype}. Allowed: JPG, PNG, WEBP.`));
+      cb(new Error(`Unsupported file type: ${file.mimetype}. Allowed formats: JPG, PNG, WEBP.`));
     }
   }
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
+// Primary Health-check endpoint for Render web service monitoring
+app.get('/health', (req, res) => {
+  res.status(200).json({
     status: 'online',
+    service: 'verilens-backend',
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Extended Forensic Telemetry endpoint (used by VERILENS frontend client)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'online',
+    service: 'verilens-backend',
     version: '2.4.0',
+    uptime: Math.floor(process.uptime()),
     deepLearningConfigured: Boolean(
       process.env.HUGGINGFACE_API_KEY ||
       (process.env.SIGHTENGINE_API_USER && process.env.SIGHTENGINE_API_SECRET) ||
@@ -240,6 +294,66 @@ function formatBytes(bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-app.listen(PORT, () => {
-  console.log(`[VERILENS Engine] Forensic Detection Backend running on http://localhost:${PORT}`);
+// Multer and file upload error handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({
+        error: `File size exceeds the ${MAX_FILE_SIZE_MB}MB limit.`,
+        code: 'LIMIT_FILE_SIZE'
+      });
+    }
+    return res.status(400).json({
+      error: `File upload error: ${err.message}`,
+      code: err.code
+    });
+  }
+  if (err && err.message && err.message.includes('Unsupported file type')) {
+    return res.status(415).json({
+      error: err.message
+    });
+  }
+  if (err && err.message && err.message.includes('CORS')) {
+    return res.status(403).json({
+      error: err.message
+    });
+  }
+  next(err);
+});
+
+// 404 handler for unrecognized routes
+app.use((req, res) => {
+  res.status(404).json({
+    error: `Route ${req.method} ${req.path} not found on VERILENS backend.`
+  });
+});
+
+// Global internal server error handler
+app.use((err, req, res, next) => {
+  console.error('[VERILENS Unhandled Server Error]:', err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal server error occurred.',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Bind to 0.0.0.0 for containerized environments (Render, Docker, Linux)
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[VERILENS Engine] Forensic Detection Backend active on port ${PORT}`);
+});
+
+// Graceful shutdown handling for Render service lifecycles
+process.on('SIGTERM', () => {
+  console.info('[VERILENS Engine] SIGTERM signal received: closing HTTP server gracefully...');
+  server.close(() => {
+    console.info('[VERILENS Engine] HTTP server closed.');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.info('[VERILENS Engine] SIGINT signal received: closing HTTP server...');
+  server.close(() => {
+    process.exit(0);
+  });
 });

@@ -8,6 +8,11 @@ export const DETECTION_MODES = {
   CUSTOM_API: 'CUSTOM_API'
 };
 
+// Base URL configured via environment variable (e.g. Render production service URL in Vercel)
+export const CONFIGURED_BACKEND_URL = (
+  (typeof import.meta !== 'undefined' && import.meta.env && (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL)) || ''
+).trim().replace(/\/+$/, '');
+
 // Calculate real cryptographic SHA-256 hash using Web Crypto API
 export async function calculateImageHash(fileOrBlob) {
   try {
@@ -22,31 +27,41 @@ export async function calculateImageHash(fileOrBlob) {
 
 /**
  * Check backend server health across possible endpoints
- * Checks relative /api/health and local http://localhost:3001/api/health
+ * Checks configured environment URL (Render), relative /api/health, and local http://localhost:3001/api/health
  */
 export async function checkBackendHealth(customBaseUrl = '') {
   const candidates = [];
   
+  // 1. User-specified custom URL (from modal or manual input)
   if (customBaseUrl && customBaseUrl.trim()) {
     const cleanCustom = customBaseUrl.trim().replace(/\/+$/, '');
     candidates.push({ url: `${cleanCustom}/api/health`, base: cleanCustom });
+    candidates.push({ url: `${cleanCustom}/health`, base: cleanCustom });
   }
 
-  // 1. Try relative endpoint (works with Vite proxy or co-hosted server)
-  candidates.push({ url: '/api/health', base: '' });
+  // 2. Production Render backend configured via VITE_API_URL or VITE_BACKEND_URL
+  if (CONFIGURED_BACKEND_URL) {
+    candidates.push({ url: `${CONFIGURED_BACKEND_URL}/api/health`, base: CONFIGURED_BACKEND_URL });
+    candidates.push({ url: `${CONFIGURED_BACKEND_URL}/health`, base: CONFIGURED_BACKEND_URL });
+  }
 
-  // 2. Try direct localhost:3001 if in a browser on localhost / 127.0.0.1
+  // 3. Try relative endpoint (works with Vite proxy, custom domain rewrite, or co-hosted server)
+  candidates.push({ url: '/api/health', base: '' });
+  candidates.push({ url: '/health', base: '' });
+
+  // 4. Try direct localhost:3001 if in a browser on localhost / 127.0.0.1
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1') {
       candidates.push({ url: 'http://localhost:3001/api/health', base: 'http://localhost:3001' });
+      candidates.push({ url: 'http://localhost:3001/health', base: 'http://localhost:3001' });
     }
   }
 
   for (const candidate of candidates) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
 
       const res = await fetch(candidate.url, { signal: controller.signal });
       clearTimeout(timeoutId);
@@ -73,8 +88,8 @@ export async function checkBackendHealth(customBaseUrl = '') {
 
   return {
     online: false,
-    baseUrl: '',
-    apiEndpoint: '/api/detect',
+    baseUrl: CONFIGURED_BACKEND_URL || '',
+    apiEndpoint: CONFIGURED_BACKEND_URL ? `${CONFIGURED_BACKEND_URL}/api/detect` : '/api/detect',
     data: null
   };
 }
@@ -89,9 +104,9 @@ export async function analyzeImage(imageItem, imageElement, options = {}) {
     onProgress = () => {}
   } = options;
 
-  // Sanitize apiEndpoint: if null, empty string, or undefined, default to '/api/detect'
+  // Sanitize apiEndpoint: if null, empty string, or undefined, default to configured backend or '/api/detect'
   if (!apiEndpoint || typeof apiEndpoint !== 'string' || apiEndpoint.trim() === '') {
-    apiEndpoint = '/api/detect';
+    apiEndpoint = CONFIGURED_BACKEND_URL ? `${CONFIGURED_BACKEND_URL}/api/detect` : '/api/detect';
   } else {
     apiEndpoint = apiEndpoint.trim();
   }

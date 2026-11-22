@@ -9,7 +9,7 @@ import {
   RefreshCw,
   Server
 } from 'lucide-react';
-import { checkBackendHealth } from '../services/detectionService';
+import { checkBackendHealth, CONFIGURED_BACKEND_URL } from '../services/detectionService';
 
 export default function ApiConfigModal({ 
   isOpen, 
@@ -28,7 +28,7 @@ export default function ApiConfigModal({
       const result = await checkBackendHealth(urlToTest);
       if (result.online) {
         setBackendStatus({ status: 'online', ...result.data });
-        setActiveUrl(result.baseUrl || 'http://localhost:3001');
+        setActiveUrl(result.baseUrl || CONFIGURED_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : 'Relative (/api)'));
       } else {
         setBackendStatus({ status: 'offline' });
         setActiveUrl('');
@@ -183,7 +183,7 @@ export default function ApiConfigModal({
 
           {backendStatus?.status !== 'online' && (
             <p style={{ fontSize: '0.8rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', lineHeight: 1.5, fontWeight: '400' }}>
-              Run <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>npm run server</code> to start the multi-signal forensic backend on port 3001.
+              Run <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>npm run server</code> locally on port 3001, or deploy the backend to Render and set <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>VITE_API_URL</code> on Vercel.
             </p>
           )}
         </div>
@@ -198,7 +198,7 @@ export default function ApiConfigModal({
               type="text"
               value={customEndpoint}
               onChange={(e) => setCustomEndpoint(e.target.value)}
-              placeholder="Auto-detect (/api/detect or http://localhost:3001/api/detect)"
+              placeholder={CONFIGURED_BACKEND_URL ? `${CONFIGURED_BACKEND_URL}/api/detect` : "Auto-detect (/api/detect or https://your-backend.onrender.com/api/detect)"}
               style={{
                 flex: 1,
                 padding: '10px 16px',
@@ -216,13 +216,14 @@ export default function ApiConfigModal({
             <button
               onClick={handleUseLocalhost}
               className="btn-secondary"
+              title="Reset to local server on port 3001"
               style={{ fontSize: '0.78rem', padding: '8px 14px', whiteSpace: 'nowrap', fontFamily: 'var(--font-body)', fontWeight: '500' }}
             >
-              Use 3001
+              Local 3001
             </button>
           </div>
           <p style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', fontWeight: '400' }}>
-            Leave blank to automatically connect to /api/detect or http://localhost:3001/api/detect.
+            Leave blank to connect automatically via VITE_API_URL, relative proxy, or local port 3001.
           </p>
         </div>
 
