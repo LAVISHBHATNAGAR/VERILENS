@@ -10,7 +10,7 @@ export const DETECTION_MODES = {
 
 // Base URL configured via environment variable (e.g. Render production service URL in Vercel)
 export const CONFIGURED_BACKEND_URL = (
-  (typeof import.meta !== 'undefined' && import.meta.env && (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL)) || 'https://verilens-nisj.onrender.com'
+  (typeof import.meta !== 'undefined' && import.meta.env && (import.meta.env.VITE_API_URL || import.meta.env.VITE_BACKEND_URL)) || 'https://verilens-n1sj.onrender.com'
 ).trim().replace(/\/+$/, '');
 
 // Calculate real cryptographic SHA-256 hash using Web Crypto API
