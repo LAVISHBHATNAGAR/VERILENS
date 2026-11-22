@@ -63,19 +63,19 @@ export default function PrivacyGuide() {
           gap: '8px',
           padding: '6px 16px',
           borderRadius: '9999px',
-          background: '#EFF6FF',
+          background: 'var(--badge-blue-bg)',
           marginBottom: '16px',
-          boxShadow: '0 2px 8px rgba(37, 99, 235, 0.06)'
+          boxShadow: 'var(--shadow-sm)'
         }}>
-          <Lock size={14} color="#2563EB" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
+          <Lock size={14} color="var(--badge-blue-text)" />
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: 'var(--badge-blue-text)' }}>
             DIGITAL PRIVACY &amp; SECURITY PROTOCOLS
           </span>
         </div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.1rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px' }}>
           Privacy, Provenance &amp; Media Safety Guide
         </h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: '#475569', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: 'var(--text-secondary)', maxWidth: '660px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
           Essential practices to safeguard personal information, protect your online identity, and evaluate digital media critically.
         </p>
       </div>
@@ -90,24 +90,24 @@ export default function PrivacyGuide() {
         {guideCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={idx} className="glass-panel" style={{ padding: '24px', background: '#FFFFFF', borderRadius: '20px', boxShadow: '0 8px 24px rgba(37, 99, 235, 0.05)' }}>
+            <div key={idx} className="glass-panel" style={{ padding: '24px', borderRadius: '20px' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
                 borderRadius: '14px',
-                background: '#EFF6FF',
+                background: 'var(--badge-blue-bg)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '16px',
-                boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
+                boxShadow: 'var(--shadow-sm)'
               }}>
-                <Icon size={22} color="#2563EB" />
+                <Icon size={22} color="var(--badge-blue-text)" />
               </div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: '600', color: '#172B4D', marginBottom: '8px' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '8px' }}>
                 {card.title}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.86rem', fontWeight: '400', color: '#64748B', lineHeight: 1.6 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.86rem', fontWeight: '400', color: 'var(--text-muted)', lineHeight: 1.6 }}>
                 {card.description}
               </p>
             </div>
@@ -116,10 +116,10 @@ export default function PrivacyGuide() {
       </div>
 
       {/* Visual Anomaly Checklist */}
-      <div className="glass-panel" style={{ padding: '30px', background: '#FFFFFF', borderRadius: '24px', boxShadow: '0 10px 30px rgba(37, 99, 235, 0.05)' }}>
+      <div className="glass-panel" style={{ padding: '30px', borderRadius: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-          <Sparkles size={20} color="#2563EB" />
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: '#172B4D' }}>
+          <Sparkles size={20} color="var(--blue-light)" />
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '600', color: 'var(--text-primary)' }}>
             Practical Visual Anomaly Checklist for Everyday Users
           </h3>
         </div>
@@ -132,15 +132,15 @@ export default function PrivacyGuide() {
               gap: '12px',
               padding: '14px 18px',
               borderRadius: '16px',
-              background: '#F8FAFC',
-              boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
+              background: 'var(--sub-block-bg)',
+              boxShadow: 'var(--shadow-sm)'
             }}>
-              <CheckCircle2 size={18} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <CheckCircle2 size={18} color="var(--success)" style={{ flexShrink: 0, marginTop: '2px' }} />
               <div>
-                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: '600', color: '#172B4D', marginBottom: '2px' }}>
+                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '2px' }}>
                   {tip.title}
                 </div>
-                <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: '400', color: '#64748B', lineHeight: 1.55 }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: '400', color: 'var(--text-muted)', lineHeight: 1.55 }}>
                   {tip.desc}
                 </div>
               </div>

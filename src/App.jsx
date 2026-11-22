@@ -24,6 +24,43 @@ export default function App() {
   const [scanStep, setScanStep] = useState('');
   const [isBackendOnline, setIsBackendOnline] = useState(false);
 
+  // Theme State: 'light' | 'dark' (defaults to stored choice or system preference)
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('verilens_theme');
+      if (saved) return saved;
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prevTheme) => {
+      const nextTheme = prevTheme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('verilens_theme', nextTheme);
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      if (nextTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return nextTheme;
+    });
+  }, []);
+
+  // Synchronize document data-theme attribute on mount / theme update
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
   // Session History State
   const [history, setHistory] = useState(() => {
     try {
@@ -188,6 +225,8 @@ export default function App() {
         onOpenHistory={() => setHistoryOpen(true)}
         onOpenApiConfig={() => setApiConfigOpen(true)}
         isDemoMode={!isBackendOnline}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}

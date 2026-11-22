@@ -85,8 +85,6 @@ export default function ApiConfigModal({
         maxWidth: '580px',
         maxHeight: '90vh',
         overflowY: 'auto',
-        background: '#FFFFFF',
-        boxShadow: '0 20px 50px rgba(15, 23, 42, 0.12)',
         borderRadius: '24px',
         padding: '28px'
       }}>
@@ -103,19 +101,19 @@ export default function ApiConfigModal({
               width: '36px',
               height: '36px',
               borderRadius: '12px',
-              background: '#EFF6FF',
+              background: 'var(--badge-blue-bg)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
+              boxShadow: 'var(--shadow-sm)'
             }}>
-              <Server size={18} color="#2563EB" />
+              <Server size={18} color="var(--badge-blue-text)" />
             </div>
             <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: '700', color: '#172B4D' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-primary)' }}>
                 Forensic Engine Telemetry
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', color: '#64748B', fontWeight: '400' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: '400' }}>
                 Multi-Signal Forensic Pipeline Status
               </p>
             </div>
@@ -126,7 +124,7 @@ export default function ApiConfigModal({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#64748B',
+              color: 'var(--text-muted)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px'
@@ -140,12 +138,12 @@ export default function ApiConfigModal({
         <div style={{
           padding: '16px',
           borderRadius: '18px',
-          background: backendStatus?.status === 'online' ? '#F0FDF4' : '#FEF2F2',
+          background: backendStatus?.status === 'online' ? 'var(--success-bg)' : 'var(--error-bg)',
           boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
           marginBottom: '20px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: backendStatus?.status === 'online' ? '#16A34A' : '#DC2626' }}>
+            <span style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: backendStatus?.status === 'online' ? 'var(--success)' : 'var(--error)' }}>
               BACKEND SERVER STATUS
             </span>
             <button
@@ -154,7 +152,7 @@ export default function ApiConfigModal({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#2563EB',
+                color: 'var(--blue-light)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -169,12 +167,12 @@ export default function ApiConfigModal({
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: '#172B4D' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-primary)' }}>
             <span style={{
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: backendStatus?.status === 'online' ? '#16A34A' : '#DC2626'
+              background: backendStatus?.status === 'online' ? 'var(--success)' : 'var(--error)'
             }} />
             <span>
               {backendStatus?.status === 'online'
@@ -184,15 +182,15 @@ export default function ApiConfigModal({
           </div>
 
           {backendStatus?.status !== 'online' && (
-            <p style={{ fontSize: '0.8rem', fontFamily: 'var(--font-body)', color: '#64748B', marginTop: '6px', lineHeight: 1.5, fontWeight: '400' }}>
-              Run <code style={{ fontFamily: 'var(--font-mono)', background: '#F1F5F9', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>npm run server</code> to start the multi-signal forensic backend on port 3001.
+            <p style={{ fontSize: '0.8rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', lineHeight: 1.5, fontWeight: '400' }}>
+              Run <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>npm run server</code> to start the multi-signal forensic backend on port 3001.
             </p>
           )}
         </div>
 
         {/* Custom Endpoint Input */}
         <div style={{ marginBottom: '22px' }}>
-          <label style={{ display: 'block', fontSize: '0.84rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: '#172B4D', marginBottom: '6px' }}>
+          <label style={{ display: 'block', fontSize: '0.84rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '6px' }}>
             Backend API Endpoint:
           </label>
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -204,10 +202,10 @@ export default function ApiConfigModal({
               style={{
                 flex: 1,
                 padding: '10px 16px',
-                background: '#F8FAFC',
+                background: 'var(--sub-block-bg)',
                 border: 'none',
                 borderRadius: '14px',
-                color: '#172B4D',
+                color: 'var(--text-primary)',
                 fontSize: '0.86rem',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '400',
@@ -223,7 +221,7 @@ export default function ApiConfigModal({
               Use 3001
             </button>
           </div>
-          <p style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: '#64748B', marginTop: '6px', fontWeight: '400' }}>
+          <p style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', fontWeight: '400' }}>
             Leave blank to automatically connect to /api/detect or http://localhost:3001/api/detect.
           </p>
         </div>
@@ -232,15 +230,15 @@ export default function ApiConfigModal({
         <div style={{
           padding: '12px 16px',
           borderRadius: '14px',
-          background: '#EFF6FF',
+          background: 'var(--badge-blue-bg)',
           boxShadow: '0 2px 8px rgba(37,99,235,0.06)',
           display: 'flex',
           gap: '8px',
           alignItems: 'center',
           marginBottom: '20px'
         }}>
-          <Lock size={15} color="#2563EB" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: '#1E40AF', lineHeight: 1.45, fontWeight: '400' }}>
+          <Lock size={15} color="var(--badge-blue-text)" style={{ flexShrink: 0 }} />
+          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--badge-blue-text)', lineHeight: 1.45, fontWeight: '400' }}>
             API keys and models stay securely on your server via .env. Uploaded images are analyzed in RAM buffers and discarded immediately.
           </span>
         </div>

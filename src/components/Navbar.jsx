@@ -6,7 +6,9 @@ export default function Navbar({
   setActiveTab,
   historyCount = 0,
   onOpenHistory,
-  isDemoMode = true
+  isDemoMode = true,
+  theme = 'light',
+  onToggleTheme
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -24,16 +26,16 @@ export default function Navbar({
   };
 
   return (
-    <header style={{
+    <header className="verilens-header" style={{
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      background: 'rgba(255, 255, 255, 0.85)',
+      background: 'var(--bg-header)',
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: 'none',
-      boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.03)',
-      transition: 'all 0.3s ease'
+      borderBottom: 'var(--glass-border)',
+      boxShadow: 'var(--shadow-sm)',
+      transition: 'all 0.35s ease'
     }}>
       <div className="verilens-container" style={{
         display: 'flex',
@@ -72,7 +74,7 @@ export default function Navbar({
                 fontWeight: '800',
                 fontSize: '1.35rem',
                 letterSpacing: '-0.025em',
-                color: '#172B4D'
+                color: 'var(--text-primary)'
               }}>
                 VERILENS
               </span>
@@ -81,8 +83,8 @@ export default function Navbar({
                 fontFamily: 'var(--font-mono)',
                 padding: '2px 8px',
                 borderRadius: '9999px',
-                background: '#EFF6FF',
-                color: '#2563EB',
+                background: 'var(--badge-blue-bg)',
+                color: 'var(--badge-blue-text)',
                 fontWeight: '600',
                 boxShadow: '0 1px 4px rgba(37, 99, 235, 0.08)'
               }}>
@@ -92,7 +94,7 @@ export default function Navbar({
             <div style={{
               fontSize: '0.68rem',
               fontFamily: 'var(--font-body)',
-              color: '#64748B',
+              color: 'var(--text-muted)',
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
               fontWeight: '500'
@@ -107,7 +109,7 @@ export default function Navbar({
           display: 'none',
           alignItems: 'center',
           gap: '6px',
-          background: 'rgba(241, 245, 249, 0.65)',
+          background: 'var(--bg-nav-track)',
           padding: '4px',
           borderRadius: '9999px'
         }} className="desktop-nav">
@@ -122,9 +124,9 @@ export default function Navbar({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: isActive ? '#FFFFFF' : 'transparent',
+                  background: isActive ? 'var(--bg-nav-active)' : 'transparent',
                   border: 'none',
-                  color: isActive ? '#2563EB' : '#475569',
+                  color: isActive ? 'var(--nav-text-active)' : 'var(--nav-text)',
                   padding: '8px 16px',
                   borderRadius: '9999px',
                   fontSize: '0.86rem',
@@ -132,20 +134,20 @@ export default function Navbar({
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   fontFamily: 'var(--font-body)',
-                  boxShadow: isActive ? '0 2px 8px rgba(0, 0, 0, 0.05)' : 'none'
+                  boxShadow: isActive ? 'var(--shadow-sm)' : 'none'
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#172B4D';
+                    e.currentTarget.style.color = 'var(--nav-text-hover)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#475569';
+                    e.currentTarget.style.color = 'var(--nav-text)';
                   }
                 }}
               >
-                <Icon size={15} />
+                <Icon size={15} color={isActive ? 'var(--nav-text-active)' : 'var(--nav-text)'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -162,11 +164,11 @@ export default function Navbar({
             gap: '6px',
             padding: '7px 14px',
             borderRadius: '9999px',
-            background: isDemoMode ? '#F1F5F9' : '#F0FDF4',
+            background: isDemoMode ? 'var(--sub-block-bg)' : 'var(--success-bg)',
             fontSize: '0.74rem',
             fontFamily: 'var(--font-mono)',
             fontWeight: '500',
-            color: isDemoMode ? '#64748B' : '#16A34A',
+            color: isDemoMode ? 'var(--text-muted)' : 'var(--success)',
             userSelect: 'none',
             boxShadow: isDemoMode ? 'none' : '0 2px 8px rgba(22, 163, 74, 0.12)'
           }}>
@@ -174,7 +176,7 @@ export default function Navbar({
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              background: isDemoMode ? '#94A3B8' : '#16A34A',
+              background: isDemoMode ? '#94A3B8' : 'var(--success)',
               boxShadow: isDemoMode ? 'none' : '0 0 6px rgba(22,163,74,0.5)',
               flexShrink: 0
             }} />
@@ -197,14 +199,14 @@ export default function Navbar({
               fontWeight: '500',
               borderRadius: '9999px',
               border: 'none',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+              boxShadow: 'var(--shadow-sm)'
             }}
           >
-            <History size={16} color="#2563EB" />
+            <History size={16} color="var(--blue-light)" />
             <span className="hide-on-mobile">History</span>
             {historyCount > 0 && (
               <span style={{
-                background: '#2563EB',
+                background: 'var(--blue)',
                 color: '#FFFFFF',
                 fontSize: '0.66rem',
                 fontWeight: '600',
@@ -219,23 +221,53 @@ export default function Navbar({
             )}
           </button>
 
+          {/* DEDICATED THEME TOGGLE BUTTON (Requirement 6) */}
+          <button
+            onClick={onToggleTheme}
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="theme-toggle-btn"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              border: 'var(--glass-border)',
+              background: theme === 'dark' ? 'rgba(15, 29, 57, 0.75)' : 'rgba(239, 246, 255, 0.95)',
+              boxShadow: theme === 'dark' 
+                ? '0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(96, 165, 250, 0.2)' 
+                : '0 2px 10px rgba(37, 99, 235, 0.12)',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              flexShrink: 0
+            }}
+          >
+            {theme === 'dark' ? (
+              <Sun size={18} color="#60A5FA" className="theme-toggle-icon" />
+            ) : (
+              <Moon size={18} color="#2563EB" className="theme-toggle-icon" />
+            )}
+          </button>
+
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{
               display: 'none',
-              background: '#FFFFFF',
+              background: 'var(--btn-sec-bg)',
               border: 'none',
-              color: '#172B4D',
+              color: 'var(--text-primary)',
               padding: '8px',
               cursor: 'pointer',
               borderRadius: '9999px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+              boxShadow: 'var(--shadow-sm)'
             }}
             className="mobile-toggle"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={20} color="#2563EB" /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={20} color="var(--blue)" /> : <Menu size={20} />}
           </button>
         </div>
       </div>
@@ -243,14 +275,15 @@ export default function Navbar({
       {/* Mobile Drawer (Smooth rounded, borderless) */}
       {mobileMenuOpen && (
         <div style={{
-          background: 'rgba(255, 255, 255, 0.98)',
-          backdropFilter: 'blur(16px)',
+          background: 'var(--bg-header)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           padding: '14px 20px',
           display: 'flex',
           flexDirection: 'column',
           gap: '6px',
           borderRadius: '0 0 20px 20px',
-          boxShadow: '0 12px 30px rgba(0,0,0,0.08)'
+          boxShadow: 'var(--shadow-lg)'
         }}>
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
@@ -262,8 +295,8 @@ export default function Navbar({
                   textAlign: 'left',
                   padding: '12px 16px',
                   borderRadius: '9999px',
-                  background: isActive ? '#EFF6FF' : 'transparent',
-                  color: isActive ? '#2563EB' : '#475569',
+                  background: isActive ? 'var(--bg-nav-active)' : 'transparent',
+                  color: isActive ? 'var(--nav-text-active)' : 'var(--nav-text)',
                   border: 'none',
                   fontSize: '0.94rem',
                   fontWeight: isActive ? '600' : '500',

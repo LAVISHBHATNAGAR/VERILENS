@@ -11,10 +11,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
       <div className="glass-panel" style={{
         padding: '38px 26px',
         textAlign: 'center',
-        background: '#FFFFFF',
-        border: 'none',
         borderRadius: '24px',
-        boxShadow: '0 14px 40px -4px rgba(37, 99, 235, 0.08)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -35,7 +32,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           justifyContent: 'center'
         }}>
           <svg width="130" height="130" style={{ transform: 'rotate(-90deg)', position: 'absolute' }}>
-            <circle cx="65" cy="65" r={radius} stroke="#F1F5F9" strokeWidth="6" fill="transparent" />
+            <circle cx="65" cy="65" r={radius} stroke="var(--sub-block-bg)" strokeWidth="6" fill="transparent" />
             <circle
               cx="65" cy="65" r={radius}
               stroke="url(#blueGrad)"
@@ -58,7 +55,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
               fontSize: '1.6rem',
               fontWeight: '500',
               fontFamily: 'var(--font-mono)',
-              color: '#172B4D',
+              color: 'var(--text-primary)',
               letterSpacing: '-0.02em'
             }}>
               {Math.round(progress)}%
@@ -66,7 +63,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
             <span style={{
               fontSize: '0.62rem',
               fontFamily: 'var(--font-mono)',
-              color: '#2563EB',
+              color: 'var(--blue-light)',
               fontWeight: '500',
               letterSpacing: '0.06em'
             }}>
@@ -81,7 +78,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           fontSize: '1.2rem',
           fontWeight: '700',
           marginBottom: '8px',
-          color: '#172B4D'
+          color: 'var(--text-primary)'
         }}>
           Running Forensic Analysis
         </h3>
@@ -91,7 +88,7 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
           fontSize: '0.88rem',
           fontFamily: 'var(--font-mono)',
           fontWeight: '400',
-          color: '#2563EB',
+          color: 'var(--blue-light)',
           marginBottom: '22px',
           minHeight: '24px',
           display: 'flex',
@@ -101,14 +98,14 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
         }}>
           <span style={{
             width: '7px', height: '7px', borderRadius: '50%',
-            background: '#2563EB', boxShadow: '0 0 8px rgba(37,99,235,0.5)', display: 'inline-block'
+            background: 'var(--blue-light)', boxShadow: '0 0 8px rgba(37,99,235,0.5)', display: 'inline-block'
           }} />
           <span>{currentStep}</span>
         </p>
 
         {/* Linear progress bar (Pill rounded) */}
         <div style={{
-          width: '100%', height: '6px', background: '#F1F5F9',
+          width: '100%', height: '6px', background: 'var(--sub-block-bg)',
           borderRadius: '9999px', overflow: 'hidden', marginBottom: '22px'
         }}>
           <div style={{
@@ -132,10 +129,10 @@ export default function ScanningAnimation({ progress = 0, currentStep = 'Initial
             <div key={idx} style={{
               padding: '7px 6px',
               borderRadius: '9999px',
-              background: phase.active ? '#EFF6FF' : '#F8FAFC',
+              background: phase.active ? 'var(--badge-blue-bg)' : 'var(--sub-block-bg)',
               fontSize: '0.68rem',
               fontFamily: 'var(--font-mono)',
-              color: phase.active ? '#2563EB' : '#94A3B8',
+              color: phase.active ? 'var(--badge-blue-text)' : 'var(--text-muted)',
               fontWeight: '500',
               transition: 'all 0.2s ease',
               boxShadow: phase.active ? '0 2px 6px rgba(37,99,235,0.1)' : 'none'

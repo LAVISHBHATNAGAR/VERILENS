@@ -88,10 +88,10 @@ export default function ImageUploader({ onImageSelected }) {
           cursor: 'pointer',
           borderWidth: '2px',
           borderStyle: 'dashed',
-          borderColor: isDragOver ? '#2563EB' : 'rgba(37, 99, 235, 0.22)',
+          borderColor: isDragOver ? 'var(--blue)' : 'rgba(96, 165, 250, 0.28)',
           borderRadius: '24px',
-          backgroundColor: isDragOver ? '#EFF6FF' : '#FFFFFF',
-          boxShadow: isDragOver ? '0 12px 35px -4px rgba(37, 99, 235, 0.2)' : '0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03)',
+          backgroundColor: isDragOver ? 'var(--bg-blue-light)' : 'var(--glass-bg)',
+          boxShadow: isDragOver ? '0 12px 35px -4px rgba(37, 99, 235, 0.25)' : 'var(--glass-shadow)',
           position: 'relative',
           overflow: 'hidden',
           transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -111,21 +111,21 @@ export default function ImageUploader({ onImageSelected }) {
           height: '74px',
           borderRadius: '50%',
           margin: '0 auto 20px auto',
-          background: isDragOver ? '#DBEAFE' : '#EFF6FF',
+          background: isDragOver ? 'var(--bg-hover)' : 'var(--badge-blue-bg)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'all 0.2s ease',
-          boxShadow: '0 4px 16px rgba(37, 99, 235, 0.12)'
+          boxShadow: 'var(--shadow-sm)'
         }}>
-          <UploadCloud size={34} color="#2563EB" />
+          <UploadCloud size={34} color="var(--badge-blue-text)" />
         </div>
 
         <h3 style={{
           fontFamily: 'var(--font-heading)',
           fontSize: '1.2rem',
           fontWeight: '700',
-          color: '#172B4D',
+          color: 'var(--text-primary)',
           marginBottom: '8px'
         }}>
           {isDragOver ? 'Drop your image here' : 'Drag & drop an image to verify'}
@@ -133,7 +133,7 @@ export default function ImageUploader({ onImageSelected }) {
         <p style={{
           fontFamily: 'var(--font-body)',
           fontSize: '0.88rem',
-          color: '#64748B',
+          color: 'var(--text-muted)',
           marginBottom: '24px',
           fontWeight: '400'
         }}>
@@ -157,15 +157,15 @@ export default function ImageUploader({ onImageSelected }) {
           alignItems: 'center',
           gap: '6px',
           fontSize: '0.78rem',
-          color: '#64748B',
+          color: 'var(--text-secondary)',
           fontFamily: 'var(--font-body)',
           fontWeight: '400',
           padding: '6px 16px',
           borderRadius: '9999px',
-          background: '#F8FAFC',
+          background: 'var(--sub-block-bg)',
           boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)'
         }}>
-          <CheckCircle2 size={13} color="#16A34A" />
+          <CheckCircle2 size={13} color="var(--success)" />
           <span>Images are not stored. Analyzed locally or discarded after processing.</span>
         </div>
       </div>
@@ -201,12 +201,12 @@ export default function ImageUploader({ onImageSelected }) {
           gap: '8px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Layers size={16} color="#2563EB" />
-            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.94rem', fontWeight: '600', color: '#172B4D' }}>
+            <Layers size={16} color="var(--blue-light)" />
+            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.94rem', fontWeight: '600', color: 'var(--text-primary)' }}>
               Or test with benchmark reference images:
             </span>
           </div>
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: '#64748B' }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-muted)' }}>
             One-click instant analysis
           </span>
         </div>
@@ -230,9 +230,6 @@ export default function ImageUploader({ onImageSelected }) {
                   gap: '12px',
                   cursor: 'pointer',
                   borderRadius: '18px',
-                  background: '#FFFFFF',
-                  border: 'none',
-                  boxShadow: '0 4px 16px -2px rgba(0, 0, 0, 0.05)',
                   transition: 'all 0.2s ease'
                 }}
               >
@@ -241,7 +238,7 @@ export default function ImageUploader({ onImageSelected }) {
                   height: '46px',
                   borderRadius: '12px',
                   overflow: 'hidden',
-                  background: '#F1F5F9',
+                  background: 'var(--sub-block-bg)',
                   border: 'none',
                   flexShrink: 0,
                   boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
@@ -253,7 +250,7 @@ export default function ImageUploader({ onImageSelected }) {
                     fontFamily: 'var(--font-heading)',
                     fontSize: '0.86rem',
                     fontWeight: '600',
-                    color: '#172B4D',
+                    color: 'var(--text-primary)',
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis'
@@ -264,20 +261,20 @@ export default function ImageUploader({ onImageSelected }) {
                     <span style={{
                       fontSize: '0.66rem',
                       fontFamily: 'var(--font-mono)',
-                      color: isAi ? '#DC2626' : '#16A34A',
+                      color: isAi ? 'var(--error)' : 'var(--success)',
                       fontWeight: '600',
                       padding: '2px 8px',
                       borderRadius: '9999px',
-                      background: isAi ? '#FEF2F2' : '#F0FDF4'
+                      background: isAi ? 'var(--error-bg)' : 'var(--success-bg)'
                     }}>
                       {isAi ? 'AI-GEN' : 'REAL'}
                     </span>
-                    <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: '#94A3B8', fontWeight: '400' }}>
+                    <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontWeight: '400' }}>
                       {sample.dimensions.width}×{sample.dimensions.height}
                     </span>
                   </div>
                 </div>
-                <ChevronRight size={14} color="#94A3B8" />
+                <ChevronRight size={14} color="var(--text-muted)" />
               </div>
             );
           })}

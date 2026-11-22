@@ -38,8 +38,8 @@ export default function AnalysisHistory({
         width: '100%',
         maxWidth: '440px',
         height: '100%',
-        background: '#FFFFFF',
-        boxShadow: '-12px 0 40px rgba(15, 23, 42, 0.1)',
+        background: 'var(--bg-secondary)',
+        boxShadow: '-12px 0 40px rgba(0, 0, 0, 0.25)',
         display: 'flex',
         flexDirection: 'column',
         animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
@@ -50,27 +50,27 @@ export default function AnalysisHistory({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#FFFFFF',
-          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)'
+          background: 'var(--bg-secondary)',
+          boxShadow: 'var(--shadow-sm)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
               width: '36px',
               height: '36px',
               borderRadius: '12px',
-              background: '#EFF6FF',
+              background: 'var(--badge-blue-bg)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(37,99,235,0.06)'
+              boxShadow: 'var(--shadow-sm)'
             }}>
-              <History size={18} color="#2563EB" />
+              <History size={18} color="var(--badge-blue-text)" />
             </div>
             <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: '#172B4D' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-primary)' }}>
                 Session History
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', fontWeight: '400', color: '#64748B' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', fontWeight: '400', color: 'var(--text-muted)' }}>
                 {history.length} {history.length === 1 ? 'image' : 'images'} audited in this session
               </p>
             </div>
@@ -81,7 +81,7 @@ export default function AnalysisHistory({
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#64748B',
+              color: 'var(--text-muted)',
               cursor: 'pointer',
               padding: '6px',
               borderRadius: '6px'
@@ -131,20 +131,20 @@ export default function AnalysisHistory({
                     padding: '12px 14px',
                     borderRadius: '16px',
                     cursor: 'pointer',
-                    background: '#F8FAFC',
+                    background: 'var(--sub-block-bg)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)',
+                    boxShadow: 'var(--shadow-sm)',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#FFFFFF';
-                    e.currentTarget.style.boxShadow = '0 6px 18px rgba(37,99,235,0.08)';
+                    e.currentTarget.style.background = 'var(--bg-hover)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#F8FAFC';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(15, 23, 42, 0.03)';
+                    e.currentTarget.style.background = 'var(--sub-block-bg)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                   }}
                 >
                   {/* Thumbnail */}
@@ -153,7 +153,7 @@ export default function AnalysisHistory({
                     height: '48px',
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    background: '#F1F5F9',
+                    background: 'var(--bg-surface)',
                     flexShrink: 0
                   }}>
                     <img 
@@ -168,7 +168,7 @@ export default function AnalysisHistory({
                       fontFamily: 'var(--font-heading)',
                       fontSize: '0.86rem',
                       fontWeight: '600',
-                      color: '#172B4D',
+                      color: 'var(--text-primary)',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis'
@@ -188,12 +188,12 @@ export default function AnalysisHistory({
                         fontWeight: '500',
                         padding: '2px 8px',
                         borderRadius: '9999px',
-                        background: isAi ? '#FEF2F2' : isReal ? '#F0FDF4' : '#FFFBEB',
-                        color: isAi ? '#DC2626' : isReal ? '#16A34A' : '#D97706'
+                        background: isAi ? 'var(--error-bg)' : isReal ? 'var(--success-bg)' : 'var(--warning-bg)',
+                        color: isAi ? 'var(--error)' : isReal ? 'var(--success)' : 'var(--warning)'
                       }}>
                         {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
                       </span>
-                      <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', fontWeight: '400', color: '#64748B' }}>
+                      <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', fontWeight: '400', color: 'var(--text-muted)' }}>
                         {item.result.confidence}% conf
                       </span>
                     </div>
@@ -201,7 +201,7 @@ export default function AnalysisHistory({
                     <div style={{
                       fontSize: '0.68rem',
                       fontFamily: 'var(--font-mono)',
-                      color: '#94A3B8',
+                      color: 'var(--text-muted)',
                       marginTop: '3px',
                       display: 'flex',
                       alignItems: 'center',
@@ -212,7 +212,7 @@ export default function AnalysisHistory({
                     </div>
                   </div>
 
-                  <ArrowRight size={14} color="#94A3B8" />
+                  <ArrowRight size={14} color="var(--text-muted)" />
                 </div>
               );
             })
@@ -223,8 +223,8 @@ export default function AnalysisHistory({
         {history.length > 0 && (
           <div style={{
             padding: '16px 20px',
-            background: '#F8FAFC',
-            boxShadow: '0 -2px 10px rgba(15, 23, 42, 0.03)',
+            background: 'var(--sub-block-bg)',
+            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
@@ -237,7 +237,7 @@ export default function AnalysisHistory({
               <Trash2 size={13} />
               <span>Clear History</span>
             </button>
-            <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: '#64748B' }}>
+            <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)' }}>
               Ephemeral Session Storage
             </span>
           </div>

@@ -42,18 +42,18 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
               width: '40px', height: '40px', borderRadius: '12px',
-              background: '#EFF6FF',
+              background: 'var(--badge-blue-bg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(37,99,235,0.08)'
+              boxShadow: 'var(--shadow-sm)'
             }}>
-              <FileCheck size={20} color="#2563EB" />
+              <FileCheck size={20} color="var(--badge-blue-text)" />
             </div>
             <div>
               <div style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '0.98rem',
                 fontWeight: '600',
-                color: '#172B4D',
+                color: 'var(--text-primary)',
                 maxWidth: '300px',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -65,7 +65,7 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
                 fontSize: '0.74rem',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: '400',
-                color: '#64748B'
+                color: 'var(--text-muted)'
               }}>
                 {imageItem.dimensions.width} × {imageItem.dimensions.height} px · {formatBytes(imageItem.size)}
               </div>
@@ -75,19 +75,19 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
           {/* Filter pills (Rounded pills, borderless) */}
           <div style={{
             display: 'flex', alignItems: 'center', gap: '4px',
-            background: '#F1F5F9', padding: '4px', borderRadius: '9999px'
+            background: 'var(--bg-nav-track)', padding: '4px', borderRadius: '9999px'
           }}>
             {filters.map((f) => {
               const isActive = activeFilter === f.id;
               return (
                 <button key={f.id} onClick={() => setActiveFilter(f.id)} style={{
-                  background: isActive ? '#FFFFFF' : 'transparent',
+                  background: isActive ? 'var(--bg-nav-active)' : 'transparent',
                   border: 'none',
-                  color: isActive ? '#2563EB' : '#64748B',
+                  color: isActive ? 'var(--nav-text-active)' : 'var(--nav-text)',
                   padding: '7px 14px', borderRadius: '9999px', fontSize: '0.76rem',
                   fontFamily: 'var(--font-body)', fontWeight: isActive ? '600' : '500',
                   cursor: 'pointer', transition: 'all 0.15s ease',
-                  boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.06)' : 'none'
+                  boxShadow: isActive ? 'var(--shadow-sm)' : 'none'
                 }}>
                   {f.label}
                 </button>
@@ -98,13 +98,13 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
           {/* Zoom controls (Pills) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <button onClick={() => setZoomLevel(p => Math.min(p + 0.25, 2.5))} title="Zoom In" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
-              <ZoomIn size={14} color="#172B4D" />
+              <ZoomIn size={14} color="var(--btn-sec-color)" />
             </button>
             <button onClick={() => setZoomLevel(p => Math.max(p - 0.25, 0.75))} title="Zoom Out" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
-              <ZoomOut size={14} color="#172B4D" />
+              <ZoomOut size={14} color="var(--btn-sec-color)" />
             </button>
             <button onClick={() => setZoomLevel(1)} title="Reset Zoom" className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '9999px' }}>
-              <RotateCcw size={14} color="#172B4D" />
+              <RotateCcw size={14} color="var(--btn-sec-color)" />
             </button>
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function ImagePreview({ imageItem, onRemove, onAnalyze, isAnalyzi
         {/* Canvas viewport (Smooth 20px rounded, borderless) */}
         <div style={{
           position: 'relative', minHeight: '360px', maxHeight: '520px',
-          background: '#F8FAFC', borderRadius: '20px', overflow: 'hidden',
+          background: 'var(--sub-block-bg)', borderRadius: '20px', overflow: 'hidden',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.03)'
         }}>

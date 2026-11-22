@@ -136,26 +136,26 @@ export default function FakeNewsChecker() {
           gap: '8px',
           padding: '7px 18px',
           borderRadius: '9999px',
-          background: '#EFF6FF',
+          background: 'var(--badge-blue-bg)',
           marginBottom: '18px',
-          boxShadow: '0 4px 16px rgba(37,99,235,0.08)'
+          boxShadow: 'var(--shadow-sm)'
         }}>
-          <Newspaper size={14} color="#2563EB" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#2563EB' }}>
+          <Newspaper size={14} color="var(--badge-blue-text)" />
+          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: 'var(--badge-blue-text)' }}>
             VERILENS INFORMATION INTEGRITY SUITE
           </span>
         </div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.15rem', fontWeight: '800', color: '#172B4D', marginBottom: '10px' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.15rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px' }}>
           Fake News &amp; Claim Credibility Scanner
         </h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: '#475569', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
           Inspect news headlines, claims, and social media posts for linguistic manipulation, emotional triggers, and signs of deceptive media.
         </p>
       </div>
 
       {/* Main Input Box (Smooth 24px, borderless, soft shadow) */}
-      <div className="glass-panel" style={{ padding: '32px 28px', marginBottom: '24px', borderRadius: '24px', border: 'none', boxShadow: '0 10px 35px -4px rgba(37, 99, 235, 0.06)' }}>
-        <label style={{ display: 'block', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: '#172B4D', marginBottom: '10px' }}>
+      <div className="glass-panel" style={{ padding: '32px 28px', marginBottom: '24px', borderRadius: '24px' }}>
+        <label style={{ display: 'block', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '10px' }}>
           Enter Headline, Claim, or Statement to Audit:
         </label>
         <textarea
@@ -166,10 +166,10 @@ export default function FakeNewsChecker() {
           style={{
             width: '100%',
             padding: '16px 18px',
-            background: '#F8FAFC',
+            background: 'var(--sub-block-bg)',
             border: 'none',
             borderRadius: '16px',
-            color: '#172B4D',
+            color: 'var(--text-primary)',
             fontSize: '0.95rem',
             fontFamily: 'var(--font-body)',
             fontWeight: '400',
@@ -182,8 +182,8 @@ export default function FakeNewsChecker() {
 
         {/* Optional Source URL */}
         <div style={{ marginBottom: '18px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: '#475569', marginBottom: '8px' }}>
-            <Link2 size={13} color="#64748B" />
+          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '8px' }}>
+            <Link2 size={13} color="var(--text-muted)" />
             <span>Source URL (Optional):</span>
           </label>
           <input
@@ -194,10 +194,10 @@ export default function FakeNewsChecker() {
             style={{
               width: '100%',
               padding: '12px 16px',
-              background: '#F8FAFC',
+              background: 'var(--sub-block-bg)',
               border: 'none',
               borderRadius: '12px',
-              color: '#172B4D',
+              color: 'var(--text-primary)',
               fontSize: '0.88rem',
               fontFamily: 'var(--font-body)',
               outline: 'none',
@@ -208,7 +208,7 @@ export default function FakeNewsChecker() {
 
         {/* Preset quick buttons (Pills, borderless) */}
         <div style={{ marginBottom: '22px' }}>
-          <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: '#64748B', marginBottom: '10px', fontWeight: '500' }}>
+          <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginBottom: '10px', fontWeight: '500' }}>
             Or try a reference headline:
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -221,9 +221,9 @@ export default function FakeNewsChecker() {
                   fontSize: '0.78rem',
                   padding: '7px 16px',
                   borderRadius: '9999px',
-                  background: '#F1F5F9',
+                  background: 'var(--sub-block-bg)',
                   border: 'none',
-                  color: '#475569',
+                  color: 'var(--text-primary)',
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
                   fontFamily: 'var(--font-body)',
@@ -231,12 +231,12 @@ export default function FakeNewsChecker() {
                   boxShadow: '0 1px 4px rgba(0,0,0,0.03)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = '#EFF6FF';
-                  e.currentTarget.style.color = '#2563EB';
+                  e.currentTarget.style.background = 'var(--badge-blue-bg)';
+                  e.currentTarget.style.color = 'var(--badge-blue-text)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = '#F1F5F9';
-                  e.currentTarget.style.color = '#475569';
+                  e.currentTarget.style.background = 'var(--sub-block-bg)';
+                  e.currentTarget.style.color = 'var(--text-primary)';
                 }}
               >
                 {preset.title}
@@ -252,7 +252,7 @@ export default function FakeNewsChecker() {
               className="btn-secondary"
               style={{ fontFamily: 'var(--font-body)', fontWeight: '500', padding: '12px 20px' }}
             >
-              <RotateCcw size={15} color="#2563EB" />
+              <RotateCcw size={15} color="var(--blue-light)" />
               <span>Reset</span>
             </button>
           )}
@@ -273,10 +273,7 @@ export default function FakeNewsChecker() {
         <div className="glass-panel" style={{
           padding: '32px 28px',
           marginBottom: '24px',
-          background: '#FFFFFF',
-          borderRadius: '24px',
-          border: 'none',
-          boxShadow: '0 12px 35px rgba(0,0,0,0.06)'
+          borderRadius: '24px'
         }}>
           <div style={{
             display: 'flex',
@@ -301,16 +298,16 @@ export default function FakeNewsChecker() {
               </span>
             </div>
 
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#64748B' }}>
-              Credibility Index: <strong style={{ color: '#2563EB', fontWeight: '500' }}>{analysis.credibilityScore}%</strong>
+            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: 'var(--text-muted)' }}>
+              Credibility Index: <strong style={{ color: 'var(--blue-light)', fontWeight: '500' }}>{analysis.credibilityScore}%</strong>
             </div>
           </div>
 
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: '700', color: '#172B4D', marginBottom: '8px' }}>
+          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
             {analysis.verdict}
           </h3>
 
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.92rem', color: '#475569', lineHeight: 1.6, marginBottom: '22px', fontWeight: '400' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '22px', fontWeight: '400' }}>
             {analysis.detailedVerdict}
           </p>
 
@@ -323,16 +320,16 @@ export default function FakeNewsChecker() {
           }}>
             {analysis.metrics.map((m, i) => (
               <div key={i} style={{
-                background: '#F8FAFC',
+                background: 'var(--sub-block-bg)',
                 padding: '16px 18px',
                 borderRadius: '16px',
                 border: 'none'
               }}>
-                <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: '#64748B', marginBottom: '4px', fontWeight: '500' }}>
+                <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '500' }}>
                   {m.name}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.25rem', fontWeight: '500', color: '#172B4D', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ fontSize: '1.25rem', fontWeight: '500', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
                     {m.score}%
                   </span>
                   <span style={{
@@ -342,7 +339,7 @@ export default function FakeNewsChecker() {
                     color: m.flag === 'High' ? '#DC2626' : '#16A34A',
                     padding: '3px 8px',
                     borderRadius: '9999px',
-                    background: m.flag === 'High' ? '#FEF2F2' : '#F0FDF4'
+                    background: m.flag === 'High' ? 'var(--error-bg)' : 'var(--success-bg)'
                   }}>
                     {m.flag}
                   </span>

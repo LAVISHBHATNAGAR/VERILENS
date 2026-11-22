@@ -44,17 +44,17 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         gap: '8px',
         padding: '7px 18px',
         borderRadius: '9999px',
-        background: 'rgba(239, 246, 255, 0.9)',
+        background: 'var(--badge-blue-bg)',
         marginBottom: '24px',
-        boxShadow: '0 4px 16px rgba(37, 99, 235, 0.08)'
+        boxShadow: 'var(--shadow-sm)'
       }}>
-        <Zap size={14} color="#2563EB" />
+        <Zap size={14} color="var(--badge-blue-text)" />
         <span style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '0.74rem',
           letterSpacing: '0.05em',
           fontWeight: '500',
-          color: '#2563EB',
+          color: 'var(--badge-blue-text)',
           textTransform: 'uppercase'
         }}>
           AI Image Forensics · Digital Truth Platform
@@ -69,17 +69,17 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
         letterSpacing: '-0.035em',
         lineHeight: 1.14,
         marginBottom: '20px',
-        color: '#172B4D'
+        color: 'var(--text-primary)'
       }}>
         See Beyond<br />
-        <span style={{ color: '#2563EB' }}>What Looks Real.</span>
+        <span style={{ color: 'var(--blue-light)' }}>What Looks Real.</span>
       </h1>
 
       {/* Subtitle (Inter, 400) */}
       <p style={{
         fontFamily: 'var(--font-body)',
         fontSize: 'clamp(1rem, 2vw, 1.16rem)',
-        color: '#475569',
+        color: 'var(--text-secondary)',
         maxWidth: '660px',
         margin: '0 auto 34px auto',
         lineHeight: 1.7,
@@ -119,7 +119,7 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
           className="btn-secondary"
           style={{ padding: '14px 28px', fontSize: '0.98rem', fontFamily: 'var(--font-body)', fontWeight: '600' }}
         >
-          <Activity size={16} color="#2563EB" />
+          <Activity size={16} color="var(--blue-light)" />
           <span>Explore Digital Safety</span>
         </button>
       </div>
@@ -139,30 +139,27 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
               className="glass-panel"
               style={{
                 padding: '28px 24px',
-                borderRadius: '20px',
-                border: 'none',
-                background: '#FFFFFF',
-                boxShadow: '0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 8px -2px rgba(0, 0, 0, 0.03)'
+                borderRadius: '20px'
               }}
             >
               <div style={{
                 width: '46px',
                 height: '46px',
                 borderRadius: '14px',
-                background: '#EFF6FF',
+                background: 'var(--badge-blue-bg)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '16px',
-                boxShadow: '0 2px 8px rgba(37, 99, 235, 0.08)'
+                boxShadow: 'var(--shadow-sm)'
               }}>
-                <Icon size={22} color="#2563EB" />
+                <Icon size={22} color="var(--badge-blue-text)" />
               </div>
               <h3 style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '1.02rem',
                 fontWeight: '600',
-                color: '#172B4D',
+                color: 'var(--text-primary)',
                 marginBottom: '8px'
               }}>
                 {f.title}
@@ -170,7 +167,7 @@ export default function Hero({ onExploreSamples, onLearnMore }) {
               <p style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: '0.86rem',
-                color: '#64748B',
+                color: 'var(--text-muted)',
                 lineHeight: 1.6,
                 fontWeight: '400'
               }}>

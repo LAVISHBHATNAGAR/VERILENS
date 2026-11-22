@@ -1,33 +1,9 @@
 /* ==========================================================================
    VERILENS – Digital Truth & Safety Assistant
-   Theme 02: Clean Intelligence — Minimal Modern SaaS Refinement
-   - Theme-only refinement:
-     * Unnecessary square boundaries & rectangular outlines removed
-     * Smooth rounded corners (16px–24px & pill shapes)
-     * Soft floating shadows & subtle luminous blue background gradients
-     * All blue buttons have 100% pure white text (#FFFFFF) & white icons
-     * Clean, modern, borderless visual elegance
-   Typography System:
-   - Headings:         Plus Jakarta Sans (500, 600, 700, 800)
-   - Body & UI Text:   Inter (400, 500, 600, 700)
-   - Technical Text:   IBM Plex Mono (400, 500)
-   Colour System:
-   - Main bg:          #F8FAFC
-   - Secondary bg:     #FFFFFF
-   - Primary text:     #172B4D
-   - Body text:        #334155
-   - Secondary text:   #475569
-   - Muted text:       #64748B
-   - Brand blue:       #2563EB
-   - Secondary blue:   #60A5FA
-   - Light blue bg:    #EFF6FF
-   - Dark blue:        #1E40AF
-   - Success:          #16A34A / #F0FDF4
-   - Warning:          #D97706 / #FFFBEB
-   - Error:            #DC2626 / #FEF2F2
-   - Border:           transparent
-   - Surface:          #F8FAFC
-   - Hover surface:    #F1F5F9
+   Dual-Theme Glassmorphism Architecture
+   - 1. Light Glassmorphism Theme (White & light-blue frosted glass, subtle blue shadows)
+   - 2. Dark Glassmorphism Theme (Black #050816, deep navy #080F24/#0B1530, electric blue accents)
+   - Typography: Plus Jakarta Sans (Headings), Inter (Body & UI), IBM Plex Mono (Technical)
    ========================================================================== */
 
 :root {
@@ -37,49 +13,129 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   --font-main: var(--font-body);
 
-  /* Background System */
+  /* LIGHT THEME TOKENS (Preserved original aesthetic) */
   --bg-main: #F8FAFC;
+  --bg-main-gradient: 
+    radial-gradient(circle at 12% 14%, rgba(219, 234, 254, 0.65) 0%, transparent 45%),
+    radial-gradient(circle at 88% 18%, rgba(191, 219, 254, 0.5) 0%, transparent 42%),
+    radial-gradient(circle at 50% 55%, rgba(239, 246, 255, 0.85) 0%, transparent 60%),
+    linear-gradient(to bottom, #F8FAFC, #FFFFFF 65%, #F1F5F9 100%);
   --bg-secondary: #FFFFFF;
   --bg-surface: #F8FAFC;
+  --bg-surface-elevated: #FFFFFF;
   --bg-hover: #F1F5F9;
   --bg-blue-light: #EFF6FF;
 
-  /* Text System */
+  --bg-header: rgba(255, 255, 255, 0.85);
+  --bg-nav-track: rgba(241, 245, 249, 0.7);
+  --bg-nav-active: #FFFFFF;
+  --nav-text: #475569;
+  --nav-text-hover: #172B4D;
+  --nav-text-active: #2563EB;
+
   --text-primary: #172B4D;
   --text-body: #334155;
   --text-secondary: #475569;
   --text-muted: #64748B;
   --text-placeholder: #94A3B8;
 
-  /* Brand Colors */
   --blue: #2563EB;
   --blue-light: #60A5FA;
   --blue-dark: #1E40AF;
   --blue-faint: rgba(37, 99, 235, 0.08);
-  --blue-border: transparent;
 
-  /* Status Colors */
   --success: #16A34A;
   --success-bg: #F0FDF4;
-  --success-border: transparent;
   --warning: #D97706;
   --warning-bg: #FFFBEB;
-  --warning-border: transparent;
   --error: #DC2626;
   --error-bg: #FEF2F2;
-  --error-border: transparent;
 
-  /* Smooth Rounded Radii */
   --radius-sm: 10px;
   --radius-md: 18px;
   --radius-lg: 24px;
   --radius-pill: 9999px;
 
-  /* Soft Elegant Floating Shadows */
   --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 18px 45px -6px rgba(37, 99, 235, 0.09), 0 4px 16px -2px rgba(0, 0, 0, 0.03);
   --shadow-blue: 0 8px 24px -4px rgba(37, 99, 235, 0.38), 0 2px 8px rgba(37, 99, 235, 0.2);
+
+  --glass-bg: rgba(255, 255, 255, 0.94);
+  --glass-border: none;
+  --glass-shadow: 0 10px 30px -4px rgba(37, 99, 235, 0.06), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+  --glass-blur: blur(16px);
+
+  --btn-sec-bg: #FFFFFF;
+  --btn-sec-color: #172B4D;
+  --btn-sec-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --btn-sec-hover-bg: #F8FAFC;
+  --btn-sec-hover-color: #2563EB;
+
+  --sub-block-bg: #F8FAFC;
+  --sub-block-border: #E2E8F0;
+  --badge-blue-bg: #EFF6FF;
+  --badge-blue-text: #2563EB;
+}
+
+/* DARK THEME TOKENS (Requirement 2 & 3) */
+[data-theme="dark"], .dark {
+  --bg-main: #050816;
+  --bg-main-gradient: 
+    radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 75%, rgba(29, 78, 216, 0.14), transparent 40%),
+    linear-gradient(135deg, #050816, #080F24 50%, #0B1530 100%);
+  --bg-secondary: #080F24;
+  --bg-surface: #0B1530;
+  --bg-surface-elevated: #0F1D39;
+  --bg-hover: rgba(59, 130, 246, 0.12);
+  --bg-blue-light: rgba(37, 99, 235, 0.18);
+
+  --bg-header: rgba(11, 21, 48, 0.85);
+  --bg-nav-track: rgba(15, 29, 57, 0.7);
+  --bg-nav-active: rgba(37, 99, 235, 0.28);
+  --nav-text: #A7B5CC;
+  --nav-text-hover: #F8FAFC;
+  --nav-text-active: #60A5FA;
+
+  --text-primary: #F8FAFC;
+  --text-body: #E2E8F0;
+  --text-secondary: #A7B5CC;
+  --text-muted: #7D8BA5;
+  --text-placeholder: #64748B;
+
+  --blue: #2563EB;
+  --blue-light: #60A5FA;
+  --blue-dark: #1D4ED8;
+  --blue-faint: rgba(59, 130, 246, 0.15);
+
+  --success: #22C55E;
+  --success-bg: rgba(34, 197, 94, 0.15);
+  --warning: #F59E0B;
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --error: #EF4444;
+  --error-bg: rgba(239, 68, 68, 0.15);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 18px 45px rgba(0, 0, 0, 0.42);
+  --shadow-blue: 0 8px 25px -4px rgba(37, 99, 235, 0.5), 0 2px 10px rgba(59, 130, 246, 0.3);
+
+  --glass-bg: rgba(15, 29, 57, 0.58);
+  --glass-border: 1px solid rgba(148, 163, 184, 0.12);
+  --glass-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+  --glass-blur: blur(20px);
+
+  --btn-sec-bg: rgba(15, 29, 57, 0.65);
+  --btn-sec-color: #F8FAFC;
+  --btn-sec-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --btn-sec-hover-bg: rgba(25, 45, 85, 0.85);
+  --btn-sec-hover-color: #60A5FA;
+
+  --sub-block-bg: rgba(11, 21, 48, 0.72);
+  --sub-block-border: rgba(148, 163, 184, 0.1);
+  --badge-blue-bg: rgba(37, 99, 235, 0.22);
+  --badge-blue-text: #60A5FA;
 }
 
 /* Reset & Base */
@@ -94,12 +150,8 @@ html {
 }
 
 body {
-  background-color: #F8FAFC;
-  background-image: 
-    radial-gradient(circle at 12% 14%, rgba(219, 234, 254, 0.65) 0%, transparent 45%),
-    radial-gradient(circle at 88% 18%, rgba(191, 219, 254, 0.5) 0%, transparent 42%),
-    radial-gradient(circle at 50% 55%, rgba(239, 246, 255, 0.85) 0%, transparent 60%),
-    linear-gradient(to bottom, #F8FAFC, #FFFFFF 65%, #F1F5F9 100%);
+  background-color: var(--bg-main);
+  background-image: var(--bg-main-gradient);
   background-attachment: fixed;
   color: var(--text-body);
   font-family: var(--font-body);
@@ -111,6 +163,44 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Smooth Theme Transitions (Requirement 7) */
+body, 
+header, 
+nav, 
+footer, 
+.glass-panel, 
+.btn-primary, 
+.btn-secondary, 
+.btn-danger-outline,
+.mono-badge, 
+input, 
+textarea, 
+.theme-toggle-btn {
+  transition: 
+    background-color 350ms ease,
+    color 350ms ease,
+    border-color 350ms ease,
+    box-shadow 350ms ease,
+    background 350ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, 
+  header, 
+  nav, 
+  footer, 
+  .glass-panel, 
+  .btn-primary, 
+  .btn-secondary, 
+  .btn-danger-outline,
+  .mono-badge, 
+  input, 
+  textarea, 
+  .theme-toggle-btn {
+    transition: none !important;
+  }
+}
+
 /* Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
@@ -118,25 +208,10 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.025em;
 }
 
-h1 {
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-h2 {
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-h3 {
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.4;
-}
+h1 { font-weight: 800; line-height: 1.15; }
+h2 { font-weight: 700; line-height: 1.25; }
+h3 { font-weight: 600; line-height: 1.35; }
+h4, h5, h6 { font-weight: 600; line-height: 1.4; }
 
 p {
   font-family: var(--font-body);
@@ -156,10 +231,10 @@ button, input, textarea, select {
 }
 
 .heading-accent {
-  color: var(--blue);
+  color: var(--blue-light);
 }
 
-/* Technical text styling */
+/* Technical text styling (IBM Plex Mono) */
 code, pre, .font-mono, .technical-text {
   font-family: var(--font-mono);
   font-weight: 500;
@@ -172,7 +247,7 @@ code, pre, .font-mono, .technical-text {
   word-break: break-all;
 }
 
-/* Soft luminous sky-blue ambient overlay (no harsh dots) */
+/* Ambient lighting overlay */
 .cyber-grid-bg {
   position: absolute;
   top: 0;
@@ -184,14 +259,18 @@ code, pre, .font-mono, .technical-text {
   z-index: 0;
 }
 
-/* Seamless, Boundary-Free Cards (No square borders, soft floating shadows, smooth 20px corners) */
+[data-theme="dark"] .cyber-grid-bg {
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+}
+
+/* Glassmorphism Panels & Cards (Requirement 1 & 3) */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: none !important;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border) !important;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--glass-shadow);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
@@ -205,7 +284,7 @@ code, pre, .font-mono, .technical-text {
   box-shadow: 0 14px 40px -4px rgba(37, 99, 235, 0.16), 0 4px 14px -2px rgba(37, 99, 235, 0.08);
 }
 
-/* Primary Button — Blue with pure white text and icons (Requirement 2) */
+/* Primary Button — Deep blue gradient with 100% pure white text and icons (Requirement 5) */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -237,7 +316,7 @@ code, pre, .font-mono, .technical-text {
 .btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px -4px rgba(37, 99, 235, 0.48), 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 12px 30px -4px rgba(37, 99, 235, 0.52), 0 4px 14px rgba(37, 99, 235, 0.3);
   color: #FFFFFF !important;
 }
 
@@ -251,7 +330,7 @@ code, pre, .font-mono, .technical-text {
   box-shadow: none;
 }
 
-/* Secondary Button — Soft white pill with subtle shadow (no boxy borders) */
+/* Secondary Button — Soft white pill in light mode, translucent glass in dark mode (Requirement 5) */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -260,28 +339,30 @@ code, pre, .font-mono, .technical-text {
   padding: 13px 24px;
   font-size: 0.92rem;
   font-weight: 600;
-  color: var(--text-primary);
-  background: #FFFFFF;
-  border: none !important;
+  color: var(--btn-sec-color) !important;
+  background: var(--btn-sec-bg) !important;
+  border: var(--glass-border) !important;
   border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: var(--font-body);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--btn-sec-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #F8FAFC;
-  color: var(--blue);
+  background: var(--btn-sec-hover-bg) !important;
+  color: var(--btn-sec-hover-color) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px -2px rgba(37, 99, 235, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 8px 24px -2px rgba(37, 99, 235, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .btn-secondary:active:not(:disabled) {
   transform: translateY(0);
 }
 
-/* Danger Button — Soft rounded pill (no harsh borders) */
+/* Danger Button */
 .btn-danger-outline {
   display: inline-flex;
   align-items: center;
@@ -301,12 +382,11 @@ code, pre, .font-mono, .technical-text {
 }
 
 .btn-danger-outline:hover {
-  background: #FEE2E2;
-  color: #B91C1C;
+  background: rgba(239, 68, 68, 0.25);
   transform: translateY(-1px);
 }
 
-/* Badges — Soft pill shape without boxy square borders */
+/* Badges */
 .mono-badge {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -321,31 +401,49 @@ code, pre, .font-mono, .technical-text {
 }
 
 .mono-badge-blue {
-  background: #EFF6FF;
-  color: var(--blue);
+  background: var(--badge-blue-bg);
+  color: var(--badge-blue-text);
 }
 
 .mono-badge-ghost {
-  background: #F1F5F9;
+  background: var(--sub-block-bg);
   color: var(--text-secondary);
 }
 
 .mono-badge-ai {
-  background: #FEF2F2;
+  background: var(--error-bg);
   color: var(--error);
 }
 
 .mono-badge-real {
-  background: #F0FDF4;
+  background: var(--success-bg);
   color: var(--success);
 }
 
 .mono-badge-warn {
-  background: #FFFBEB;
+  background: var(--warning-bg);
   color: var(--warning);
 }
 
-/* Scan laser line — soft blue */
+/* Dedicated Theme Toggle Button & Animation (Requirement 6) */
+.theme-toggle-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.08);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+.theme-toggle-btn:hover .theme-toggle-icon {
+  transform: rotate(25deg);
+}
+
+/* Scan laser line */
 @keyframes laserSweep {
   0% { top: 0%; opacity: 0.6; }
   50% { opacity: 1; }
@@ -388,6 +486,10 @@ code, pre, .font-mono, .technical-text {
   border-radius: 9999px;
 }
 
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #1E293B;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--blue);
 }
@@ -401,4 +503,60 @@ code, pre, .font-mono, .technical-text {
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
+}
+
+/* ==========================================================================
+   DARK THEME COMPONENT OVERRIDES
+   Ensures seamless contrast across all sub-components and modals
+   ========================================================================== */
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .glass-panel {
+  background: var(--glass-bg) !important;
+  border: var(--glass-border) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+[data-theme="dark"] .glass-panel:hover {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+[data-theme="dark"] .btn-secondary svg {
+  color: #60A5FA !important;
+  stroke: #60A5FA !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+  background: rgba(11, 21, 48, 0.8) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(148, 163, 184, 0.15) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-placeholder) !important;
+}
+
+/* Drawer & Modal glass in dark mode */
+[data-theme="dark"] [style*="borderLeft: '1px solid"],
+[data-theme="dark"] [style*="background: '#FFFFFF'"] {
+  background: var(--bg-surface) !important;
+}
+
+[data-theme="dark"] footer {
+  background: var(--bg-surface) !important;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4) !important;
 }
