@@ -14,35 +14,41 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
     };
   }
 
-  // 1. Detect 8x8 JPEG Block Discontinuity (to prevent false positives on compressed photos)
-  let boundaryGradSum = 0;
-  let boundaryCount = 0;
-  let internalGradSum = 0;
-  let internalCount = 0;
+  // 1. Detect 8x8 JPEG Block Discontinuity (phase-independent to support scaled/cropped images)
+  let maxBlockiness = 1.0;
+  for (let phase = 0; phase < 8; phase += 2) {
+    let boundaryGradSum = 0;
+    let boundaryCount = 0;
+    let internalGradSum = 0;
+    let internalCount = 0;
 
-  for (let y = 8; y < height - 8; y += 2) {
-    const row = y * width;
-    const isYBoundary = (y % 8 === 0);
+    for (let y = 8; y < height - 8; y += 4) {
+      const row = y * width;
+      const isYBoundary = ((y + phase) % 8 === 0);
 
-    for (let x = 8; x < width - 8; x += 2) {
-      const gx = Math.abs(grayPixels[row + x + 1] - grayPixels[row + x]);
-      const gy = Math.abs(grayPixels[row + width + x] - grayPixels[row + x]);
-      const isXBoundary = (x % 8 === 0);
+      for (let x = 8; x < width - 8; x += 4) {
+        const gx = Math.abs(grayPixels[row + x + 1] - grayPixels[row + x]);
+        const gy = Math.abs(grayPixels[row + width + x] - grayPixels[row + x]);
+        const isXBoundary = ((x + phase) % 8 === 0);
 
-      if (isXBoundary || isYBoundary) {
-        boundaryGradSum += (gx + gy);
-        boundaryCount++;
-      } else {
-        internalGradSum += (gx + gy);
-        internalCount++;
+        if (isXBoundary || isYBoundary) {
+          boundaryGradSum += (gx + gy);
+          boundaryCount++;
+        } else {
+          internalGradSum += (gx + gy);
+          internalCount++;
+        }
       }
     }
+
+    const avgBoundary = boundaryCount > 0 ? boundaryGradSum / boundaryCount : 1;
+    const avgInternal = internalCount > 0 ? internalGradSum / internalCount : 1;
+    const ratio = avgInternal > 0 ? avgBoundary / avgInternal : 1.0;
+    if (ratio > maxBlockiness) maxBlockiness = ratio;
   }
 
-  const avgBoundaryGrad = boundaryCount > 0 ? boundaryGradSum / boundaryCount : 1;
-  const avgInternalGrad = internalCount > 0 ? internalGradSum / internalCount : 1;
-  const jpegBlockiness = avgInternalGrad > 0 ? avgBoundaryGrad / avgInternalGrad : 1.0;
-  const isHeavyJpeg = jpegBlockiness > 1.35;
+  const jpegBlockiness = maxBlockiness;
+  const isHeavyJpeg = jpegBlockiness > 1.28;
 
   // 2. Compute 3x3 high-pass Laplacian noise residual
   const residual = new Float32Array(width * height);
@@ -141,31 +147,46 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
   if (isHeavyJpeg) {
     indicators.push({
       type: 'NEUTRAL',
-      name: 'Heavy JPEG Quantization Detected',
-      detail: `Detected prominent 8x8 discrete cosine transform grid boundaries (Blockiness index: ${jpegBlockiness.toFixed(2)}). Compression suppresses high-frequency sensor noise.`
+      name: 'JPEG Quantization Structure Detected',
+      detail: `Detected prominent 8x8 discrete cosine transform grid boundaries (Blockiness index: ${jpegBlockiness.toFixed(2)}). Compression naturally suppresses fine high-frequency sensor noise.`
     });
   }
 
-  if (lowNoiseRatio > 0.40 && !isHeavyJpeg) {
-    noiseAiScore = 0.85;
+  // Calibrated against real-world camera denoising and smartphone ISP processing
+  // Only declare a high-frequency noise deficit if over 80% of smooth blocks exhibit near-zero noise AND overall variance is unnaturally suppressed
+  if (lowNoiseRatio > 0.80 && avgNoiseVariance < 0.8 && !isHeavyJpeg && totalEvaluatedBlocks > 8) {
+    noiseAiScore = 0.86;
     indicators.push({
       type: 'ANOMALY',
       name: 'High-Frequency Sensor Noise Deficit',
-      detail: `${(lowNoiseRatio * 100).toFixed(1)}% of evaluated image patches exhibit an ultra-low noise floor (avg variance ${avgNoiseVariance.toFixed(2)} vs expected >2.5).`
+      detail: `${(lowNoiseRatio * 100).toFixed(1)}% of evaluated image patches exhibit near-zero sensor noise (avg variance ${avgNoiseVariance.toFixed(2)} vs expected camera floor >1.5), characteristic of generative diffusion surfaces.`
     });
-  } else if (lowNoiseRatio < 0.15 && avgNoiseVariance >= 2.0 && avgNoiseVariance <= 28.0) {
-    noiseAiScore = 0.15;
+  } else if (lowNoiseRatio <= 0.35 && avgNoiseVariance >= 1.5 && avgNoiseVariance <= 35.0) {
+    noiseAiScore = 0.16;
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Consistent Camera Sensor Noise Floor',
       detail: `Smooth patches exhibit uniform Poisson-Gaussian shot noise variance (${avgNoiseVariance.toFixed(2)}), consistent with physical digital camera sensors.`
     });
+  } else if (lowNoiseRatio <= 0.60 && avgNoiseVariance >= 1.0) {
+    noiseAiScore = 0.28;
+    indicators.push({
+      type: 'AUTHENTIC',
+      name: 'Organic Silicon Sensor Grain Detected',
+      detail: `Micro-noise variance (${avgNoiseVariance.toFixed(2)}) is consistent with physical camera sensor exposure.`
+    });
   } else {
-    noiseAiScore = 0.50;
+    // Standard photographic smoothing, camera ISP noise reduction, or ambiguous surface
+    noiseAiScore = 0.48;
+    indicators.push({
+      type: 'NEUTRAL',
+      name: 'Indeterminate Noise Residual',
+      detail: `Noise distribution is within standard photographic post-processing, mobile ISP denoising, or compression range.`
+    });
   }
 
-  if (varianceSpread > 10.0 && noiseAiScore >= 0.5 && !isHeavyJpeg) {
-    noiseAiScore = Math.min(0.95, noiseAiScore + 0.12);
+  if (varianceSpread > 14.0 && noiseAiScore >= 0.60 && !isHeavyJpeg) {
+    noiseAiScore = Math.min(0.88, noiseAiScore + 0.10);
     indicators.push({
       type: 'ANOMALY',
       name: 'Noise Variance Clustering',

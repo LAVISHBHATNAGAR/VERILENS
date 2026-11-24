@@ -8,7 +8,8 @@ import {
   ArrowRight,
   ShieldCheck,
   AlertTriangle,
-  HelpCircle
+  HelpCircle,
+  RefreshCw
 } from 'lucide-react';
 import { formatBytes } from '../services/detectionService';
 
@@ -17,6 +18,7 @@ export default function AnalysisHistory({
   onClose, 
   history = [], 
   onSelectHistoryItem, 
+  onReanalyzeItem,
   onClearHistory 
 }) {
   if (!isOpen) return null;
@@ -209,8 +211,37 @@ export default function AnalysisHistory({
                     }}>
                       <Clock size={11} />
                       <span>{new Date(item.timestamp).toLocaleTimeString()}</span>
+                      {item.result.isFallback && (
+                        <span style={{ color: 'var(--warning)', marginLeft: '4px', fontSize: '0.62rem' }}>• Local Fallback</span>
+                      )}
                     </div>
                   </div>
+
+                  {onReanalyzeItem && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReanalyzeItem(item);
+                      }}
+                      title="Re-analyze image with updated engine"
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--blue-light)',
+                        padding: '6px',
+                        cursor: 'pointer',
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'transform 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.transform = 'rotate(45deg)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}
+                    >
+                      <RefreshCw size={14} />
+                    </button>
+                  )}
 
                   <ArrowRight size={14} color="var(--text-muted)" />
                 </div>

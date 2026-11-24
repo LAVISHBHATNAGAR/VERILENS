@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/api/:match*",
+      "destination": "https://verilens-n1sj.onrender.com/api/:match*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://verilens-n1sj.onrender.com/health"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

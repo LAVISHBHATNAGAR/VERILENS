@@ -137,8 +137,9 @@ export default function App() {
   };
 
   // Run forensic analysis
-  const handleAnalyze = async () => {
-    if (!currentImage || isAnalyzing) return;
+  const executeAnalysis = async (targetImg) => {
+    const target = targetImg || currentImage;
+    if (!target || isAnalyzing) return;
 
     setIsAnalyzing(true);
     setScanProgress(5);
@@ -146,8 +147,8 @@ export default function App() {
 
     try {
       const result = await analyzeImage(
-        currentImage.file || currentImage,
-        currentImage.element,
+        target.file || target,
+        target.element,
         {
           mode: apiConfig.mode,
           apiEndpoint: apiConfig.apiEndpoint || '/api/detect',
@@ -166,26 +167,52 @@ export default function App() {
         setIsBackendOnline(true);
       }
 
-      // Save to session history (capped at 20 items)
+      // Save to session history (replacing older entry with same image name to prevent stale duplicates)
       const historyItem = {
         id: result.id,
         timestamp: result.timestamp,
-        previewUrl: currentImage.dataUrl,
+        previewUrl: target.dataUrl,
         result,
         imageData: {
-          name: currentImage.name,
-          size: currentImage.size,
-          dimensions: currentImage.dimensions
+          name: target.name,
+          size: target.size,
+          dimensions: target.dimensions
         }
       };
 
-      setHistory((prev) => [historyItem, ...prev.slice(0, 19)]);
+      setHistory((prev) => {
+        const filtered = prev.filter(p => (p.imageData?.name || p.result.metadata?.fileName) !== target.name);
+        return [historyItem, ...filtered.slice(0, 19)];
+      });
     } catch (err) {
       alert(`Analysis notice: ${err.message}`);
     } finally {
       setIsAnalyzing(false);
       setScanProgress(0);
     }
+  };
+
+  const handleAnalyze = () => executeAnalysis(currentImage);
+
+  // Re-analyze an image from history using the updated engine
+  const handleReanalyzeItem = (item) => {
+    const img = new Image();
+    img.src = item.previewUrl;
+    img.onload = () => {
+      const imgObj = {
+        name: item.result.metadata?.fileName || item.imageData?.name || 'reanalyzed_image.png',
+        size: item.imageData?.size || 1000000,
+        type: item.result.metadata?.mimeType || 'image/png',
+        dataUrl: item.previewUrl,
+        element: img,
+        dimensions: item.imageData?.dimensions || { width: 1024, height: 1024 }
+      };
+      setCurrentImage(imgObj);
+      setAnalysisResult(null);
+      setActiveTab('checker');
+      setHistoryOpen(false);
+      executeAnalysis(imgObj);
+    };
   };
 
   // Select item from history to review
@@ -312,6 +339,7 @@ export default function App() {
         onClose={() => setHistoryOpen(false)}
         history={history}
         onSelectHistoryItem={handleSelectHistoryItem}
+        onReanalyzeItem={handleReanalyzeItem}
         onClearHistory={handleClearHistory}
       />
 

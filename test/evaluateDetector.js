@@ -80,6 +80,62 @@ async function createAuthenticPhotographicImage(width, height) {
     .toBuffer();
 }
 
+// Smartphone photo with mobile ISP denoising and camera grain
+async function createSmartphonePhotograph(width, height) {
+  const channels = 3;
+  const buffer = Buffer.alloc(width * height * channels);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * channels;
+      const base = Math.floor(100 + Math.sin(x / 40) * 40 + Math.cos(y / 40) * 40);
+      const u1 = Math.max(0.0001, Math.random());
+      const u2 = Math.random();
+      const noise = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2) * 2.2;
+      buffer[idx] = Math.max(0, Math.min(255, Math.floor(base + noise)));
+      buffer[idx + 1] = Math.max(0, Math.min(255, Math.floor(base * 0.95 + noise)));
+      buffer[idx + 2] = Math.max(0, Math.min(255, Math.floor(base * 0.90 + noise)));
+    }
+  }
+  return await sharp(buffer, { raw: { width, height, channels } })
+    .jpeg({ quality: 85 })
+    .toBuffer();
+}
+
+// Genuine Screenshot: UI boxes, sharp edges, flat backgrounds
+async function createScreenshotImage(width, height) {
+  const channels = 3;
+  const buffer = Buffer.alloc(width * height * channels);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * channels;
+      // Flat UI background with a white window panel and colored button
+      let r = 30, g = 41, b = 59; // Dark UI slate
+      if (x > 60 && x < width - 60 && y > 50 && y < height - 50) {
+        r = 248; g = 250; b = 252; // White window
+        if (x > 100 && x < 240 && y > 80 && y < 120) {
+          r = 37; g = 99; b = 235; // Blue button
+        }
+      }
+      buffer[idx] = r;
+      buffer[idx + 1] = g;
+      buffer[idx + 2] = b;
+    }
+  }
+  return await sharp(buffer, { raw: { width, height, channels } })
+    .png()
+    .toBuffer();
+}
+
+// Resized and edited authentic photograph
+async function createEditedPhotograph(width, height) {
+  const orig = await createAuthenticPhotographicImage(width + 200, height + 200);
+  return await sharp(orig)
+    .resize(width, height)
+    .modulate({ brightness: 1.05, saturation: 1.1 })
+    .jpeg({ quality: 80 })
+    .toBuffer();
+}
+
 async function createCompressedRealImage(width, height) {
   const realBuffer = await createAuthenticPhotographicImage(width, height);
   // Extremely heavy compression: 30% quality (masks fine details)
@@ -141,6 +197,24 @@ async function runBenchmark() {
       groundTruth: 'REAL',
       category: 'Authentic Street Photo (Optical Dispersion & Grain)',
       buffer: await createAuthenticPhotographicImage(900, 600)
+    },
+    {
+      name: 'smartphone_portrait_photo.jpg',
+      groundTruth: 'REAL',
+      category: 'Smartphone Camera Photo (Mobile ISP & Ambient Grain)',
+      buffer: await createSmartphonePhotograph(1080, 720)
+    },
+    {
+      name: 'screenshot_desktop_ui.png',
+      groundTruth: 'UNCERTAIN',
+      category: 'Desktop Application UI Screenshot (Flat UI & Fonts)',
+      buffer: await createScreenshotImage(800, 600)
+    },
+    {
+      name: 'edited_and_resized_photo.jpg',
+      groundTruth: 'REAL',
+      category: 'Resized & Color-Adjusted Authentic Photograph',
+      buffer: await createEditedPhotograph(800, 533)
     },
     {
       name: 'real_photo_heavy_jpeg.jpg',

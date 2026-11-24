@@ -93,7 +93,7 @@ function fft2D(matrix, n) {
     }
   }
 
-  // Calculate centered log-power spectrum
+  // Calculate centered power spectrum (raw magnitude)
   const power = new Float32Array(n * n);
   const half = n >> 1;
   for (let y = 0; y < n; y++) {
@@ -102,7 +102,7 @@ function fft2D(matrix, n) {
       // FFT shift (center DC component)
       const shiftY = (y + half) % n;
       const shiftX = (x + half) % n;
-      power[shiftY * n + shiftX] = Math.log(1 + mag);
+      power[shiftY * n + shiftX] = mag;
     }
   }
 
@@ -191,18 +191,31 @@ export function analyzeFrequencySpectrum(grayPixels, width, height) {
 
       avgPower /= (patchSize * patchSize);
 
-      // Search for anomalous isolated periodic frequency peaks in high bands (r >= 15)
-      for (let r = 15; r < maxRadius; r++) {
+      // Search for anomalous isolated periodic frequency peaks in high/mid bands (r >= 6)
+      // Exclude main horizontal and vertical axes (dy === 0 or dx === 0) because natural geometric edges lie along them
+      for (let r = 6; r < maxRadius; r++) {
         if (binCounts[r] > 0) {
           const meanAtR = radialBins[r] / binCounts[r];
-          // Check variance of points at this radius
           for (let y = 0; y < patchSize; y++) {
             const dy = y - half;
+            if (Math.abs(dy) < 2) continue; // Skip horizontal axis
             for (let x = 0; x < patchSize; x++) {
               const dx = x - half;
+              if (Math.abs(dx) < 2) continue; // Skip vertical axis
               if (Math.round(Math.sqrt(dx * dx + dy * dy)) === r) {
-                const diff = power[y * patchSize + x] - meanAtR;
-                if (diff > maxSpike) maxSpike = diff;
+                const val = power[y * patchSize + x];
+                if (meanAtR > 0 && val > meanAtR * 5.0) {
+                  // Check point symmetry in opposite quadrant (characteristic of 2D lattice harmonics)
+                  const symY = half - dy;
+                  const symX = half - dx;
+                  if (symY >= 0 && symY < patchSize && symX >= 0 && symX < patchSize) {
+                    const symVal = power[symY * patchSize + symX];
+                    if (symVal > meanAtR * 4.0) {
+                      const spikeRatio = Math.log(1 + val) - Math.log(1 + meanAtR);
+                      if (spikeRatio > maxSpike) maxSpike = spikeRatio;
+                    }
+                  }
+                }
               }
             }
           }
@@ -210,7 +223,7 @@ export function analyzeFrequencySpectrum(grayPixels, width, height) {
       }
 
       // Radial decay slope estimation: log(Power) vs log(frequency)
-      // Natural images typically have slope near -1.8 to -2.3
+      // For natural optical photography, P(f) ~ 1/f^alpha gives slope near -1.4 to -2.4
       let sumLogR = 0, sumLogP = 0, sumLogR2 = 0, sumLogRLogP = 0, count = 0;
       for (let r = 3; r < maxRadius; r++) {
         if (binCounts[r] > 0) {
@@ -242,42 +255,47 @@ export function analyzeFrequencySpectrum(grayPixels, width, height) {
   const avgSlope = patchCount > 0 ? totalDecaySlope / patchCount : -2.0;
 
   // Evaluate synthetic probability from spectral domain
-  // 1. High periodic spike energy indicates upsampling artifacts
-  // 2. Slope substantially flatter than -1.6 or steeper than -2.8 indicates diffusion filtering
+  // Calibrated against natural camera decay: -1.3 to -2.5 is typical of natural optical images
   let spectralAiScore = 0.5;
   let indicators = [];
 
-  if (avgPeriodicSpikes > 3.8) {
-    spectralAiScore += 0.28;
+  if (avgPeriodicSpikes > 2.8) {
+    spectralAiScore = Math.min(0.92, 0.5 + avgPeriodicSpikes * 0.12);
     indicators.push({
       type: 'ANOMALY',
       name: 'Periodic Fourier Spectral Peaks',
       detail: `Detected anomalous periodic high-frequency energy spikes (${avgPeriodicSpikes.toFixed(2)} dB delta), characteristic of generative neural upsampling grids.`
     });
-  } else if (avgPeriodicSpikes < 1.8) {
-    spectralAiScore -= 0.18;
+  } else if (avgPeriodicSpikes < 0.8 && avgSlope <= -1.4 && avgSlope >= -2.4) {
+    spectralAiScore = 0.20;
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Smooth Radial Fourier Decay',
-      detail: 'Frequency power spectrum displays uniform continuous radial decay without periodic lattice harmonics.'
+      detail: `Frequency power spectrum displays uniform continuous radial decay (slope: ${avgSlope.toFixed(2)}) without periodic lattice harmonics, consistent with natural scene optics.`
     });
-  }
-
-  if (avgSlope > -1.4) {
+  } else if (avgSlope > -0.9) {
     // Unnatural high frequency energy plateau
-    spectralAiScore += 0.18;
+    spectralAiScore += 0.15;
     indicators.push({
       type: 'ANOMALY',
       name: 'Spectral Energy Plateau',
-      detail: `High-frequency decay slope is unnaturally flat (${avgSlope.toFixed(2)} vs optical expectation -2.0).`
+      detail: `High-frequency decay slope is unnaturally flat (${avgSlope.toFixed(2)} vs optical expectation -1.8).`
     });
-  } else if (avgSlope < -2.9) {
+  } else if (avgSlope < -3.2) {
     // Over-smoothed / low-pass diffusion blur
-    spectralAiScore += 0.15;
+    spectralAiScore += 0.12;
     indicators.push({
       type: 'ANOMALY',
       name: 'High-Frequency Spectral Deficit',
       detail: `High-frequency energy falls off prematurely (${avgSlope.toFixed(2)} slope), typical of diffusion denoising steps.`
+    });
+  } else {
+    // In normal optical range
+    spectralAiScore = 0.35;
+    indicators.push({
+      type: 'AUTHENTIC',
+      name: 'Natural Frequency Distribution',
+      detail: `Radial spectral energy decay slope (${avgSlope.toFixed(2)}) conforms with empirical photographic power laws.`
     });
   }
 
