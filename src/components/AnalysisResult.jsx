@@ -14,7 +14,11 @@ import {
   ChevronDown, 
   ChevronUp,
   Activity,
-  AlertCircle
+  AlertCircle,
+  Eye,
+  Sun,
+  Cpu,
+  Sliders
 } from 'lucide-react';
 import { downloadPdfReport, downloadJsonData } from '../services/reportGenerator';
 import confetti from 'canvas-confetti';
@@ -326,6 +330,67 @@ export default function AnalysisResult({
           </p>
         </div>
 
+        {/* Deep Learning Vision Model Telemetry Banner */}
+        {result.modelStatus === 'UNCONFIGURED' ? (
+          <div style={{
+            padding: '14px 18px',
+            borderRadius: '16px',
+            background: 'var(--sub-block-bg)',
+            border: '1px solid rgba(217, 119, 6, 0.25)',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Cpu size={18} color="#D97706" />
+              <div>
+                <div style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: 'var(--text-primary)' }}>
+                  Deep Learning Vision Model — Unconfigured (.env)
+                </div>
+                <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)' }}>
+                  Forensic evaluation is operating strictly on measured 2D Fourier harmonics, CMOS sensor noise, and visual content analysis.
+                </div>
+              </div>
+            </div>
+            {onOpenApiConfig && (
+              <button
+                onClick={onOpenApiConfig}
+                className="btn-secondary"
+                style={{ fontSize: '0.76rem', padding: '6px 14px', borderRadius: '9999px', whiteSpace: 'nowrap' }}
+              >
+                <Sliders size={13} />
+                <span>Configure Model API Key</span>
+              </button>
+            )}
+          </div>
+        ) : result.modelStatus === 'CONNECTED' ? (
+          <div style={{
+            padding: '12px 18px',
+            borderRadius: '16px',
+            background: 'var(--success-bg)',
+            border: '1px solid rgba(22, 163, 74, 0.25)',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '10px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CheckCircle2 size={16} color="var(--success)" />
+              <span style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: 'var(--text-primary)' }}>
+                Deep Learning Vision Model: Active ({result.modelName})
+              </span>
+            </div>
+            <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--success)', fontWeight: '500' }}>
+              REAL-TIME INFERENCE VERIFIED
+            </span>
+          </div>
+        ) : null}
+
         {/* 4-Pillar Multi-Signal Breakdown Matrix */}
         {result.pillars && (
           <div style={{ marginTop: '28px' }}>
@@ -394,6 +459,97 @@ export default function AnalysisResult({
                 </div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Visual Content Analysis: Composition, Lighting, Surface Textures */}
+      <div className="glass-panel" style={{
+        padding: '28px',
+        marginBottom: '24px',
+        borderRadius: '24px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '12px',
+              background: 'var(--badge-blue-bg)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: 'var(--shadow-sm)'
+            }}>
+              <Eye size={20} color="var(--badge-blue-text)" />
+            </div>
+            <div>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.08rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+                Observed Visual Content &amp; Scene Analysis
+              </h3>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '400' }}>
+                Subject classification, illumination vectors, and physical texture dynamics
+              </p>
+            </div>
+          </div>
+
+          <span style={{
+            fontSize: '0.74rem',
+            fontFamily: 'var(--font-mono)',
+            padding: '4px 14px',
+            borderRadius: '9999px',
+            background: 'var(--badge-blue-bg)',
+            color: 'var(--blue-light)',
+            fontWeight: '600'
+          }}>
+            {result.sceneTitle || 'Photographic Scene'}
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' }}>
+          {/* Composition */}
+          <div style={{ background: 'var(--sub-block-bg)', padding: '16px 18px', borderRadius: '16px' }}>
+            <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Layers size={13} color="var(--blue-light)" />
+              <span>COMPOSITION &amp; SUBJECT CLASSIFICATION</span>
+            </div>
+            <p style={{ fontSize: '0.86rem', fontFamily: 'var(--font-body)', color: 'var(--text-primary)', lineHeight: 1.55, margin: 0 }}>
+              {result.visualContent?.compositionDescription || result.sceneTitle}
+            </p>
+          </div>
+
+          {/* Lighting */}
+          <div style={{ background: 'var(--sub-block-bg)', padding: '16px 18px', borderRadius: '16px' }}>
+            <div style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Sun size={13} color="var(--blue-light)" />
+              <span>ILLUMINATION &amp; SHADOW PHYSICS</span>
+            </div>
+            <p style={{ fontSize: '0.86rem', fontFamily: 'var(--font-body)', color: 'var(--text-primary)', lineHeight: 1.55, margin: 0 }}>
+              {result.visualContent?.lighting?.description || 'Uniform illumination distribution with balanced shadow fall-off.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Individual Visual Observations list */}
+        {result.visualObservations && result.visualObservations.length > 2 && (
+          <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {result.visualObservations.slice(2).map((obs, idx) => (
+              <div key={idx} style={{
+                padding: '10px 14px',
+                background: 'var(--sub-block-bg)',
+                borderRadius: '12px',
+                fontSize: '0.82rem',
+                fontFamily: 'var(--font-body)',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.45,
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: '8px'
+              }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--blue-light)', flexShrink: 0 }} />
+                <span>{obs}</span>
+              </div>
+            ))}
           </div>
         )}
       </div>

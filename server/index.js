@@ -11,6 +11,7 @@ import { analyzeFrequencySpectrum } from './forensics/fourierAnalysis.js';
 import { analyzeNoiseResidual } from './forensics/noiseResidualAnalysis.js';
 import { analyzeEdgeAndOpticalGradients } from './forensics/edgeGradientAnalysis.js';
 import { analyzeMetadataProvenance } from './forensics/metadataProvenance.js';
+import { analyzeVisualContent } from './forensics/visualContentAnalysis.js';
 import { runDeepLearningClassifier } from './forensics/deepLearningDetector.js';
 import { fuseForensicSignals } from './forensics/ensembleFusion.js';
 
@@ -26,7 +27,7 @@ app.use(cors({
   origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-api-key', 'x-huggingface-key', 'x-gemini-key']
 }));
 
 // Request size limits
@@ -166,19 +167,25 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       .raw()
       .toBuffer();
 
+    // Optional client-supplied API credentials from request headers or body
+    const clientHfKey = req.headers['x-huggingface-key'] || req.headers['x-api-key'] || req.body?.apiKey;
+    const clientGeminiKey = req.headers['x-gemini-key'];
+
     // 3. Parallel Multi-Signal Forensic Pipeline Execution
     const [
       metaProvenance,
       fourierAnalysis,
       noiseAnalysis,
       gradientAnalysis,
+      visualContent,
       dlModelResult
     ] = await Promise.all([
       analyzeMetadataProvenance(fileBuffer, mimeType, fileName),
       analyzeFrequencySpectrum(new Uint8Array(grayBuffer), procWidth, procHeight),
       analyzeNoiseResidual(new Uint8Array(grayBuffer), procWidth, procHeight),
       analyzeEdgeAndOpticalGradients(new Uint8Array(rgbBuffer), procWidth, procHeight),
-      runDeepLearningClassifier(fileBuffer, mimeType)
+      analyzeVisualContent(new Uint8Array(rgbBuffer), new Uint8Array(grayBuffer), procWidth, procHeight, metadata),
+      runDeepLearningClassifier(fileBuffer, mimeType, { hfKey: clientHfKey, geminiKey: clientGeminiKey })
     ]);
 
     // 4. Ensemble Fusion & Calibrated Uncertainty Assessment
@@ -188,6 +195,7 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       noise: noiseAnalysis,
       gradients: gradientAnalysis,
       metadata: metaProvenance,
+      visualContent,
       imageMeta: { width, height, procWidth, procHeight }
     });
 
@@ -204,6 +212,9 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       confidence: fusedAssessment.confidence,
       confidenceLevel: fusedAssessment.confidenceLevel,
       summary: fusedAssessment.summary,
+      sceneTitle: fusedAssessment.sceneTitle,
+      sceneType: fusedAssessment.sceneType,
+      visualObservations: fusedAssessment.visualObservations || [],
       anomalies: fusedAssessment.anomalies,
       authenticSignals: fusedAssessment.authenticSignals,
       limitations: fusedAssessment.limitations,
@@ -217,6 +228,12 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
           color: dlModelResult.isAvailable 
             ? (dlModelResult.aiProbability >= 0.65 ? 'red' : dlModelResult.aiProbability <= 0.35 ? 'emerald' : 'amber')
             : 'amber'
+        },
+        {
+          name: 'Visual Content & Composition',
+          score: visualContent.isValid ? (visualContent.sceneType === 'portrait' ? (visualContent.observations?.anatomy?.some(a => a.status === 'ANOMALY') ? 75 : 25) : 35) : 50,
+          status: visualContent.sceneTitle || 'Evaluated',
+          color: visualContent.sceneType === 'screenshot_graphic' ? 'amber' : 'emerald'
         },
         {
           name: '2D Fourier Frequency Spectrum',

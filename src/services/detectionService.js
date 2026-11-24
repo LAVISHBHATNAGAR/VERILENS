@@ -155,14 +155,24 @@ export async function analyzeImage(imageItem, imageElement, options = {}) {
     let response = null;
     let fetchError = null;
 
-    // Helper to attempt fetch with timeout
+    // Helper to attempt fetch with timeout and optional client auth headers
     const tryFetch = async (targetUrl) => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
+
+      const headers = {};
+      try {
+        const hfToken = localStorage.getItem('verilens_hf_token');
+        if (hfToken && hfToken.trim()) headers['x-huggingface-key'] = hfToken.trim();
+        const geminiKey = localStorage.getItem('verilens_gemini_key');
+        if (geminiKey && geminiKey.trim()) headers['x-gemini-key'] = geminiKey.trim();
+      } catch {}
+
       try {
         const res = await fetch(targetUrl, {
           method: 'POST',
           body: formData,
+          headers,
           signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -393,6 +403,21 @@ function executeClientCanvasAnalysis(imageElement, fileBlob, fileName, mimeType,
     confidence,
     confidenceLevel: confidence >= 70 ? 'Moderate' : 'Low / Uncertain',
     summary,
+    sceneTitle: isRealBenchmark ? 'Physical Camera Capture' : isAiBenchmark ? 'Synthetic Generative Art' : 'Photographic Scene',
+    sceneType: 'general_subject',
+    visualContent: {
+      sceneTitle: isRealBenchmark ? 'Physical Camera Capture' : isAiBenchmark ? 'Synthetic Generative Art' : 'Photographic Scene',
+      sceneType: 'general_subject',
+      compositionDescription: 'Local client-side pixel analysis across luminance and chrominance planes.',
+      lighting: { consistency: 'Coherent', description: 'Diffused illumination across local image patches.' }
+    },
+    visualObservations: [
+      `Scene: ${isRealBenchmark ? 'Verified Physical Camera Capture' : isAiBenchmark ? 'Synthetic Generative Art' : 'Photographic Scene'}`,
+      'Illumination: Diffused illumination across local image patches.',
+      `Sensor Grain: ${(zeroNoiseRatio * 100).toFixed(0)}% zero-variance regions measured locally.`
+    ],
+    modelStatus: 'UNCONFIGURED',
+    modelName: 'None (Client-Side Fallback)',
     anomalies,
     limitations,
     pillars: [

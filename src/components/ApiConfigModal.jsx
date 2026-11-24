@@ -21,6 +21,8 @@ export default function ApiConfigModal({
   const [checkingBackend, setCheckingBackend] = useState(false);
   const [activeUrl, setActiveUrl] = useState('');
   const [customEndpoint, setCustomEndpoint] = useState(config?.apiEndpoint || '');
+  const [hfToken, setHfToken] = useState('');
+  const [geminiKey, setGeminiKey] = useState('');
 
   const verifyHealth = async (urlToTest) => {
     setCheckingBackend(true);
@@ -45,10 +47,24 @@ export default function ApiConfigModal({
     if (isOpen) {
       verifyHealth(config?.apiEndpoint);
       setCustomEndpoint(config?.apiEndpoint || '');
+      setHfToken(localStorage.getItem('verilens_hf_token') || '');
+      setGeminiKey(localStorage.getItem('verilens_gemini_key') || '');
     }
   }, [isOpen, config?.apiEndpoint]);
 
   const handleSave = () => {
+    if (hfToken.trim()) {
+      localStorage.setItem('verilens_hf_token', hfToken.trim());
+    } else {
+      localStorage.removeItem('verilens_hf_token');
+    }
+
+    if (geminiKey.trim()) {
+      localStorage.setItem('verilens_gemini_key', geminiKey.trim());
+    } else {
+      localStorage.removeItem('verilens_gemini_key');
+    }
+
     if (onSaveConfig) {
       onSaveConfig({
         ...config,
@@ -224,6 +240,90 @@ export default function ApiConfigModal({
           </div>
           <p style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', fontWeight: '400' }}>
             Leave blank to connect automatically via VITE_API_URL, relative proxy, or local port 3001.
+          </p>
+        </div>
+
+        {/* Deep Learning Vision Model Integration */}
+        <div style={{
+          padding: '16px',
+          borderRadius: '16px',
+          background: 'var(--sub-block-bg)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <span style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: 'var(--text-primary)' }}>
+              Deep Learning Vision Model (Optional)
+            </span>
+            <span style={{
+              fontSize: '0.68rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '500',
+              padding: '2px 8px',
+              borderRadius: '9999px',
+              background: (hfToken || geminiKey) ? 'var(--success-bg)' : 'var(--badge-blue-bg)',
+              color: (hfToken || geminiKey) ? 'var(--success)' : 'var(--blue-light)'
+            }}>
+              {(hfToken || geminiKey) ? 'CONFIGURED' : 'UNCONFIGURED (.ENV)'}
+            </span>
+          </div>
+
+          <div style={{ marginBottom: '12px' }}>
+            <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+              <span>Hugging Face API Token:</span>
+              <a 
+                href="https://huggingface.co/settings/tokens" 
+                target="_blank" 
+                rel="noreferrer" 
+                style={{ color: 'var(--blue-light)', textDecoration: 'none' }}
+              >
+                Get free token ↗
+              </a>
+            </label>
+            <input
+              type="password"
+              value={hfToken}
+              onChange={(e) => setHfToken(e.target.value)}
+              placeholder="hf_xxxxxxxxxxxxxxxxxxxx (umm-maybe/AI-image-detector)"
+              style={{
+                width: '100%',
+                padding: '9px 14px',
+                background: 'var(--bg-primary)',
+                border: 'none',
+                borderRadius: '12px',
+                color: 'var(--text-primary)',
+                fontSize: '0.82rem',
+                fontFamily: 'var(--font-mono)',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: '0.78rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+              Google Gemini API Key:
+            </label>
+            <input
+              type="password"
+              value={geminiKey}
+              onChange={(e) => setGeminiKey(e.target.value)}
+              placeholder="AIzaSy... (Gemini 2.0 Flash Vision Verification)"
+              style={{
+                width: '100%',
+                padding: '9px 14px',
+                background: 'var(--bg-primary)',
+                border: 'none',
+                borderRadius: '12px',
+                color: 'var(--text-primary)',
+                fontSize: '0.82rem',
+                fontFamily: 'var(--font-mono)',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+          </div>
+          <p style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.45 }}>
+            Token is stored in browser memory &amp; sent in secure request headers (<code style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem' }}>x-huggingface-key</code>) so the backend can query inference models without modifying server files.
           </p>
         </div>
 

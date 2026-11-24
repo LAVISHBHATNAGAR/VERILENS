@@ -19,6 +19,7 @@ import { analyzeFrequencySpectrum } from '../server/forensics/fourierAnalysis.js
 import { analyzeNoiseResidual } from '../server/forensics/noiseResidualAnalysis.js';
 import { analyzeEdgeAndOpticalGradients } from '../server/forensics/edgeGradientAnalysis.js';
 import { analyzeMetadataProvenance } from '../server/forensics/metadataProvenance.js';
+import { analyzeVisualContent } from '../server/forensics/visualContentAnalysis.js';
 import { runDeepLearningClassifier } from '../server/forensics/deepLearningDetector.js';
 import { fuseForensicSignals } from '../server/forensics/ensembleFusion.js';
 
@@ -45,6 +46,59 @@ async function createSyntheticDiffusionImage(width, height, isLattice = false) {
 
   return await sharp(buffer, { raw: { width, height, channels } })
     .png()
+    .toBuffer();
+}
+
+// Realistic AI Landscape / Cityscape image: Sky gradient + organic vegetation with synthetic deconvolution lattice
+async function createSyntheticLandscapeImage(width, height) {
+  const channels = 3;
+  const buffer = Buffer.alloc(width * height * channels);
+
+  for (let y = 0; y < height; y++) {
+    const isTop = y < height * 0.45;
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * channels;
+      const grad = Math.sin((x / width) * 4 * Math.PI) * Math.cos((y / height) * 4 * Math.PI);
+      const val = Math.floor(128 + grad * 80);
+      const harmonic = Math.round(Math.sin(x * 0.785) * Math.sin(y * 0.785) * 1.8);
+
+      if (isTop) {
+        // Sky blue gradient
+        buffer[idx] = Math.max(0, Math.min(255, Math.floor(val * 0.55) + harmonic));
+        buffer[idx + 1] = Math.max(0, Math.min(255, Math.floor(val * 0.78) + harmonic));
+        buffer[idx + 2] = Math.max(0, Math.min(255, Math.floor(val * 1.25) + harmonic));
+      } else {
+        // Foliage / terrain
+        buffer[idx] = Math.max(0, Math.min(255, Math.floor(val * 0.50) + harmonic));
+        buffer[idx + 1] = Math.max(0, Math.min(255, Math.floor(val * 1.15) + harmonic));
+        buffer[idx + 2] = Math.max(0, Math.min(255, Math.floor(val * 0.45) + harmonic));
+      }
+    }
+  }
+
+  return await sharp(buffer, { raw: { width, height, channels } })
+    .png()
+    .toBuffer();
+}
+
+// Realistic AI Product Studio render
+async function createSyntheticProductImage(width, height) {
+  const channels = 3;
+  const buffer = Buffer.alloc(width * height * channels);
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * channels;
+      const grad = Math.sin((x / width) * 2 * Math.PI) * Math.cos((y / height) * 2 * Math.PI);
+      const val = Math.floor(140 + grad * 90);
+      buffer[idx] = Math.max(0, Math.min(255, val));
+      buffer[idx + 1] = Math.max(0, Math.min(255, val));
+      buffer[idx + 2] = Math.max(0, Math.min(255, val));
+    }
+  }
+
+  return await sharp(buffer, { raw: { width, height, channels } })
+    .jpeg({ quality: 95 })
     .toBuffer();
 }
 
@@ -163,7 +217,7 @@ async function runBenchmark() {
   console.log('================================================================\n');
 
   // Create real test buffers
-  const baseAi = await sharp(await createSyntheticDiffusionImage(800, 800, false)).jpeg().toBuffer();
+  const baseAi = await sharp(await createSyntheticProductImage(800, 800)).jpeg().toBuffer();
   const promptText = 'Steps: 25, Sampler: DPM++ 2M Karras, CFG scale: 7, Seed: 849302194';
   const aiWithPromptBuffer = Buffer.concat([baseAi, Buffer.from(promptText)]);
 
@@ -178,7 +232,7 @@ async function runBenchmark() {
       name: 'ai_cityscape_midjourney.png',
       groundTruth: 'AI',
       category: 'AI Landscape (Synthetic Harmonics)',
-      buffer: await createSyntheticDiffusionImage(1024, 768, true)
+      buffer: await createSyntheticLandscapeImage(1024, 768)
     },
     {
       name: 'ai_product_sdxl_prompt.jpg',
@@ -257,6 +311,7 @@ async function runBenchmark() {
     const fourier = analyzeFrequencySpectrum(new Uint8Array(grayBuffer), w, h);
     const noise = analyzeNoiseResidual(new Uint8Array(grayBuffer), w, h);
     const gradients = analyzeEdgeAndOpticalGradients(new Uint8Array(rgbBuffer), w, h);
+    const visualContent = analyzeVisualContent(new Uint8Array(rgbBuffer), new Uint8Array(grayBuffer), w, h, meta);
     const dlResult = await runDeepLearningClassifier(tc.buffer, 'image/png');
 
     const result = fuseForensicSignals({
@@ -265,6 +320,7 @@ async function runBenchmark() {
       noise,
       gradients,
       metadata: metaProvenance,
+      visualContent,
       imageMeta: { width: w, height: h, procWidth: w, procHeight: h }
     });
 
@@ -294,6 +350,8 @@ async function runBenchmark() {
     console.log(`  Verdict:      ${result.verdict.toUpperCase()}`);
     console.log(`  Confidence:   ${result.confidence}% (${result.confidenceLevel})`);
     console.log(`  P(AI):        ${result.aiScore}% | P(Real): ${result.realScore}%`);
+    console.log(`  Scene:        ${result.sceneTitle}`);
+    console.log(`  Summary:      ${result.summary}`);
     console.log(`  Signals:      Fourier: ${result.signalsSummary.fourier} | Noise: ${result.signalsSummary.noise}`);
     console.log(`  Status:       ${outcomeMatch ? 'PASS ✓' : 'FLAGGED'}\n`);
   }
