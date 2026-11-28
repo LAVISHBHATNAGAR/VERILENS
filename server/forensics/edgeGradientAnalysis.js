@@ -49,30 +49,33 @@ export function analyzeEdgeAndOpticalGradients(rgbBuffer, width, height) {
     }
   }
 
-  let gradientAiScore = 0.5;
   const avgDispersion = totalEdgeCount > 10 ? dispersionDeltas / totalEdgeCount : 0;
   const harshEdgeRatio = totalEdgeCount > 10 ? harshTransitionCount / totalEdgeCount : 0;
 
-  // Physical glass lenses typically create consistent subtle chromatic fringing (dispersion > 8)
-  if (avgDispersion > 12.0 && harshEdgeRatio < 0.20) {
-    gradientAiScore -= 0.15;
+  // Smooth continuous optical chromatic aberration curve (no fixed discrete jumps)
+  let gradientAiScore = 0.5;
+  if (totalEdgeCount >= 10) {
+    const dispFactor = Math.min(1, avgDispersion / 22);
+    gradientAiScore = 0.64 - dispFactor * 0.42 + harshEdgeRatio * 0.24;
+  }
+
+  if (avgDispersion > 11.0 && harshEdgeRatio < 0.22) {
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Physical Optical Edge Dispersion',
-      detail: `High-contrast boundaries display optical wavelength dispersion consistent with physical glass refraction.`
+      detail: `High-contrast boundaries exhibit RGB wavelength dispersion (${avgDispersion.toFixed(1)}) matching physical glass refraction.`
     });
-  } else if (avgDispersion < 4.5 && totalEdgeCount > 30) {
-    gradientAiScore += 0.15;
+  } else if (avgDispersion < 5.0 && totalEdgeCount > 25) {
     indicators.push({
       type: 'ANOMALY',
       name: 'Achromatic Synthetic Boundaries',
-      detail: 'Edge boundaries exhibit uniform synthetic pixel cuts without organic glass chromatic dispersion.'
+      detail: `Boundary edges show minimal glass chromatic fringing (${avgDispersion.toFixed(1)}), typical of rendered or generative images.`
     });
   }
 
   return {
     isValid: true,
-    gradientAiScore: Math.max(0.1, Math.min(0.9, gradientAiScore)),
+    gradientAiScore: Number(Math.max(0.10, Math.min(0.90, gradientAiScore)).toFixed(3)),
     avgDispersion: Math.round(avgDispersion * 10) / 10,
     totalEdgeCount,
     indicators

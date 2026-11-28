@@ -13,6 +13,7 @@ import { analyzeEdgeAndOpticalGradients } from './forensics/edgeGradientAnalysis
 import { analyzeMetadataProvenance } from './forensics/metadataProvenance.js';
 import { analyzeVisualContent } from './forensics/visualContentAnalysis.js';
 import { runDeepLearningClassifier } from './forensics/deepLearningDetector.js';
+import { analyzeSherloqForensics } from './forensics/sherloqForensics.js';
 import { fuseForensicSignals } from './forensics/ensembleFusion.js';
 
 dotenv.config();
@@ -58,7 +59,7 @@ const upload = multer({
 app.get('/', (req, res) => {
   res.status(200).json({
     service: 'VERILENS Forensic Detection Backend',
-    version: '2.4.0',
+    version: '2.0.0',
     status: 'online',
     uptime: Math.floor(process.uptime()),
     endpoints: {
@@ -85,7 +86,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'online',
     service: 'verilens-backend',
-    version: '2.4.0',
+    version: '2.0.0',
     uptime: Math.floor(process.uptime()),
     deepLearningConfigured: Boolean(
       process.env.HUGGINGFACE_API_KEY ||
@@ -142,9 +143,9 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
     const width = metadata.width || 800;
     const height = metadata.height || 600;
 
-    // Scale to a maximum dimension of 1024 for consistent, optimized signal processing
-    // without sacrificing high-frequency resolution
-    const maxDim = 1024;
+    // Scale to a maximum dimension of 512 for fast, lightweight signal processing
+    // while retaining diffusion noise, FFT lattice, and chromatic metrics
+    const maxDim = 512;
     const scale = Math.min(maxDim / width, maxDim / height, 1);
     const procWidth = Math.round(width * scale);
     const procHeight = Math.round(height * scale);
@@ -178,14 +179,16 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       noiseAnalysis,
       gradientAnalysis,
       visualContent,
-      dlModelResult
+      dlModelResult,
+      sherloqAnalysis
     ] = await Promise.all([
       analyzeMetadataProvenance(fileBuffer, mimeType, fileName),
       analyzeFrequencySpectrum(new Uint8Array(grayBuffer), procWidth, procHeight),
-      analyzeNoiseResidual(new Uint8Array(grayBuffer), procWidth, procHeight),
+      analyzeNoiseResidual(new Uint8Array(grayBuffer), procWidth, procHeight, mimeType),
       analyzeEdgeAndOpticalGradients(new Uint8Array(rgbBuffer), procWidth, procHeight),
       analyzeVisualContent(new Uint8Array(rgbBuffer), new Uint8Array(grayBuffer), procWidth, procHeight, metadata),
-      runDeepLearningClassifier(fileBuffer, mimeType, { hfKey: clientHfKey, geminiKey: clientGeminiKey })
+      runDeepLearningClassifier(fileBuffer, mimeType, { hfKey: clientHfKey, geminiKey: clientGeminiKey }),
+      analyzeSherloqForensics({ fileBuffer, rgbBuffer, grayBuffer, width: procWidth, height: procHeight, mimeType })
     ]);
 
     // 4. Ensemble Fusion & Calibrated Uncertainty Assessment
@@ -196,6 +199,7 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       gradients: gradientAnalysis,
       metadata: metaProvenance,
       visualContent,
+      sherloq: sherloqAnalysis,
       imageMeta: { width, height, procWidth, procHeight }
     });
 
@@ -214,7 +218,13 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
       summary: fusedAssessment.summary,
       sceneTitle: fusedAssessment.sceneTitle,
       sceneType: fusedAssessment.sceneType,
+      visualContent: fusedAssessment.visualContent,
       visualObservations: fusedAssessment.visualObservations || [],
+      modelStatus: fusedAssessment.modelStatus,
+      modelName: fusedAssessment.modelName,
+      signalDisparity: fusedAssessment.signalDisparity,
+      isUncertain: fusedAssessment.isUncertain,
+      sherloq: fusedAssessment.sherloq || null,
       anomalies: fusedAssessment.anomalies,
       authenticSignals: fusedAssessment.authenticSignals,
       limitations: fusedAssessment.limitations,
@@ -255,6 +265,33 @@ app.post('/api/detect', upload.single('image'), async (req, res) => {
         }
       ],
       signalsSummary: fusedAssessment.signalsSummary,
+      telemetry: {
+        fourier: {
+          avgDecaySlope: fourierAnalysis.avgDecaySlope ?? null,
+          avgPeriodicSpikes: fourierAnalysis.avgPeriodicSpikes ?? null,
+          avgHighRatio: fourierAnalysis.avgHighRatio ?? null,
+          spectralAiScore: fourierAnalysis.spectralAiScore ?? 0.5
+        },
+        noise: {
+          avgNoiseVariance: noiseAnalysis.avgNoiseVariance ?? null,
+          zeroNoiseRatio: noiseAnalysis.zeroNoiseRatio ?? null,
+          varianceSpread: noiseAnalysis.varianceSpread ?? null,
+          jpegBlockiness: noiseAnalysis.jpegBlockiness ?? null,
+          isHeavyJpeg: Boolean(noiseAnalysis.isHeavyJpeg),
+          noiseAiScore: noiseAnalysis.noiseAiScore ?? 0.5
+        },
+        gradients: {
+          avgDispersion: gradientAnalysis.avgDispersion ?? null,
+          totalEdgeCount: gradientAnalysis.totalEdgeCount ?? 0,
+          gradientAiScore: gradientAnalysis.gradientAiScore ?? 0.5
+        },
+        metadata: {
+          hasCameraExif: Boolean(metaProvenance.hasCameraExif),
+          hasAiMetadata: Boolean(metaProvenance.hasAiMetadata),
+          cameraDetails: metaProvenance.cameraDetails || null,
+          aiToolSignature: metaProvenance.aiToolSignature || null
+        }
+      },
       metadata: {
         fileName,
         fileSize: formatBytes(fileSize),

@@ -16,6 +16,7 @@ export function fuseForensicSignals({
   gradients = { isValid: false },
   metadata = { hasCameraExif: false, hasAiMetadata: false },
   visualContent = { isValid: false },
+  sherloq = { isValid: false },
   imageMeta = {}
 }) {
   const anomalies = [];
@@ -28,12 +29,14 @@ export function fuseForensicSignals({
   // 1. Check Definitive Metadata Override (Embedded Generative Prompts / Workflow Chunks)
   if (metadata.hasAiMetadata) {
     const summary = `Deterministic AI generation signature isolated in container metadata: ${metadata.aiToolSignature}. Raw prompt parameters were embedded directly in the image chunks.`;
+    const metaAiScore = Math.min(99, Math.max(92, Math.round(92 + (noise.noiseAiScore || 0.5) * 6)));
+    const metaConfidence = Math.min(98, Math.max(91, Math.round(91 + (fourier.spectralAiScore || 0.5) * 6)));
     return {
       verdict: 'Likely AI-generated',
       verdictLevel: 'ai',
-      aiScore: 98,
-      realScore: 2,
-      confidence: 96,
+      aiScore: metaAiScore,
+      realScore: 100 - metaAiScore,
+      confidence: metaConfidence,
       confidenceLevel: 'High',
       summary,
       sceneTitle,
@@ -50,6 +53,7 @@ export function fuseForensicSignals({
         noise: `${(noise.noiseAiScore * 100).toFixed(0)}% (Zero-Noise: ${noise.zeroNoiseRatio || 0}%)`,
         metadata: `Embedded Generative Prompt: ${metadata.aiToolSignature}`
       },
+      sherloq: sherloq?.isValid ? sherloq : null,
       modelStatus: deepLearning.isAvailable ? 'CONNECTED' : 'UNCONFIGURED',
       modelName: deepLearning.modelName || 'None (External Vision API Unconfigured)',
       isUncertain: false
@@ -146,7 +150,16 @@ export function fuseForensicSignals({
     });
   }
 
-  // Signal E: Hardware Camera EXIF Adjustment
+  // Signal E: Lightweight Sherloq Micro-Forensics Hint (on non-heavy-JPEG images)
+  const isHeavyJpeg = Boolean(noise.isHeavyJpeg);
+  if (sherloq?.isValid && typeof sherloq.sherloqAiHint === 'number' && !isHeavyJpeg) {
+    const weight = deepLearning.isAvailable ? 0.12 : 0.18;
+    totalWeight += weight;
+    weightedScoreSum += sherloq.sherloqAiHint * weight;
+    activeScores.push({ name: 'Sherloq DSP', score: sherloq.sherloqAiHint });
+  }
+
+  // Signal F: Hardware Camera EXIF Adjustment
   if (metadata.hasCameraExif) {
     weightedScoreSum *= 0.50; // Decisive physical hardware evidence
     (metadata.indicators || []).forEach(ind => authenticSignals.push(ind));
@@ -156,22 +169,16 @@ export function fuseForensicSignals({
     });
   }
 
-  const isHeavyJpeg = Boolean(noise.isHeavyJpeg);
   if (isHeavyJpeg) {
     limitations.push('High JPEG quantization suppresses fine sensor noise, introducing uncertainty into micro-texture analysis.');
   }
 
-  // When organic CMOS shot noise is strongly present and no periodic anomalies exist
-  if (noise.isValid && noise.noiseAiScore <= 0.32 && (!fourier.isValid || fourier.avgPeriodicSpikes < 1.2)) {
-    weightedScoreSum = Math.min(weightedScoreSum, totalWeight * 0.28);
-  }
-
-  // When synthetic noise deficit and periodic lattice spikes are decisively detected without camera hardware
+  // When synthetic noise deficit and periodic/optical anomalies co-occur without camera hardware
   if (!metadata.hasCameraExif && !isHeavyJpeg) {
-    if (noise.isValid && noise.noiseAiScore >= 0.82 && fourier.isValid && fourier.avgPeriodicSpikes >= 1.5) {
+    if (noise.isValid && noise.noiseAiScore >= 0.78 && fourier.isValid && fourier.avgPeriodicSpikes >= 1.4) {
       weightedScoreSum = Math.max(weightedScoreSum, totalWeight * 0.72);
-    } else if (noise.isValid && noise.noiseAiScore >= 0.84 && (!fourier.isValid || fourier.spectralAiScore >= 0.35)) {
-      weightedScoreSum = Math.max(weightedScoreSum, totalWeight * 0.65);
+    } else if (noise.isValid && noise.noiseAiScore >= 0.80 && (!fourier.isValid || fourier.spectralAiScore >= 0.35)) {
+      weightedScoreSum = Math.max(weightedScoreSum, totalWeight * 0.66);
     }
   }
 
@@ -186,7 +193,7 @@ export function fuseForensicSignals({
     const minScore = Math.min(...scores);
     const maxScore = Math.max(...scores);
     signalDisparity = maxScore - minScore;
-    if (minScore <= 0.28 && maxScore >= 0.72) {
+    if (minScore <= 0.22 && maxScore >= 0.80 && signalDisparity >= 0.60) {
       hasTrueConflict = true;
     }
   }
@@ -202,9 +209,10 @@ export function fuseForensicSignals({
   const authenticCount = authenticSignals.filter(a => a.type === 'AUTHENTIC').length;
 
   // 4. Decision & Uncertainty Evaluation across 3 Strict Outcomes
+  const agreement = Math.max(0, 1 - signalDisparity);
   let verdict = 'Inconclusive';
   let verdictLevel = 'inconclusive';
-  let calibratedConfidence = 40;
+  let calibratedConfidence = 38;
   let confidenceLevel = 'Low / Uncertain';
   let dynamicSummary = '';
 
@@ -213,39 +221,44 @@ export function fuseForensicSignals({
   if (isScreenshot && !metadata.hasCameraExif) {
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = 40;
+    calibratedConfidence = Math.round(Math.min(48, Math.max(26, 46 - signalDisparity * 18 - rawProb * 10)));
     confidenceLevel = 'Low / Uncertain';
     dynamicSummary = `Digital user interface or raster screenshot layout detected (${visualContent.metrics?.uniqueColorClusters || 32} color clusters, ${visualContent.metrics?.harshEdgeRatio || 0}% 0-pixel non-optical edges). Physical camera sensor noise cannot be measured on rendered screen pixels.`;
-  } else if (isHeavyJpeg && !metadata.hasCameraExif && rawProb >= 0.40 && rawProb <= 0.75) {
+  } else if (isHeavyJpeg && !metadata.hasCameraExif && !(fourier.isValid && fourier.avgPeriodicSpikes >= 1.9 && fourier.spectralAiScore >= 0.72) && rawProb >= 0.36 && rawProb <= 0.78) {
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = 35;
+    calibratedConfidence = Math.round(Math.min(46, Math.max(24, 44 - (noise.jpegBlockiness || 0.7) * 14 - signalDisparity * 12)));
     confidenceLevel = 'Low / Uncertain';
     dynamicSummary = `Image exhibits prominent 8x8 discrete cosine transform compression quantization (Blockiness index: ${noise.jpegBlockiness || 'high'}). Compression quantization obscures high-frequency CMOS sensor noise, preventing a definitive verdict.`;
   } else if (isLowResolution && !metadata.hasCameraExif) {
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = 30;
+    const resRatio = Math.min(1, ((imageMeta.width || 160) * (imageMeta.height || 160)) / (250 * 250));
+    calibratedConfidence = Math.round(Math.min(44, Math.max(22, 22 + resRatio * 18)));
     confidenceLevel = 'Low / Uncertain';
     dynamicSummary = `Image resolution (${imageMeta.width}×${imageMeta.height}) is too limited to extract unambiguous micro-texture or CMOS sensor noise signatures.`;
   } else if (hasTrueConflict) {
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = 35;
+    calibratedConfidence = Math.round(Math.min(47, Math.max(24, 46 - signalDisparity * 22)));
     confidenceLevel = 'Low / Uncertain';
     dynamicSummary = `Forensic signals conflict across domains (Disparity: ${(signalDisparity * 100).toFixed(0)}%). Frequency harmonics and noise floor indicators directly contradict each other. Evidence is insufficient for a reliable determination.`;
   } else if (
-    // Strong AI classification conditions
+    // Synthetic detection — responds to strong anomalies AND subtle multi-signal synthetic clues
     (deepLearning.isAvailable && deepLearning.aiProbability >= 0.62 && rawProb >= 0.55) ||
     (!deepLearning.isAvailable && !metadata.hasCameraExif && !isHeavyJpeg && (
-      (rawProb >= 0.64 && anomalyCount >= 1) ||
-      (noise.isValid && noise.noiseAiScore >= 0.82 && fourier.isValid && fourier.spectralAiScore >= 0.35) ||
-      (fourier.isValid && fourier.avgPeriodicSpikes >= 2.0)
+      (rawProb >= 0.55 && (
+        anomalyCount >= 1 ||
+        (noise.isValid && noise.noiseAiScore >= 0.55 && gradients.isValid && gradients.gradientAiScore >= 0.48) ||
+        (sherloq?.isValid && sherloq.sherloqAiHint >= 0.58)
+      )) ||
+      (noise.isValid && noise.noiseAiScore >= 0.78 && (!fourier.isValid || fourier.spectralAiScore >= 0.35)) ||
+      (fourier.isValid && fourier.avgPeriodicSpikes >= 1.8)
     ))
   ) {
     verdict = 'Likely AI-generated';
     verdictLevel = 'ai';
-    calibratedConfidence = Math.round(Math.min(94, 64 + (rawProb - 0.55) * 75));
+    calibratedConfidence = Math.round(Math.min(95, Math.max(58, 56 + (rawProb - 0.52) * 65 + agreement * 16)));
     confidenceLevel = calibratedConfidence >= 80 ? 'High' : 'Moderate';
 
     // Build Image-Specific AI Narrative
@@ -255,17 +268,19 @@ export function fuseForensicSignals({
       dynamicSummary = `Generative synthetic patterns detected in environmental scene. 2D Fourier spectral analysis reveals periodic high-frequency harmonics (${fourier.avgPeriodicSpikes || '2.5'} dB delta) characteristic of generative neural upsampling grids.`;
     } else {
       const topAnomalies = anomalies.filter(a => a.type === 'ANOMALY' || a.type === 'DEFINITIVE_ANOMALY');
-      dynamicSummary = `Multi-signal forensic indicators corroborate synthetic image synthesis. Observed markers include ${topAnomalies.map(a => a.name).slice(0, 2).join(' and ')}.`;
+      dynamicSummary = topAnomalies.length > 0
+        ? `Multi-signal forensic indicators corroborate synthetic image synthesis. Observed markers include ${topAnomalies.map(a => a.name).slice(0, 2).join(' and ')}.`
+        : `Multiple subtle frequency, sensor-noise (${noise.avgNoiseVariance}), and optical dispersion indicators align with synthetic image generation.`;
     }
   } else if (
     // Authentic camera capture conditions
     metadata.hasCameraExif ||
     (deepLearning.isAvailable && deepLearning.aiProbability <= 0.35 && rawProb <= 0.45) ||
-    (rawProb <= 0.38 && (authenticCount >= 1 || (!isHeavyJpeg && noise.noiseAiScore <= 0.35)) && (noise.zeroNoiseRatio || 0) < 60)
+    (rawProb <= 0.41 && (authenticCount >= 1 || (!isHeavyJpeg && noise.noiseAiScore <= 0.38)) && (noise.zeroNoiseRatio || 0) < 75)
   ) {
     verdict = 'Likely authentic';
     verdictLevel = 'real';
-    calibratedConfidence = Math.round(Math.min(94, 62 + (0.38 - rawProb) * 75));
+    calibratedConfidence = Math.round(Math.min(95, Math.max(56, 54 + (0.44 - rawProb) * 72 + agreement * 16 + (metadata.hasCameraExif ? 8 : 0))));
     confidenceLevel = calibratedConfidence >= 80 ? 'High' : 'Moderate';
 
     // Build Image-Specific Authentic Narrative
@@ -277,13 +292,13 @@ export function fuseForensicSignals({
       dynamicSummary = `Environmental landscape composition displays authentic optical characteristics: continuous atmospheric Rayleigh scattering, high-entropy natural foliage texture, and smooth radial Fourier frequency decay without periodic upsampling spikes.`;
     } else {
       const topAuthentic = authenticSignals.filter(a => a.type === 'AUTHENTIC');
-      dynamicSummary = `Optical camera signatures detected. Organic Poisson-Gaussian sensor noise floor aligns with physical digital camera sensors (${topAuthentic.map(a => a.name).slice(0, 2).join(', ')}).`;
+      dynamicSummary = `Optical camera signatures detected. Organic Poisson-Gaussian sensor noise floor aligns with physical digital camera sensors (${topAuthentic.map(a => a.name).slice(0, 2).join(', ') || 'natural sensor grain'}).`;
     }
   } else {
     // Indeterminate middle band
     verdict = 'Inconclusive';
     verdictLevel = 'inconclusive';
-    calibratedConfidence = Math.round(Math.max(25, Math.min(45, 50 - Math.abs(rawProb - 0.50) * 40)));
+    calibratedConfidence = Math.round(Math.min(49, Math.max(25, 48 - Math.abs(rawProb - 0.50) * 35 - signalDisparity * 16)));
     confidenceLevel = 'Low / Uncertain';
     dynamicSummary = `The forensic metrics fall into an indeterminate middle band (${(rawProb * 100).toFixed(0)}%). Visual patterns and noise distribution do not provide conclusive proof of either authentic optical camera capture or synthetic generative diffusion. Classified as Inconclusive to prevent false attribution.`;
   }
@@ -342,6 +357,14 @@ export function fuseForensicSignals({
     }
   ];
 
+  // Append non-destructive Sherloq DSP indicators for dossier transparency
+  if (sherloq?.isValid && Array.isArray(sherloq.indicators) && !isScreenshot) {
+    sherloq.indicators.forEach((ind) => {
+      if (ind.type === 'ANOMALY' && !isHeavyJpeg) anomalies.push(ind);
+      else if (ind.type === 'AUTHENTIC') authenticSignals.push(ind);
+    });
+  }
+
   return {
     verdict,
     verdictLevel,
@@ -377,6 +400,7 @@ export function fuseForensicSignals({
       noise: `${(noise.noiseAiScore * 100).toFixed(0)}% (Zero-Noise: ${noise.zeroNoiseRatio || 0}%)`,
       metadata: metadata.hasCameraExif ? `Verified (${metadata.cameraDetails})` : 'Sanitized'
     },
+    sherloq: sherloq?.isValid ? sherloq : null,
     signalDisparity: Math.round(signalDisparity * 100),
     modelStatus: deepLearning.isAvailable ? 'CONNECTED' : 'UNCONFIGURED',
     modelName: deepLearning.modelName || 'None (External Vision API Unconfigured)',

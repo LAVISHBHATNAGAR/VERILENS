@@ -5,7 +5,7 @@
  * while preventing false positives caused by heavy JPEG compression.
  */
 
-export function analyzeNoiseResidual(grayPixels, width, height) {
+export function analyzeNoiseResidual(grayPixels, width, height, mimeType = '') {
   if (width < 32 || height < 32) {
     return {
       isValid: false,
@@ -14,41 +14,43 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
     };
   }
 
-  // 1. Detect 8x8 JPEG Block Discontinuity (phase-independent to support scaled/cropped images)
-  let maxBlockiness = 1.0;
-  for (let phase = 0; phase < 8; phase += 2) {
-    let boundaryGradSum = 0;
-    let boundaryCount = 0;
-    let internalGradSum = 0;
-    let internalCount = 0;
+  // Lossless containers (PNG/GIF) do not carry live JPEG 8x8 DCT quantization unless transcoded
+  const lowerMime = (mimeType || '').toLowerCase();
+  const isLosslessContainer = lowerMime.includes('png') || lowerMime.includes('gif');
 
-    for (let y = 8; y < height - 8; y += 4) {
-      const row = y * width;
-      const isYBoundary = ((y + phase) % 8 === 0);
+  // 1. Detect 8x8 JPEG DCT Block Discontinuity via coprime stride (gcd(3,8)=1 covers all 8 phases)
+  const xGradSum = new Float64Array(8);
+  const xGradCnt = new Uint32Array(8);
+  const yGradSum = new Float64Array(8);
+  const yGradCnt = new Uint32Array(8);
 
-      for (let x = 8; x < width - 8; x += 4) {
-        const gx = Math.abs(grayPixels[row + x + 1] - grayPixels[row + x]);
-        const gy = Math.abs(grayPixels[row + width + x] - grayPixels[row + x]);
-        const isXBoundary = ((x + phase) % 8 === 0);
-
-        if (isXBoundary || isYBoundary) {
-          boundaryGradSum += (gx + gy);
-          boundaryCount++;
-        } else {
-          internalGradSum += (gx + gy);
-          internalCount++;
-        }
-      }
+  for (let y = 4; y < height - 4; y += 3) {
+    const row = y * width;
+    const ym = y % 8;
+    for (let x = 4; x < width - 4; x += 3) {
+      xGradSum[x % 8] += Math.abs(grayPixels[row + x + 1] - grayPixels[row + x]);
+      xGradCnt[x % 8]++;
+      yGradSum[ym] += Math.abs(grayPixels[row + width + x] - grayPixels[row + x]);
+      yGradCnt[ym]++;
     }
-
-    const avgBoundary = boundaryCount > 0 ? boundaryGradSum / boundaryCount : 1;
-    const avgInternal = internalCount > 0 ? internalGradSum / internalCount : 1;
-    const ratio = avgInternal > 0 ? avgBoundary / avgInternal : 1.0;
-    if (ratio > maxBlockiness) maxBlockiness = ratio;
   }
 
-  const jpegBlockiness = maxBlockiness;
-  const isHeavyJpeg = jpegBlockiness > 1.28;
+  const axisBlockRatio = (sumArr, cntArr) => {
+    const means = [];
+    for (let i = 0; i < 8; i++) {
+      means.push(cntArr[i] > 0 ? sumArr[i] / cntArr[i] : 0);
+    }
+    means.sort((a, b) => a - b);
+    const median = (means[3] + means[4]) / 2;
+    const peak = means[7];
+    return median >= 0.35 && peak >= 0.85 ? peak / median : 1.0;
+  };
+
+  const jpegBlockiness = Math.max(
+    axisBlockRatio(xGradSum, xGradCnt),
+    axisBlockRatio(yGradSum, yGradCnt)
+  );
+  const isHeavyJpeg = !isLosslessContainer && jpegBlockiness >= 1.24;
 
   // 2. Compute 3x3 high-pass Laplacian noise residual
   const residual = new Float32Array(width * height);
@@ -81,6 +83,7 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
 
       let sum = 0;
       let sumSq = 0;
+      let lumSum = 0;
       let count = 0;
       let gradSum = 0;
 
@@ -92,6 +95,7 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
           sumSq += val * val;
 
           const origRow = (startY + y) * width + (startX + x);
+          lumSum += grayPixels[origRow];
           const gx = Math.abs(grayPixels[origRow + 1] - grayPixels[origRow - 1]);
           const gy = Math.abs(grayPixels[origRow + width] - grayPixels[origRow - width]);
           gradSum += (gx + gy);
@@ -103,8 +107,12 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
       const mean = sum / count;
       const variance = (sumSq / count) - (mean * mean);
       const avgGrad = gradSum / count;
+      const meanLum = lumSum / count;
 
-      if (avgGrad < 35) {
+      // Exclude clipped pure-black space margins or saturated white regions unless textured
+      const isClippedVoid = (meanLum < 7 || meanLum > 249) && variance < 0.12 && avgGrad < 2;
+
+      if (avgGrad < 35 && !isClippedVoid) {
         blockVariances.push(variance);
         totalEvaluatedBlocks++;
 
@@ -152,47 +160,49 @@ export function analyzeNoiseResidual(grayPixels, width, height) {
     });
   }
 
-  // Calibrated against real-world camera denoising and smartphone ISP processing
-  // Only declare a high-frequency noise deficit if over 80% of smooth blocks exhibit near-zero noise AND overall variance is unnaturally suppressed
-  if (lowNoiseRatio > 0.80 && avgNoiseVariance < 0.8 && !isHeavyJpeg && totalEvaluatedBlocks > 8) {
-    noiseAiScore = 0.86;
+  // Continuous PRNU scoring from measured zero-noise ratio and residual variance
+  if (lowNoiseRatio > 0.72 && avgNoiseVariance < 1.35 && !isHeavyJpeg && totalEvaluatedBlocks > 8) {
+    const varDeficit = Math.max(0, (1.35 - avgNoiseVariance) / 1.35);
+    noiseAiScore = 0.68 + (lowNoiseRatio - 0.72) * 0.45 + varDeficit * 0.14;
     indicators.push({
       type: 'ANOMALY',
       name: 'High-Frequency Sensor Noise Deficit',
-      detail: `${(lowNoiseRatio * 100).toFixed(1)}% of evaluated image patches exhibit near-zero sensor noise (avg variance ${avgNoiseVariance.toFixed(2)} vs expected camera floor >1.5), characteristic of generative diffusion surfaces.`
+      detail: `${(lowNoiseRatio * 100).toFixed(1)}% of smooth patches exhibit near-zero sensor noise (avg variance ${avgNoiseVariance.toFixed(2)} vs camera floor >1.5), typical of diffusion surfaces.`
     });
-  } else if (lowNoiseRatio <= 0.35 && avgNoiseVariance >= 1.5 && avgNoiseVariance <= 35.0) {
-    noiseAiScore = 0.16;
+  } else if (lowNoiseRatio <= 0.45 && avgNoiseVariance >= 1.2 && avgNoiseVariance <= 36.0) {
+    const grainStrength = Math.min(1, (avgNoiseVariance - 1.2) / 16);
+    noiseAiScore = 0.11 + lowNoiseRatio * 0.34 - grainStrength * 0.04;
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Consistent Camera Sensor Noise Floor',
-      detail: `Smooth patches exhibit uniform Poisson-Gaussian shot noise variance (${avgNoiseVariance.toFixed(2)}), consistent with physical digital camera sensors.`
+      detail: `Smooth patches carry Poisson-Gaussian shot noise variance (${avgNoiseVariance.toFixed(2)}), matching physical CMOS sensors.`
     });
-  } else if (lowNoiseRatio <= 0.60 && avgNoiseVariance >= 1.0) {
-    noiseAiScore = 0.28;
+  } else if (lowNoiseRatio <= 0.68 && avgNoiseVariance >= 0.9 && !isHeavyJpeg) {
+    noiseAiScore = 0.22 + lowNoiseRatio * 0.25;
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Organic Silicon Sensor Grain Detected',
-      detail: `Micro-noise variance (${avgNoiseVariance.toFixed(2)}) is consistent with physical camera sensor exposure.`
+      detail: `Micro-noise variance (${avgNoiseVariance.toFixed(2)}) suggests authentic camera sensor exposure.`
     });
   } else {
-    // Standard photographic smoothing, camera ISP noise reduction, or ambiguous surface
-    noiseAiScore = 0.48;
+    noiseAiScore = isHeavyJpeg ? 0.48 : Math.min(0.66, 0.36 + lowNoiseRatio * 0.26);
     indicators.push({
       type: 'NEUTRAL',
       name: 'Indeterminate Noise Residual',
-      detail: `Noise distribution is within standard photographic post-processing, mobile ISP denoising, or compression range.`
+      detail: `Noise distribution falls within post-processing, mobile ISP denoising, or compression range.`
     });
   }
 
-  if (varianceSpread > 14.0 && noiseAiScore >= 0.60 && !isHeavyJpeg) {
-    noiseAiScore = Math.min(0.88, noiseAiScore + 0.10);
+  if (varianceSpread > 12.0 && noiseAiScore >= 0.56 && !isHeavyJpeg) {
+    noiseAiScore = Math.min(0.92, noiseAiScore + 0.09);
     indicators.push({
       type: 'ANOMALY',
       name: 'Noise Variance Clustering',
-      detail: `Disparate noise distribution across regions (IQR ${varianceSpread.toFixed(2)}), typical of latent diffusion sampling.`
+      detail: `Disparate noise variance spread (IQR ${varianceSpread.toFixed(2)}), typical of latent diffusion patches.`
     });
   }
+
+  noiseAiScore = Number(Math.max(0.06, Math.min(0.95, noiseAiScore)).toFixed(3));
 
   return {
     isValid: true,

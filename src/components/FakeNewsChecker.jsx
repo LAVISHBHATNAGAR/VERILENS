@@ -1,37 +1,105 @@
 import React, { useState } from 'react';
-import { 
-  Newspaper, 
-  Search, 
-  AlertTriangle, 
-  CheckCircle2, 
-  ExternalLink, 
-  Sparkles, 
-  HelpCircle, 
+import {
+  Newspaper,
+  Search,
+  ExternalLink,
   RotateCcw,
+  Link2,
   ShieldCheck,
-  Link2
+  AlertTriangle,
+  Globe
 } from 'lucide-react';
+
+const CLICKBAIT_WORDS = [
+  'shocking',
+  'secret',
+  'hiding',
+  'miracle',
+  'doctors stunned',
+  'they don’t want you to know',
+  'overnight',
+  'instant',
+  'won’t believe'
+];
+
+const URGENCY_WORDS = [
+  'within 48 hours',
+  'danger',
+  'deadly',
+  'immediately',
+  'catastrophe',
+  'imminent',
+  'collapse',
+  'warning'
+];
+
+const PRESETS = [
+  {
+    title: 'Sensational Clickbait Claim',
+    text: 'SHOCKING SECRET: Scientists Warn Global Grid Failure Within 48 Hours, Government Hiding Truth!!!',
+    url: 'http://viral-breaking-alerts.example/grid-collapse'
+  },
+  {
+    title: 'Verifiable News Report',
+    text: 'Regional Meteorological Agency issues standard winter storm advisory for northern coastal districts.',
+    url: 'https://www.reuters.com/world/'
+  },
+  {
+    title: 'Unverified Health Panacea',
+    text: 'Ancient Himalayan herb cures diabetes and reverse ages skin overnight with zero diet changes.',
+    url: ''
+  }
+];
+
+function buildAnnotatedSegments(text) {
+  const tokens = text.split(/(\s+)/);
+  const lowerFull = text.toLowerCase();
+  const matchedPhrases = [...CLICKBAIT_WORDS, ...URGENCY_WORDS].filter((w) =>
+    lowerFull.includes(w)
+  );
+
+  return tokens.map((part, idx) => {
+    if (!part.trim()) return { text: part, kind: null, key: idx };
+    const lower = part.toLowerCase();
+    const isPhraseWord = matchedPhrases.some((phrase) =>
+      phrase.split(/\s+/).some((pw) => lower.includes(pw))
+    );
+    const isExaggeratedPunct = /!{2,}|\?{2,}/.test(part);
+    const isAllCaps = part.replace(/[^A-Za-z]/g, '').length >= 4 && part === part.toUpperCase();
+
+    let kind = null;
+    if (isPhraseWord) kind = 'trigger';
+    else if (isExaggeratedPunct) kind = 'punctuation';
+    else if (isAllCaps) kind = 'caps';
+
+    return { text: part, kind, key: idx };
+  });
+}
+
+function inspectSourceUrl(rawUrl) {
+  if (!rawUrl || !rawUrl.trim()) return null;
+  try {
+    const parsed = new URL(rawUrl.trim());
+    const isHttps = parsed.protocol === 'https:';
+    const host = parsed.hostname.replace(/^www\./, '');
+    const trustedExamples = ['reuters.com', 'apnews.com', 'bbc.com', 'nature.com', 'who.int', 'nasa.gov'];
+    const isEstablished = trustedExamples.some((d) => host === d || host.endsWith(`.${d}`));
+    return {
+      valid: true,
+      host,
+      isHttps,
+      isEstablished
+    };
+  } catch {
+    return { valid: false };
+  }
+}
 
 export default function FakeNewsChecker() {
   const [headline, setHeadline] = useState('');
   const [sourceUrl, setSourceUrl] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
-
-  const presets = [
-    {
-      title: 'Sensational Clickbait Claim',
-      text: 'SHOCKING SECRET: Scientists Warn Global Grid Failure Within 48 Hours, Government Hiding Truth!!!'
-    },
-    {
-      title: 'Verifiable News Report',
-      text: 'Regional Meteorological Agency issues standard winter storm advisory for northern coastal districts.'
-    },
-    {
-      title: 'Unverified Health Panacea',
-      text: 'Ancient Himalayan herb cures diabetes and reverse ages skin overnight with zero diet changes.'
-    }
-  ];
 
   const handleAnalyze = () => {
     if (!headline.trim()) return;
@@ -44,33 +112,27 @@ export default function FakeNewsChecker() {
       let clickbaitSignals = 0;
       let sensationalSignals = 0;
       let urgencySignals = 0;
-      let evidenceFlags = [];
+      const evidenceFlags = [];
 
-      // Clickbait triggers
-      const clickbaitWords = ['shocking', 'secret', 'hiding', 'miracle', 'doctors stunned', 'they don’t want you to know', 'overnight', 'instant', 'won’t believe'];
-      clickbaitWords.forEach(w => {
+      CLICKBAIT_WORDS.forEach((w) => {
         if (lower.includes(w)) {
           clickbaitSignals += 25;
           evidenceFlags.push(`Clickbait phrasing detected: "${w}"`);
         }
       });
 
-      // Capital letters check
       const capsCount = (text.match(/[A-Z]/g) || []).length;
       if (capsCount > 12 && capsCount / text.length > 0.22) {
         sensationalSignals += 35;
-        evidenceFlags.push('Excessive uppercase text formatting used to induce urgency');
+        evidenceFlags.push('Excessive uppercase formatting used to induce urgency');
       }
 
-      // Multiple exclamation / question marks
       if (/!{2,}/.test(text) || /\?{2,}/.test(text)) {
         sensationalSignals += 30;
         evidenceFlags.push('Punctuation exaggeration (multiple exclamation or question marks)');
       }
 
-      // Fear / urgency words
-      const urgencyWords = ['within 48 hours', 'danger', 'deadly', 'immediately', 'catastrophe', 'imminent', 'collapse', 'warning'];
-      urgencyWords.forEach(w => {
+      URGENCY_WORDS.forEach((w) => {
         if (lower.includes(w)) {
           urgencySignals += 25;
           evidenceFlags.push(`High emotional polarity trigger: "${w}"`);
@@ -81,163 +143,126 @@ export default function FakeNewsChecker() {
       const credibilityScore = 100 - totalRisk;
 
       let verdict = 'Likely Authentic & Factual Format';
-      let verdictStatus = 'supported';
-      let verdictColor = '#16A34A';
-      let verdictBg = '#F0FDF4';
       let riskLevel = 'LOW';
-      let detailedVerdict = 'This headline follows objective journalistic formatting with restrained syntax and no sensational clickbait patterns.';
+      let badgeClass = 'mono-badge-real';
+      let detailedVerdict =
+        'This headline follows restrained journalistic formatting without sensational clickbait or emotional manipulation triggers.';
 
       if (totalRisk >= 60) {
         verdict = 'High Sensationalism / Probable Deceptive Media';
-        verdictStatus = 'disputed';
-        verdictColor = '#DC2626';
-        verdictBg = '#FEF2F2';
         riskLevel = 'HIGH';
-        detailedVerdict = 'This claim shows severe linguistic red flags including manipulative urgency, emotional distortion, and clickbait syntax.';
+        badgeClass = 'mono-badge-ai';
+        detailedVerdict =
+          'Severe linguistic red flags detected, including manipulative urgency, emotional distortion, or clickbait syntax.';
       } else if (totalRisk >= 35) {
         verdict = 'Unverified Claims / Sensationalized Phrasing';
-        verdictStatus = 'unverified';
-        verdictColor = '#D97706';
-        verdictBg = '#FFFBEB';
         riskLevel = 'MODERATE';
-        detailedVerdict = 'This statement contains exaggerated framing or unsupported assertions that warrant independent cross-checking.';
+        badgeClass = 'mono-badge-warn';
+        detailedVerdict =
+          'Contains exaggerated framing or unsupported assertions that warrant independent cross-checking.';
       }
 
       setAnalysis({
         headline: text,
         sourceUrl: sourceUrl.trim(),
+        urlReport: inspectSourceUrl(sourceUrl),
+        segments: buildAnnotatedSegments(text),
         credibilityScore,
         riskScore: totalRisk,
         verdict,
-        verdictStatus,
-        verdictColor,
-        verdictBg,
+        badgeClass,
         riskLevel,
         detailedVerdict,
         evidenceFlags,
         metrics: [
-          { name: 'Clickbait & Emotional Polarity', score: Math.min(100, clickbaitSignals + 10), flag: clickbaitSignals > 20 ? 'High' : 'Normal' },
-          { name: 'Sensationalism / Syntax Distortion', score: Math.min(100, sensationalSignals + 10), flag: sensationalSignals > 20 ? 'High' : 'Normal' },
-          { name: 'Urgency & Fear Induction Index', score: Math.min(100, urgencySignals + 10), flag: urgencySignals > 20 ? 'High' : 'Normal' }
+          {
+            name: 'Clickbait & Emotional Polarity',
+            score: Math.min(100, clickbaitSignals + 10),
+            flag: clickbaitSignals > 20 ? 'High' : 'Normal'
+          },
+          {
+            name: 'Sensationalism / Syntax Distortion',
+            score: Math.min(100, sensationalSignals + 10),
+            flag: sensationalSignals > 20 ? 'High' : 'Normal'
+          },
+          {
+            name: 'Urgency & Fear Induction Index',
+            score: Math.min(100, urgencySignals + 10),
+            flag: urgencySignals > 20 ? 'High' : 'Normal'
+          }
         ]
       });
 
       setAnalyzing(false);
-    }, 600);
+    }, 450);
   };
 
   return (
-    <div style={{ maxWidth: '920px', margin: '0 auto', paddingBottom: '40px' }}>
-      {/* Title Card */}
-      <div style={{ textAlign: 'center', marginBottom: '34px' }}>
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '7px 18px',
-          borderRadius: '9999px',
-          background: 'var(--badge-blue-bg)',
-          marginBottom: '18px',
-          boxShadow: 'var(--shadow-sm)'
-        }}>
-          <Newspaper size={14} color="var(--badge-blue-text)" />
-          <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: 'var(--badge-blue-text)' }}>
-            VERILENS INFORMATION INTEGRITY SUITE
-          </span>
-        </div>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.15rem', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px' }}>
+    <div className="max-w-5xl mx-auto pb-10 space-y-6">
+      {/* Header */}
+      <div className="text-center">
+        <span className="mono-badge mono-badge-blue mb-4">
+          <Newspaper className="w-3.5 h-3.5" />
+          <span>VERILENS INFORMATION INTEGRITY LAB</span>
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] mb-2.5">
           Fake News &amp; Claim Credibility Scanner
         </h2>
-        <p style={{ fontFamily: 'var(--font-body)', fontWeight: '400', color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto', fontSize: '0.96rem', lineHeight: 1.6 }}>
-          Inspect news headlines, claims, and social media posts for linguistic manipulation, emotional triggers, and signs of deceptive media.
+        <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl mx-auto">
+          Audit headlines, viral claims, and source URLs with inline trigger-phrase annotation and linguistic manipulation scoring.
         </p>
       </div>
 
-      {/* Main Input Box (Smooth 24px, borderless, soft shadow) */}
-      <div className="glass-panel" style={{ padding: '32px 28px', marginBottom: '24px', borderRadius: '24px' }}>
-        <label style={{ display: 'block', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '10px' }}>
-          Enter Headline, Claim, or Statement to Audit:
+      {/* Main Input Workbench */}
+      <div className="glass-panel p-6 sm:p-8 rounded-[26px]">
+        <label
+          htmlFor="claim-input"
+          className="block text-sm font-semibold text-[var(--text-primary)] mb-2.5"
+        >
+          Headline, Claim, or Social Post
         </label>
         <textarea
+          id="claim-input"
           rows={3}
           value={headline}
           onChange={(e) => setHeadline(e.target.value)}
-          placeholder="Paste article title or viral claim here (e.g. 'BREAKING: Secret research reveals miraculous new cure hidden by officials...')"
-          style={{
-            width: '100%',
-            padding: '16px 18px',
-            background: 'var(--sub-block-bg)',
-            border: 'none',
-            borderRadius: '16px',
-            color: 'var(--text-primary)',
-            fontSize: '0.95rem',
-            fontFamily: 'var(--font-body)',
-            fontWeight: '400',
-            resize: 'vertical',
-            outline: 'none',
-            marginBottom: '16px',
-            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.03)'
-          }}
+          placeholder="Paste article title or viral claim here..."
+          className="w-full rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] px-4 py-3.5 text-sm sm:text-base text-[var(--text-primary)] placeholder:text-[var(--text-placeholder)] focus:border-[var(--blue)] focus:outline-none mb-4"
         />
 
-        {/* Optional Source URL */}
-        <div style={{ marginBottom: '18px' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            <Link2 size={13} color="var(--text-muted)" />
-            <span>Source URL (Optional):</span>
+        <div className="mb-5">
+          <label
+            htmlFor="source-url-input"
+            className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)] mb-2"
+          >
+            <Link2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+            <span>Source URL (Optional Domain &amp; TLS Check)</span>
           </label>
           <input
+            id="source-url-input"
             type="url"
             value={sourceUrl}
             onChange={(e) => setSourceUrl(e.target.value)}
             placeholder="https://example.com/article"
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              background: 'var(--sub-block-bg)',
-              border: 'none',
-              borderRadius: '12px',
-              color: 'var(--text-primary)',
-              fontSize: '0.88rem',
-              fontFamily: 'var(--font-body)',
-              outline: 'none',
-              boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.03)'
-            }}
+            className="w-full rounded-xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] px-4 py-2.5 text-sm font-mono text-[var(--text-primary)] placeholder:text-[var(--text-placeholder)] focus:border-[var(--blue)] focus:outline-none"
           />
         </div>
 
-        {/* Preset quick buttons (Pills, borderless) */}
-        <div style={{ marginBottom: '22px' }}>
-          <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginBottom: '10px', fontWeight: '500' }}>
-            Or try a reference headline:
+        {/* Reference Presets */}
+        <div className="mb-6">
+          <div className="text-xs font-medium text-[var(--text-muted)] mb-2.5">
+            Load reference specimen:
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {presets.map((preset, idx) => (
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map((preset, idx) => (
               <button
                 key={idx}
                 type="button"
-                onClick={() => setHeadline(preset.text)}
-                style={{
-                  fontSize: '0.78rem',
-                  padding: '7px 16px',
-                  borderRadius: '9999px',
-                  background: 'var(--sub-block-bg)',
-                  border: 'none',
-                  color: 'var(--text-primary)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: '500',
-                  boxShadow: '0 1px 4px rgba(0,0,0,0.03)'
+                onClick={() => {
+                  setHeadline(preset.text);
+                  setSourceUrl(preset.url);
                 }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'var(--badge-blue-bg)';
-                  e.currentTarget.style.color = 'var(--badge-blue-text)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'var(--sub-block-bg)';
-                  e.currentTarget.style.color = 'var(--text-primary)';
-                }}
+                className="px-3.5 py-1.5 rounded-full text-xs font-medium bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] text-[var(--text-primary)] hover:border-[var(--border-specular)] hover:text-[var(--blue-light)] transition-colors"
               >
                 {preset.title}
               </button>
@@ -245,102 +270,121 @@ export default function FakeNewsChecker() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+        <div className="flex flex-wrap justify-end gap-3">
           {headline && (
             <button
-              onClick={() => { setHeadline(''); setAnalysis(null); }}
-              className="btn-secondary"
-              style={{ fontFamily: 'var(--font-body)', fontWeight: '500', padding: '12px 20px' }}
+              type="button"
+              onClick={() => {
+                setHeadline('');
+                setSourceUrl('');
+                setAnalysis(null);
+              }}
+              className="btn-secondary px-5 py-2.5 text-sm"
             >
-              <RotateCcw size={15} color="var(--blue-light)" />
+              <RotateCcw className="w-4 h-4 text-[var(--blue-light)]" />
               <span>Reset</span>
             </button>
           )}
           <button
+            type="button"
             onClick={handleAnalyze}
             disabled={!headline.trim() || analyzing}
-            className="btn-primary"
-            style={{ padding: '13px 28px', fontFamily: 'var(--font-body)', fontWeight: '600' }}
+            className="btn-primary px-7 py-2.5 text-sm"
           >
-            <Search size={16} color="#FFFFFF" strokeWidth={2.2} />
-            <span style={{ color: '#FFFFFF' }}>{analyzing ? 'Scanning Linguistic Patterns...' : 'Audit Credibility'}</span>
+            <Search className="w-4 h-4" />
+            <span>{analyzing ? 'Scanning Syntax...' : 'Audit Credibility'}</span>
           </button>
         </div>
       </div>
 
-      {/* Analysis Results Display (Smooth 24px, borderless) */}
+      {/* Results Card */}
       {analysis && (
-        <div className="glass-panel" style={{
-          padding: '32px 28px',
-          marginBottom: '24px',
-          borderRadius: '24px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-            marginBottom: '18px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.74rem',
-                fontWeight: '500',
-                padding: '5px 14px',
-                borderRadius: '9999px',
-                background: analysis.verdictBg,
-                color: analysis.verdictColor,
-                border: 'none'
-              }}>
-                RISK LEVEL: {analysis.riskLevel}
-              </span>
-            </div>
+        <div className="glass-panel p-6 sm:p-8 rounded-[26px] space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className={`mono-badge ${analysis.badgeClass}`}>
+              {analysis.riskLevel === 'LOW' ? (
+                <ShieldCheck className="w-3.5 h-3.5" />
+              ) : (
+                <AlertTriangle className="w-3.5 h-3.5" />
+              )}
+              <span>RISK LEVEL: {analysis.riskLevel}</span>
+            </span>
 
-            <div style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: 'var(--text-muted)' }}>
-              Credibility Index: <strong style={{ color: 'var(--blue-light)', fontWeight: '500' }}>{analysis.credibilityScore}%</strong>
+            <div className="font-mono text-xs sm:text-sm text-[var(--text-muted)] tabular-nums">
+              Credibility Index:{' '}
+              <strong className="text-[var(--blue-light)] font-bold">
+                {analysis.credibilityScore}%
+              </strong>
             </div>
           </div>
 
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
-            {analysis.verdict}
-          </h3>
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] mb-1.5">
+              {analysis.verdict}
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)]">
+              {analysis.detailedVerdict}
+            </p>
+          </div>
 
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '22px', fontWeight: '400' }}>
-            {analysis.detailedVerdict}
-          </p>
+          {/* Animated Risk & Credibility Bar */}
+          <div className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] p-4">
+            <div className="flex justify-between font-mono text-[11px] mb-2 tabular-nums">
+              <span className="text-[var(--success)]">CREDIBILITY {analysis.credibilityScore}%</span>
+              <span className="text-[var(--error)]">MANIPULATION RISK {analysis.riskScore}%</span>
+            </div>
+            <div className="w-full h-3 rounded-full bg-slate-500/20 overflow-hidden flex">
+              <div
+                className="h-full bg-emerald-500 transition-all duration-500"
+                style={{ width: `${analysis.credibilityScore}%` }}
+              />
+              <div
+                className="h-full bg-red-500 transition-all duration-500"
+                style={{ width: `${analysis.riskScore}%` }}
+              />
+            </div>
+          </div>
 
-          {/* Metric cards (Borderless) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '12px',
-            marginBottom: '24px'
-          }}>
+          {/* Inline Highlighted Claim Annotation */}
+          <div className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] p-4">
+            <div className="font-mono text-[11px] text-[var(--text-muted)] uppercase mb-2">
+              Annotated Headline Syntax
+            </div>
+            <p className="text-base leading-relaxed text-[var(--text-primary)]">
+              {analysis.segments.map((seg) => {
+                if (!seg.kind) return <React.Fragment key={seg.key}>{seg.text}</React.Fragment>;
+                const styleClass =
+                  seg.kind === 'trigger'
+                    ? 'bg-[var(--error-bg)] text-[var(--error)] border border-red-500/30'
+                    : seg.kind === 'caps'
+                      ? 'bg-[var(--warning-bg)] text-[var(--warning)] border border-amber-500/30'
+                      : 'bg-purple-500/15 text-purple-400 border border-purple-500/30';
+                return (
+                  <mark key={seg.key} className={`px-1.5 py-0.5 rounded-md font-medium ${styleClass}`}>
+                    {seg.text}
+                  </mark>
+                );
+              })}
+            </p>
+          </div>
+
+          {/* Metric Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
             {analysis.metrics.map((m, i) => (
-              <div key={i} style={{
-                background: 'var(--sub-block-bg)',
-                padding: '16px 18px',
-                borderRadius: '16px',
-                border: 'none'
-              }}>
-                <div style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '500' }}>
-                  {m.name}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '1.25rem', fontWeight: '500', color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
+              <div
+                key={i}
+                className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] p-4"
+              >
+                <div className="text-xs font-medium text-[var(--text-muted)] mb-2">{m.name}</div>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xl font-semibold text-[var(--text-primary)] tabular-nums">
                     {m.score}%
                   </span>
-                  <span style={{
-                    fontSize: '0.68rem',
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: '500',
-                    color: m.flag === 'High' ? '#DC2626' : '#16A34A',
-                    padding: '3px 8px',
-                    borderRadius: '9999px',
-                    background: m.flag === 'High' ? 'var(--error-bg)' : 'var(--success-bg)'
-                  }}>
+                  <span
+                    className={`mono-badge text-[10px] py-0.5 px-2.5 ${
+                      m.flag === 'High' ? 'mono-badge-ai' : 'mono-badge-real'
+                    }`}
+                  >
                     {m.flag}
                   </span>
                 </div>
@@ -348,59 +392,74 @@ export default function FakeNewsChecker() {
             ))}
           </div>
 
-          {/* Evidence flags if any */}
-          {analysis.evidenceFlags && analysis.evidenceFlags.length > 0 && (
-            <div style={{
-              padding: '16px 20px',
-              borderRadius: '16px',
-              background: '#FFFBEB',
-              marginBottom: '22px'
-            }}>
-              <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: '#92400E', marginBottom: '8px' }}>
-                DETECTED LINGUISTIC SIGNALS:
+          {/* URL Domain Inspection */}
+          {analysis.urlReport && (
+            <div className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] p-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <Globe className="w-4 h-4 text-[var(--blue-light)] shrink-0" />
+                {analysis.urlReport.valid ? (
+                  <div className="text-xs sm:text-sm text-[var(--text-primary)]">
+                    Domain: <span className="font-mono font-semibold">{analysis.urlReport.host}</span>
+                    <span className="mx-2 text-[var(--text-muted)]">·</span>
+                    <span className={analysis.urlReport.isHttps ? 'text-[var(--success)]' : 'text-[var(--warning)]'}>
+                      {analysis.urlReport.isHttps ? 'TLS HTTPS Verified' : 'Unencrypted HTTP'}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-xs text-[var(--warning)]">
+                    Provided URL is malformed; inspect domain carefully before trusting.
+                  </div>
+                )}
               </div>
-              <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {analysis.urlReport.valid && (
+                <span
+                  className={`mono-badge text-[10px] py-0.5 px-2.5 ${
+                    analysis.urlReport.isEstablished ? 'mono-badge-real' : 'mono-badge-warn'
+                  }`}
+                >
+                  {analysis.urlReport.isEstablished ? 'RECOGNIZED WIRE' : 'UNVERIFIED DOMAIN'}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Evidence Flags */}
+          {analysis.evidenceFlags.length > 0 && (
+            <div className="rounded-2xl bg-[var(--warning-bg)] border border-amber-500/30 p-4">
+              <div className="font-mono text-xs font-semibold text-[var(--warning)] mb-2">
+                DETECTED LINGUISTIC SIGNALS
+              </div>
+              <ul className="list-disc pl-5 space-y-1 text-sm text-[var(--text-secondary)]">
                 {analysis.evidenceFlags.map((flag, idx) => (
-                  <li key={idx} style={{ fontSize: '0.84rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: '#78350F' }}>
-                    {flag}
-                  </li>
+                  <li key={idx}>{flag}</li>
                 ))}
               </ul>
             </div>
           )}
 
-          {/* Fact Check Resources */}
-          <div style={{
-            paddingTop: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px'
-          }}>
-            <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-body)', color: '#64748B', fontWeight: '400' }}>
-              Cross-verify claim in reputable global registries:
+          {/* Cross-Verify Links */}
+          <div className="pt-4 border-t border-[var(--border-hairline)] flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs text-[var(--text-muted)]">
+              Cross-verify claim in global fact-checking registries:
             </span>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="flex flex-wrap gap-2.5">
               <a
-                href={`https://toolbox.google.com/factcheck/explorer/search/list:57?hl=en&num_results=10&query=${encodeURIComponent(headline)}`}
+                href={`https://toolbox.google.com/factcheck/explorer/search/list:57?hl=en&num_results=10&query=${encodeURIComponent(analysis.headline)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-secondary"
-                style={{ fontSize: '0.8rem', padding: '8px 16px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+                className="btn-secondary text-xs py-2 px-4"
               >
                 <span>Google Fact Check</span>
-                <ExternalLink size={13} color="#2563EB" />
+                <ExternalLink className="w-3.5 h-3.5 text-[var(--blue-light)]" />
               </a>
               <a
-                href={`https://www.reuters.com/fact-check/`}
+                href="https://www.reuters.com/fact-check/"
                 target="_blank"
                 rel="noreferrer"
-                className="btn-secondary"
-                style={{ fontSize: '0.8rem', padding: '8px 16px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+                className="btn-secondary text-xs py-2 px-4"
               >
-                <span>Reuters</span>
-                <ExternalLink size={13} color="#2563EB" />
+                <span>Reuters Fact Check</span>
+                <ExternalLink className="w-3.5 h-3.5 text-[var(--blue-light)]" />
               </a>
             </div>
           </div>

@@ -1,36 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  Sliders, 
-  CheckCircle2, 
-  Activity, 
-  Lock,
-  Globe,
-  RefreshCw,
-  Server
-} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Lock, RefreshCw, Server } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog';
 import { checkBackendHealth, CONFIGURED_BACKEND_URL } from '../services/detectionService';
 
-export default function ApiConfigModal({ 
-  isOpen, 
-  onClose, 
-  config, 
-  onSaveConfig 
+export default function ApiConfigModal({
+  isOpen,
+  onClose,
+  config,
+  onSaveConfig
 }) {
   const [backendStatus, setBackendStatus] = useState(null);
   const [checkingBackend, setCheckingBackend] = useState(false);
   const [activeUrl, setActiveUrl] = useState('');
-  const [customEndpoint, setCustomEndpoint] = useState(config?.apiEndpoint || '');
-  const [hfToken, setHfToken] = useState('');
-  const [geminiKey, setGeminiKey] = useState('');
+  const [customEndpoint, setCustomEndpoint] = useState(() => config?.apiEndpoint || '');
+  const [hfToken, setHfToken] = useState(() => {
+    try {
+      return localStorage.getItem('verilens_hf_token') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [geminiKey, setGeminiKey] = useState(() => {
+    try {
+      return localStorage.getItem('verilens_gemini_key') || '';
+    } catch {
+      return '';
+    }
+  });
 
-  const verifyHealth = async (urlToTest) => {
+  const runHealthCheck = useCallback(async (urlToTest) => {
     setCheckingBackend(true);
     try {
       const result = await checkBackendHealth(urlToTest);
       if (result.online) {
         setBackendStatus({ status: 'online', ...result.data });
-        setActiveUrl(result.baseUrl || CONFIGURED_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : 'Relative (/api)'));
+        setActiveUrl(
+          result.baseUrl ||
+            CONFIGURED_BACKEND_URL ||
+            (typeof window !== 'undefined' ? window.location.origin : 'Relative (/api)')
+        );
       } else {
         setBackendStatus({ status: 'offline' });
         setActiveUrl('');
@@ -41,319 +55,237 @@ export default function ApiConfigModal({
     } finally {
       setCheckingBackend(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      verifyHealth(config?.apiEndpoint);
-      setCustomEndpoint(config?.apiEndpoint || '');
-      setHfToken(localStorage.getItem('verilens_hf_token') || '');
-      setGeminiKey(localStorage.getItem('verilens_gemini_key') || '');
-    }
+    if (!isOpen) return undefined;
+    let active = true;
+    checkBackendHealth(config?.apiEndpoint)
+      .then((result) => {
+        if (!active) return;
+        if (result.online) {
+          setBackendStatus({ status: 'online', ...result.data });
+          setActiveUrl(
+            result.baseUrl ||
+              CONFIGURED_BACKEND_URL ||
+              (typeof window !== 'undefined' ? window.location.origin : 'Relative (/api)')
+          );
+        } else {
+          setBackendStatus({ status: 'offline' });
+          setActiveUrl('');
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setBackendStatus({ status: 'offline' });
+          setActiveUrl('');
+        }
+      });
+    return () => {
+      active = false;
+    };
   }, [isOpen, config?.apiEndpoint]);
 
   const handleSave = () => {
-    if (hfToken.trim()) {
-      localStorage.setItem('verilens_hf_token', hfToken.trim());
-    } else {
-      localStorage.removeItem('verilens_hf_token');
+    try {
+      if (hfToken.trim()) localStorage.setItem('verilens_hf_token', hfToken.trim());
+      else localStorage.removeItem('verilens_hf_token');
+
+      if (geminiKey.trim()) localStorage.setItem('verilens_gemini_key', geminiKey.trim());
+      else localStorage.removeItem('verilens_gemini_key');
+    } catch {
+      // Ignore storage errors in private mode
     }
 
-    if (geminiKey.trim()) {
-      localStorage.setItem('verilens_gemini_key', geminiKey.trim());
-    } else {
-      localStorage.removeItem('verilens_gemini_key');
-    }
-
-    if (onSaveConfig) {
-      onSaveConfig({
-        ...config,
-        apiEndpoint: customEndpoint.trim()
-      });
-    }
+    onSaveConfig?.({
+      ...config,
+      apiEndpoint: customEndpoint.trim()
+    });
     onClose();
   };
 
   const handleUseLocalhost = () => {
     const local = 'http://localhost:3001/api/detect';
     setCustomEndpoint(local);
-    verifyHealth('http://localhost:3001');
+    runHealthCheck('http://localhost:3001');
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 250,
-      background: 'rgba(23, 43, 77, 0.45)',
-      backdropFilter: 'blur(4px)',
-      WebkitBackdropFilter: 'blur(4px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-      animation: 'fadeIn 0.2s ease'
-    }}>
-      <div className="glass-panel" style={{
-        width: '100%',
-        maxWidth: '580px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        borderRadius: '24px',
-        padding: '28px'
-      }}>
-        {/* Header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '20px',
-          paddingBottom: '14px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '12px',
-              background: 'var(--badge-blue-bg)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'var(--shadow-sm)'
-            }}>
-              <Server size={18} color="var(--badge-blue-text)" />
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-xl bg-[var(--bg-secondary)] border border-[var(--border-hairline)] rounded-[24px] p-6 shadow-[var(--shadow-lg)]">
+        <DialogHeader className="text-left pb-3 border-b border-[var(--border-hairline)]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[var(--badge-blue-bg)] border border-[var(--border-specular)] flex items-center justify-center shrink-0">
+              <Server className="w-5 h-5 text-[var(--badge-blue-text)]" />
             </div>
             <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-primary)' }}>
+              <DialogTitle className="text-lg font-bold text-[var(--text-primary)]">
                 Forensic Engine Telemetry
-              </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: '400' }}>
-                Multi-Signal Forensic Pipeline Status
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[var(--text-muted)]">
+                Configure backend node connectivity and optional Deep Learning API keys
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="space-y-4 py-1 max-h-[68vh] overflow-y-auto pr-1">
+          {/* Backend Status Banner */}
+          <div
+            className={`rounded-2xl p-4 border ${
+              backendStatus?.status === 'online'
+                ? 'bg-[var(--success-bg)] border-emerald-500/30'
+                : 'bg-[var(--error-bg)] border-red-500/30'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1.5">
+              <span
+                className={`font-mono text-xs font-semibold ${
+                  backendStatus?.status === 'online' ? 'text-[var(--success)]' : 'text-[var(--error)]'
+                }`}
+              >
+                BACKEND SERVER STATUS
+              </span>
+              <button
+                type="button"
+                onClick={() => runHealthCheck(customEndpoint)}
+                disabled={checkingBackend}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--blue-light)] hover:underline"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${checkingBackend ? 'animate-spin' : ''}`} />
+                <span>Re-check</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm font-medium text-[var(--text-primary)]">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  backendStatus?.status === 'online' ? 'bg-[var(--success)]' : 'bg-[var(--error)]'
+                }`}
+              />
+              <span>
+                {backendStatus?.status === 'online'
+                  ? `Online & Connected (${activeUrl})`
+                  : 'Server Unreachable (Using Local Canvas Fallback)'}
+              </span>
+            </div>
+
+            {backendStatus?.status !== 'online' && (
+              <p className="text-xs text-[var(--text-muted)] mt-2 leading-relaxed">
+                Start locally with <code className="font-mono bg-[var(--sub-block-bg)] px-1.5 py-0.5 rounded">npm run server</code> on port 3001, or configure <code className="font-mono bg-[var(--sub-block-bg)] px-1.5 py-0.5 rounded">VITE_API_URL</code>.
               </p>
+            )}
+          </div>
+
+          {/* Custom Endpoint */}
+          <div>
+            <label
+              htmlFor="backend-endpoint-input"
+              className="block text-xs font-semibold text-[var(--text-primary)] mb-1.5"
+            >
+              Backend API Endpoint
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="backend-endpoint-input"
+                type="text"
+                value={customEndpoint}
+                onChange={(e) => setCustomEndpoint(e.target.value)}
+                placeholder={
+                  CONFIGURED_BACKEND_URL
+                    ? `${CONFIGURED_BACKEND_URL}/api/detect`
+                    : 'Auto-detect (/api/detect)'
+                }
+                className="flex-1 rounded-xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] px-3.5 py-2 text-xs sm:text-sm font-mono text-[var(--text-primary)] focus:border-[var(--blue)] focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleUseLocalhost}
+                className="btn-secondary text-xs py-2 px-3.5 whitespace-nowrap"
+              >
+                Local 3001
+              </button>
+            </div>
+            <p className="text-[11px] text-[var(--text-muted)] mt-1.5">
+              Leave empty to auto-probe configured Render backend, relative proxy, or localhost:3001.
+            </p>
+          </div>
+
+          {/* Vision Model Keys */}
+          <div className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-[var(--text-primary)]">
+                Deep Learning Vision Model (Optional)
+              </span>
+              <span
+                className={`mono-badge text-[10px] py-0.5 px-2.5 ${
+                  hfToken || geminiKey ? 'mono-badge-real' : 'mono-badge-blue'
+                }`}
+              >
+                {hfToken || geminiKey ? 'CONFIGURED' : 'UNCONFIGURED'}
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <label htmlFor="hf-token-input" className="font-medium text-[var(--text-secondary)]">
+                  Hugging Face Token
+                </label>
+                <a
+                  href="https://huggingface.co/settings/tokens"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[var(--blue-light)] hover:underline"
+                >
+                  Get free token
+                </a>
+              </div>
+              <input
+                id="hf-token-input"
+                type="password"
+                value={hfToken}
+                onChange={(e) => setHfToken(e.target.value)}
+                placeholder="hf_xxxxxxxxxxxxxxxxxxxx"
+                className="w-full rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-hairline)] px-3 py-2 text-xs font-mono text-[var(--text-primary)] focus:border-[var(--blue)] focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="gemini-key-input"
+                className="block text-xs font-medium text-[var(--text-secondary)] mb-1"
+              >
+                Google Gemini API Key
+              </label>
+              <input
+                id="gemini-key-input"
+                type="password"
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                placeholder="AIzaSy... (Gemini Multimodal Verification)"
+                className="w-full rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-hairline)] px-3 py-2 text-xs font-mono text-[var(--text-primary)] focus:border-[var(--blue)] focus:outline-none"
+              />
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '6px'
-            }}
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        {/* Backend Status Section */}
-        <div style={{
-          padding: '16px',
-          borderRadius: '18px',
-          background: backendStatus?.status === 'online' ? 'var(--success-bg)' : 'var(--error-bg)',
-          boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
-          marginBottom: '20px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <span style={{ fontSize: '0.78rem', fontFamily: 'var(--font-mono)', fontWeight: '500', color: backendStatus?.status === 'online' ? 'var(--success)' : 'var(--error)' }}>
-              BACKEND SERVER STATUS
-            </span>
-            <button
-              onClick={() => verifyHealth(customEndpoint)}
-              disabled={checkingBackend}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--blue-light)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '0.74rem',
-                fontFamily: 'var(--font-body)',
-                fontWeight: '500'
-              }}
-            >
-              <RefreshCw size={12} className={checkingBackend ? 'animate-spin' : ''} />
-              <span>Re-check</span>
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-primary)' }}>
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: backendStatus?.status === 'online' ? 'var(--success)' : 'var(--error)'
-            }} />
-            <span>
-              {backendStatus?.status === 'online'
-                ? `Online & Connected (${activeUrl})`
-                : 'Server Unreachable (Operating in Local Canvas Fallback Mode)'}
+          {/* Privacy Guarantee */}
+          <div className="rounded-xl bg-[var(--badge-blue-bg)] border border-[var(--border-specular)] p-3 flex items-center gap-2.5">
+            <Lock className="w-4 h-4 text-[var(--badge-blue-text)] shrink-0" />
+            <span className="text-xs text-[var(--badge-blue-text)] leading-relaxed">
+              Keys remain local in your browser or server .env. Uploaded images stay strictly in RAM buffers.
             </span>
           </div>
-
-          {backendStatus?.status !== 'online' && (
-            <p style={{ fontSize: '0.8rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', lineHeight: 1.5, fontWeight: '400' }}>
-              Run <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>npm run server</code> locally on port 3001, or deploy the backend to Render and set <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--sub-block-bg)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.76rem' }}>VITE_API_URL</code> on Vercel.
-            </p>
-          )}
         </div>
 
-        {/* Custom Endpoint Input */}
-        <div style={{ marginBottom: '22px' }}>
-          <label style={{ display: 'block', fontSize: '0.84rem', fontFamily: 'var(--font-body)', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '6px' }}>
-            Backend API Endpoint:
-          </label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input
-              type="text"
-              value={customEndpoint}
-              onChange={(e) => setCustomEndpoint(e.target.value)}
-              placeholder={CONFIGURED_BACKEND_URL ? `${CONFIGURED_BACKEND_URL}/api/detect` : "Auto-detect (/api/detect or https://your-backend.onrender.com/api/detect)"}
-              style={{
-                flex: 1,
-                padding: '10px 16px',
-                background: 'var(--sub-block-bg)',
-                border: 'none',
-                borderRadius: '14px',
-                color: 'var(--text-primary)',
-                fontSize: '0.86rem',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: '400',
-                outline: 'none',
-                boxShadow: 'inset 0 1px 3px rgba(15, 23, 42, 0.05)'
-              }}
-            />
-            <button
-              onClick={handleUseLocalhost}
-              className="btn-secondary"
-              title="Reset to local server on port 3001"
-              style={{ fontSize: '0.78rem', padding: '8px 14px', whiteSpace: 'nowrap', fontFamily: 'var(--font-body)', fontWeight: '500' }}
-            >
-              Local 3001
-            </button>
-          </div>
-          <p style={{ fontSize: '0.74rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '6px', fontWeight: '400' }}>
-            Leave blank to connect automatically via VITE_API_URL, relative proxy, or local port 3001.
-          </p>
-        </div>
-
-        {/* Deep Learning Vision Model Integration */}
-        <div style={{
-          padding: '16px',
-          borderRadius: '16px',
-          background: 'var(--sub-block-bg)',
-          marginBottom: '20px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <span style={{ fontSize: '0.84rem', fontFamily: 'var(--font-heading)', fontWeight: '600', color: 'var(--text-primary)' }}>
-              Deep Learning Vision Model (Optional)
-            </span>
-            <span style={{
-              fontSize: '0.68rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: '500',
-              padding: '2px 8px',
-              borderRadius: '9999px',
-              background: (hfToken || geminiKey) ? 'var(--success-bg)' : 'var(--badge-blue-bg)',
-              color: (hfToken || geminiKey) ? 'var(--success)' : 'var(--blue-light)'
-            }}>
-              {(hfToken || geminiKey) ? 'CONFIGURED' : 'UNCONFIGURED (.ENV)'}
-            </span>
-          </div>
-
-          <div style={{ marginBottom: '12px' }}>
-            <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              <span>Hugging Face API Token:</span>
-              <a 
-                href="https://huggingface.co/settings/tokens" 
-                target="_blank" 
-                rel="noreferrer" 
-                style={{ color: 'var(--blue-light)', textDecoration: 'none' }}
-              >
-                Get free token ↗
-              </a>
-            </label>
-            <input
-              type="password"
-              value={hfToken}
-              onChange={(e) => setHfToken(e.target.value)}
-              placeholder="hf_xxxxxxxxxxxxxxxxxxxx (umm-maybe/AI-image-detector)"
-              style={{
-                width: '100%',
-                padding: '9px 14px',
-                background: 'var(--bg-primary)',
-                border: 'none',
-                borderRadius: '12px',
-                color: 'var(--text-primary)',
-                fontSize: '0.82rem',
-                fontFamily: 'var(--font-mono)',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: '0.78rem', fontFamily: 'var(--font-body)', fontWeight: '500', color: 'var(--text-secondary)', marginBottom: '4px' }}>
-              Google Gemini API Key:
-            </label>
-            <input
-              type="password"
-              value={geminiKey}
-              onChange={(e) => setGeminiKey(e.target.value)}
-              placeholder="AIzaSy... (Gemini 2.0 Flash Vision Verification)"
-              style={{
-                width: '100%',
-                padding: '9px 14px',
-                background: 'var(--bg-primary)',
-                border: 'none',
-                borderRadius: '12px',
-                color: 'var(--text-primary)',
-                fontSize: '0.82rem',
-                fontFamily: 'var(--font-mono)',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-          </div>
-          <p style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.45 }}>
-            Token is stored in browser memory &amp; sent in secure request headers (<code style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem' }}>x-huggingface-key</code>) so the backend can query inference models without modifying server files.
-          </p>
-        </div>
-
-        {/* Privacy Note */}
-        <div style={{
-          padding: '12px 16px',
-          borderRadius: '14px',
-          background: 'var(--badge-blue-bg)',
-          boxShadow: '0 2px 8px rgba(37,99,235,0.06)',
-          display: 'flex',
-          gap: '8px',
-          alignItems: 'center',
-          marginBottom: '20px'
-        }}>
-          <Lock size={15} color="var(--badge-blue-text)" style={{ flexShrink: 0 }} />
-          <span style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', color: 'var(--badge-blue-text)', lineHeight: 1.45, fontWeight: '400' }}>
-            API keys and models stay securely on your server via .env. Uploaded images are analyzed in RAM buffers and discarded immediately.
-          </span>
-        </div>
-
-        {/* Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          <button onClick={onClose} className="btn-secondary" style={{ padding: '9px 18px', fontFamily: 'var(--font-body)', fontWeight: '500' }}>
+        <div className="flex justify-end gap-2.5 pt-3 border-t border-[var(--border-hairline)]">
+          <button type="button" onClick={onClose} className="btn-secondary text-xs py-2 px-4">
             Cancel
           </button>
-          <button onClick={handleSave} className="btn-primary" style={{ padding: '9px 22px', fontFamily: 'var(--font-body)', fontWeight: '600', color: '#FFFFFF' }}>
+          <button type="button" onClick={handleSave} className="btn-primary text-xs py-2 px-5">
             Save &amp; Apply
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

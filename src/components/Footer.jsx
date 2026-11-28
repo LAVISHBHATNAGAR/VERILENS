@@ -1,136 +1,151 @@
 import React from 'react';
-import { ShieldCheck, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
-export default function Footer({ onNavigate }) {
+const CURRENT_YEAR = new Date().getFullYear();
+
+function FooterOpticalMark() {
+  return (
+    <div className="w-8 h-8 rounded-lg bg-[#12141b] border border-[var(--border-hairline)] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex items-center justify-center shrink-0">
+      <svg viewBox="0 0 28 28" className="w-4.5 h-4.5" fill="none" aria-hidden="true">
+        <path
+          d="M14 2.5L23.5 6.4V13.8C23.5 19.3 19.4 23.8 14 25.5C8.6 23.8 4.5 19.3 4.5 13.8V6.4L14 2.5Z"
+          stroke="#fcfcfc"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <circle cx="14" cy="13.5" r="5" stroke="#ff5e78" strokeWidth="1.1" strokeDasharray="2.5 1.8" />
+        <circle cx="14" cy="13.5" r="2.2" fill="#ff2e2e" />
+      </svg>
+    </div>
+  );
+}
+
+export default function Footer({ onNavigate, isBackendOnline = false }) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <footer style={{
-      background: 'var(--bg-secondary)',
-      boxShadow: 'var(--shadow-sm)',
-      padding: '48px 0 32px 0',
-      marginTop: '60px',
-      position: 'relative',
-      zIndex: 10
-    }}>
-      <div className="verilens-container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '36px',
-          marginBottom: '36px'
-        }}>
-          {/* Brand Col */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-              <div style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '12px',
-                background: 'var(--badge-blue-bg)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: 'var(--shadow-sm)'
-              }}>
-                <ShieldCheck size={18} color="var(--badge-blue-text)" />
-              </div>
-              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+    <footer className="mt-28 border-t border-[var(--border-hairline)] bg-[var(--bg-secondary)]/72 backdrop-blur-xl relative z-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+      <div className="verilens-container py-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12 items-start">
+          {/* Brand Summary */}
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-2.5 mb-3">
+              <FooterOpticalMark />
+              <span className="font-heading text-base font-extrabold text-[var(--text-primary)] tracking-[-0.02em]">
                 VERILENS
               </span>
+              <span className="font-mono text-[9.5px] tracking-[0.09em] px-1.5 py-[1px] rounded-[4px] bg-[var(--bg-main)]/85 text-[var(--text-muted)] border border-[var(--border-hairline)]">
+                v2.0.0
+              </span>
             </div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.84rem', fontWeight: '400', color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: '340px' }}>
-              Digital Truth &amp; Safety Assistant. Protecting information integrity, auditing synthetic imagery, and verifying digital media provenance.
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-sm">
+              Digital Truth &amp; Media Forensics Workbench. Auditing synthetic imagery and provenance with calibrated scientific uncertainty.
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-heading)', color: 'var(--blue-light)', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: '600' }}>
-              Truth Suite Modules
+          {/* Navigation Links */}
+          <div className="md:col-span-3">
+            <h4 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-3">
+              Modules
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button
-                onClick={() => onNavigate('checker')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => e.target.style.color = 'var(--blue-light)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-              >
-                AI Image Checker
-              </button>
-              <button
-                onClick={() => onNavigate('fakenews')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => e.target.style.color = 'var(--blue-light)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-              >
-                Fake News Checker
-              </button>
-              <button
-                onClick={() => onNavigate('privacy')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => e.target.style.color = 'var(--blue-light)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-              >
-                Privacy &amp; Media Guide
-              </button>
-              <button
-                onClick={() => onNavigate('about')}
-                style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', textAlign: 'left', fontSize: '0.86rem', fontFamily: 'var(--font-body)', fontWeight: '500', cursor: 'pointer', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => e.target.style.color = 'var(--blue-light)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-              >
-                About Project
-              </button>
+            <div className="flex flex-col items-start gap-1.5">
+              {[
+                { id: 'checker', label: 'AI Image Checker' },
+                { id: 'fakenews', label: 'Fake News Checker' },
+                { id: 'privacy', label: 'Privacy & Media Guide' },
+                { id: 'about', label: 'Architecture & Pipeline' }
+              ].map((link) => (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => onNavigate(link.id)}
+                  className="text-sm font-medium text-[var(--text-secondary)] hover:text-[#ff5e78] transition-colors"
+                >
+                  {link.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Security Telemetry Status */}
-          <div>
-            <h4 style={{ fontSize: '0.8rem', fontFamily: 'var(--font-heading)', color: 'var(--text-primary)', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: '600' }}>
-              System Integrity Status
+          {/* Refined Forensic Hardware Status Plate */}
+          <div className="md:col-span-4">
+            <h4 className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-3">
+              Telemetry &amp; Memory Posture
             </h4>
-            <div style={{
-              background: 'var(--success-bg)',
-              padding: '14px 18px',
-              borderRadius: '18px',
-              boxShadow: '0 2px 10px rgba(22, 163, 74, 0.06)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--success)', boxShadow: '0 0 6px rgba(22,163,74,0.4)' }} />
-                <span style={{ fontSize: '0.74rem', fontFamily: 'var(--font-mono)', color: 'var(--success)', fontWeight: '500' }}>
-                  OPERATIONAL · SECURE
+            <div className="relative rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-main)]/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] overflow-hidden">
+              {/* Crisp Hardware Corner Registration Marks */}
+              <span aria-hidden="true" className="pointer-events-none absolute top-1.5 left-1.5 w-2 h-2 border-t border-l border-[#ff5e78]/45" />
+              <span aria-hidden="true" className="pointer-events-none absolute top-1.5 right-1.5 w-2 h-2 border-t border-r border-[#ff5e78]/45" />
+              <span aria-hidden="true" className="pointer-events-none absolute bottom-1.5 left-1.5 w-2 h-2 border-b border-l border-[#ff5e78]/45" />
+              <span aria-hidden="true" className="pointer-events-none absolute bottom-1.5 right-1.5 w-2 h-2 border-b border-r border-[#ff5e78]/45" />
+
+              <div className="px-4 py-2.5 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      isBackendOnline
+                        ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]'
+                        : 'bg-[#ff5e78]'
+                    }`}
+                  />
+                  <span className="font-mono text-[11px] font-semibold tracking-wider text-[var(--text-primary)]">
+                    {isBackendOnline ? 'ENGINE ONLINE' : 'CLIENT SANDBOX'}
+                  </span>
+                </div>
+                <span className="font-mono text-[9.5px] tracking-widest text-[var(--text-muted)] tabular-nums">
+                  RAM-ONLY · 0 KB DISK
                 </span>
               </div>
-              <p style={{ fontSize: '0.76rem', fontFamily: 'var(--font-body)', fontWeight: '400', color: 'var(--text-muted)', lineHeight: 1.5 }}>
-                Multi-signal forensic analysis active. Zero persistent image telemetry logged.
-              </p>
+
+              {/* Animated Live SVG Memory-Buffer Activity & SHA-256 Purge Divider */}
+              <div className="px-4 py-1 border-y border-[var(--border-hairline)] bg-[var(--sub-block-bg)]/50">
+                <svg viewBox="0 0 280 8" className="w-full h-2 block" preserveAspectRatio="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="shaPurgeSweep" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor={isBackendOnline ? '#34d399' : '#ff2e2e'} stopOpacity="0" />
+                      <stop offset="50%" stopColor={isBackendOnline ? '#34d399' : '#ff5e78'} stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#ff2e2e" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  {/* Segmented Buffer Hairlines */}
+                  <line x1="0" y1="4" x2="280" y2="4" stroke="#27272a" strokeWidth="1" strokeDasharray="3 3" />
+                  {/* Continuous 60fps Purge Packet Sweep */}
+                  <rect x="-70" y="3" width="70" height="2" rx="1" fill="url(#shaPurgeSweep)">
+                    <animateTransform
+                      attributeName="transform"
+                      type="translate"
+                      from="0 0"
+                      to="350 0"
+                      dur="2.8s"
+                      repeatCount="indefinite"
+                    />
+                  </rect>
+                </svg>
+              </div>
+
+              <div className="px-4 py-2.5 flex items-center justify-between gap-3">
+                <p className="text-[11.5px] text-[var(--text-muted)] leading-relaxed">
+                  Sharp pixels decode inside volatile memory and purge immediately post SHA-256 audit.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div style={{
-          paddingTop: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px'
-        }}>
-          <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)', fontWeight: '400' }}>
-            © {new Date().getFullYear()} VERILENS – Digital Truth &amp; Safety Assistant. Academic College Demonstration.
+        <div className="pt-8 border-t border-[var(--border-hairline)] flex flex-wrap items-center justify-between gap-3">
+          <div className="font-mono text-[10.5px] tracking-wide text-[var(--text-muted)]">
+            © {CURRENT_YEAR} VERILENS v2.0.0 · Crimson Pulse Forensics Suite
           </div>
 
           <button
+            type="button"
             onClick={scrollToTop}
-            className="btn-secondary"
-            style={{ fontSize: '0.76rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
+            className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border-hairline)] bg-[var(--sub-block-bg)]/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] font-mono text-[11px] font-medium text-[var(--text-secondary)] hover:text-[#ff5e78] hover:border-[#ff2e2e]/45 transition-all"
           >
             <span>Back to top</span>
-            <ArrowUp size={12} color="var(--blue-light)" />
+            <ArrowUp className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-y-0.5" />
           </button>
         </div>
       </div>

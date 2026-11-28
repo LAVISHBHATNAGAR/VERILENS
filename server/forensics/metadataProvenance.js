@@ -1,46 +1,56 @@
 /**
  * Container & EXIF Metadata Provenance Analysis
- * Inspects file headers for camera hardware metadata, AI generation prompt chunks,
- * or stripped container markers.
+ * Inspects headers, XMP/IPTC/C2PA blocks, and EXIF tags for hardware cameras or AI generators.
  */
 import exifParser from 'exif-parser';
 
 export function analyzeMetadataProvenance(fileBuffer, mimeType, fileName) {
   const indicators = [];
-  let metadataAiScore = 0.5; // neutral by default
+  let metadataAiScore = 0.5;
   let hasCameraExif = false;
   let hasAiMetadata = false;
   let cameraDetails = null;
   let aiToolSignature = null;
 
-  // 1. Text chunk inspection (PNG/WEBP/JPEG comments or text blocks)
-  const bufferString = fileBuffer.toString('latin1', 0, Math.min(fileBuffer.length, 65536));
+  // Scan header + tail chunk (PNG text chunks / JPEG XMP / C2PA manifests)
+  const headStr = fileBuffer.toString('latin1', 0, Math.min(fileBuffer.length, 98304));
+  const tailStr =
+    fileBuffer.length > 98304
+      ? fileBuffer.toString('latin1', Math.max(0, fileBuffer.length - 32768))
+      : '';
+  const bufferString = headStr + '\n' + tailStr;
 
   const aiKeywords = [
     { pattern: /Steps:\s*\d+,\s*Sampler:/i, tool: 'Stable Diffusion / A1111' },
     { pattern: /"prompt":\s*\{.*"inputs":/i, tool: 'ComfyUI Workflow' },
+    { pattern: /trainedAlgorithmicMedia/i, tool: 'IPTC Generative AI Marker' },
+    { pattern: /Made with Google AI|Google DeepMind|Imagen|SynthID/i, tool: 'Google AI / Imagen' },
+    { pattern: /ChatGPT|OpenAI|DALL[·-]?E|Truepic/i, tool: 'OpenAI / ChatGPT' },
     { pattern: /Midjourney/i, tool: 'Midjourney' },
     { pattern: /NovelAI/i, tool: 'NovelAI' },
-    { pattern: /DALL[·-]?E/i, tool: 'OpenAI DALL-E' },
     { pattern: /Flux(?:\.1|(?:\s*\[\w+\]))/i, tool: 'FLUX Diffusion' },
-    { pattern: /Adobe Firefly/i, tool: 'Adobe Firefly' }
+    { pattern: /Adobe Firefly/i, tool: 'Adobe Firefly' },
+    { pattern: /c2pa|jumbf/i, tool: 'C2PA Content Credentials (Generative Check)' }
   ];
 
   for (const item of aiKeywords) {
     if (item.pattern.test(bufferString)) {
+      // C2PA alone can exist on Sony/Leica cameras — require algorithmic/tool context unless explicit AI tool
+      if (item.tool.startsWith('C2PA') && !/trainedAlgorithmicMedia|openai|chatgpt|midjourney|firefly|google|dall/i.test(bufferString)) {
+        continue;
+      }
       hasAiMetadata = true;
       aiToolSignature = item.tool;
       metadataAiScore = 0.98;
       indicators.push({
         type: 'DEFINITIVE_ANOMALY',
         name: `Embedded Synthetic Tool Signature: ${item.tool}`,
-        detail: `Found raw generative prompt/workflow metadata embedded directly inside the image container (${item.tool}).`
+        detail: `Found generative provenance metadata inside the container (${item.tool}).`
       });
       break;
     }
   }
 
-  // 2. EXIF Header parsing
   if (!hasAiMetadata) {
     try {
       const parser = exifParser.create(fileBuffer);
@@ -49,38 +59,38 @@ export function analyzeMetadataProvenance(fileBuffer, mimeType, fileName) {
 
       if (tags.Make && tags.Model) {
         hasCameraExif = true;
-        cameraDetails = `${tags.Make} ${tags.Model}`;
-        metadataAiScore = 0.15; // Strongly points to physical capture
+        cameraDetails = `${tags.Make} ${tags.Model}`.trim();
+        metadataAiScore = 0.14;
 
-        let extraDetails = [];
+        const extraDetails = [];
         if (tags.ISO) extraDetails.push(`ISO ${tags.ISO}`);
         if (tags.FNumber) extraDetails.push(`f/${tags.FNumber}`);
-        if (tags.ExposureTime) extraDetails.push(`${(tags.ExposureTime).toFixed(4)}s`);
+        if (tags.ExposureTime) extraDetails.push(`${Number(tags.ExposureTime).toFixed(4)}s`);
         if (tags.FocalLength) extraDetails.push(`${tags.FocalLength}mm`);
 
         indicators.push({
           type: 'AUTHENTIC',
           name: `Verified Hardware Camera EXIF: ${cameraDetails}`,
-          detail: `Found valid hardware sensor exposure parameters (${extraDetails.join(', ')}). Generative models do not produce authentic hardware camera tags.`
+          detail: `Found optical sensor exposure parameters (${extraDetails.join(', ') || 'Make/Model present'}).`
         });
       } else if (tags.Software) {
-        if (/photoshop|lightroom|gimp/i.test(tags.Software)) {
+        if (/photoshop|lightroom|gimp|snapseed|vsco/i.test(tags.Software)) {
           indicators.push({
             type: 'NEUTRAL',
             name: `Photo Editing Software Tag: ${tags.Software}`,
-            detail: 'Image was exported or edited through photo editing software. Primary camera tags may have been modified.'
+            detail: 'Image exported from photo editing software; hardware sensor EXIF may be omitted.'
           });
         }
       }
     } catch {
-      // Container has no parseable EXIF
+      // Container lacks parseable EXIF
     }
 
     if (!hasCameraExif) {
       indicators.push({
         type: 'NEUTRAL',
         name: 'Container Metadata Sanitized / Stripped',
-        detail: 'Image container contains no camera manufacturer tags. Common in both AI-generated outputs and social media compressed uploads.'
+        detail: 'No hardware camera manufacturer tags present (common in AI outputs and social media uploads).'
       });
     }
   }
@@ -91,6 +101,8 @@ export function analyzeMetadataProvenance(fileBuffer, mimeType, fileName) {
     hasAiMetadata,
     cameraDetails,
     aiToolSignature,
+    mimeType: mimeType || 'image/unknown',
+    fileName: fileName || 'image',
     indicators
   };
 }

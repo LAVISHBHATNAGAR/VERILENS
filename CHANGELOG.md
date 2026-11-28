@@ -1,0 +1,22 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased] - v2.0.0
+
+### Added
+- **TypeScript, Velaris & KineticGrid Background (`src/components/ui/{velaris,kinetic-grid}.tsx`)**: Added TypeScript support (`tsconfig.json`, `typescript` devDependency, `tsx: true` in `components.json`), integrated the WebGL simplex-noise `Velaris` hero backdrop, and added the interactive cursor-warping & click-rippling `KineticGrid` full-page background synced to the Crimson Pulse light and dark palettes.
+- **Crimson Pulse Theme (`design-system/verilens/MASTER.md`)**: Applied exact light and dark tokens from `@serafimcloud/themes/crimson-pulse` (`#fcfcfc` / `#0d1117` / `#e61919` / `#24335c` / `#ffafbd` light; `#0d0e12` / `#161922` / `#ff2e2e` / `#1a233b` / `#ff5e78` dark; `0.75rem` radius).
+- **Scroll-Triggered Digicam Shutter & Xenon Flash Lab (`DigicamScrollShowcase`)**: Added a GSAP ScrollTrigger + click-interactive digicam studio rig (`public/images/digicam-camera.jpg`) that snaps the shutter and fires a white xenon flash spark + contact-sheet capture (`digicam-street.jpg`, `digicam-architecture.jpg`, `digicam-studio.jpg`) with one-click forensic workbench loading.
+- **Forensic Workbench, Dossier & Interactive Modules**: Added Split Wipe + `4x`/`8x` Optical Pixel Loupe (`ImagePreview`), live signal oscilloscope (`ScanningAnimation`), animated verdict arc gauge + 5-axis radar + Fourier radial decay charts (`ForensicCharts`), tabbed evidence inspector (`AnalysisResult`), inline headline syntax highlighting (`FakeNewsChecker`), interactive EXIF Privacy Risk Simulator (`PrivacyGuide`), and 5-stage pipeline diagram (`AboutSection`).
+- **Real Full Moon vs. ASCII Curtain & Editorial Rhythm (`HeroSplitComparator`, `DigicamScrollShowcase`, `Hero`, `ImageUploader`, `Footer`)**: Paired a full-bleed public-domain Full Moon photograph (`public/moon-real.jpg`) with a live pixel-aligned `<canvas>` ASCII luminance mapper (` .:-=+*#%@` in Obsidian `#08080B` + crimson/bone-white tints), removed the camera lens HUD overlay in `DigicamScrollShowcase`, and opened vertical section spacing (`space-y-24 lg:space-y-32`), hero padding (`min-h-[82vh]`), and footer separation (`mt-28`, `py-16`).
+- **Web-Native Sherloq Forensics Integration (`sherloqForensics.js`, `canvasFilters.js`, `ImagePreview`, `AnalysisResult`)**: Added JavaScript/Sharp + HTML5 Canvas implementations inspired by `GuidoBartoli/sherloq` — interactive JPEG Recompression ELA (`quality`/`gain`/`grayscale`), Hany Farid JPEG Ghost maps, Spatial Luminance Gradient, Median Noise Separation, LSB Bit-Plane Slicer (`Bit 0..7` + Shannon entropy), 3×3 Color Covariance PCA (Jacobi eigensolver), 2D Haar DWT Subbands (`LL/HL/LH/HH`), Copy-Move Clone block matching, and embedded EXIF Thumbnail Diff auditing.
+- **Localhost Engine Priority & Real Raster Calibration Specimens (`detectionService.js`, `sampleImages.js`, `noiseResidualAnalysis.js`)**: Prioritized `/api` (`localhost:3001`) over remote fallback endpoints during local development so local `telemetry` and `sherloq` payloads are always served, replaced SVG reference placeholders with raster PNG/JPEG specimens (`public/specimens/`), and excluded clipped pure-black void margins from PRNU variance scoring.
+
+### Changed
+- Set up `v2` development branch and aligned version metadata to `2.0.0` across `package.json`, `package-lock.json`, `server/index.js` (`/` and `/api/health`), and `Navbar`.
+- Extended `server/index.js` and `src/services/detectionService.js` responses with structured `telemetry` fields (`fourier`, `noise`, `gradients`, `metadata`) and `visualContent` / `modelStatus` forwarding without altering underlying detection math.
+- **Continuous Image-Dependent Scoring & Lightweight Engine (`server/forensics/*`, `server/index.js`, `detectionService.js`, `ImagePreview.jsx`)**: Replaced discrete bucketed scores and the `28%`/`70%`/`40%` clamps with continuous image-derived formulas across 2D FFT, PRNU noise, optical chromatic dispersion, Sherloq spatial hints (`sherloqAiHint`), and offline canvas fallback; expanded AI provenance markers (`TrainedAlgorithmicMedia`, Google AI/Imagen, ChatGPT/OpenAI, Midjourney, FLUX, ComfyUI, Firefly); and cut pipeline latency via `maxDim = 512`, `2x2` FFT patches, streamlined JPEG ELA, zero artificial `setTimeout` sleeps, and trimmed redundant workbench filters.

@@ -126,9 +126,9 @@ export function analyzeFrequencySpectrum(grayPixels, width, height) {
     };
   }
 
-  // Sample up to 9 distributed patches across image
-  const patchesX = Math.min(3, Math.floor(width / patchSize));
-  const patchesY = Math.min(3, Math.floor(height / patchSize));
+  // Sample up to 4 distributed 64x64 patches for fast FFT computation
+  const patchesX = Math.min(2, Math.floor(width / patchSize));
+  const patchesY = Math.min(2, Math.floor(height / patchSize));
   const stepX = Math.floor((width - patchSize) / Math.max(1, patchesX - 1));
   const stepY = Math.floor((height - patchSize) / Math.max(1, patchesY - 1));
 
@@ -254,54 +254,56 @@ export function analyzeFrequencySpectrum(grayPixels, width, height) {
   const avgPeriodicSpikes = patchCount > 0 ? totalPeriodicSpikes / patchCount : 0;
   const avgSlope = patchCount > 0 ? totalDecaySlope / patchCount : -2.0;
 
-  // Evaluate synthetic probability from spectral domain
-  // Calibrated against natural camera decay: -1.3 to -2.5 is typical of natural optical images
-  let spectralAiScore = 0.5;
-  let indicators = [];
+  // Continuous image-dependent spectral likelihood (no fixed score steps)
+  // Physical optics follow ~1/f^1.85; generative models deviate in slope, suppress high-frequency tail, or inject lattice peaks.
+  const slopeIdealDiff = Math.abs(avgSlope + 1.85);
+  const slopePenalty = Math.max(0, slopeIdealDiff - 0.35) * 0.22;
+  const highFreqDeficit = avgHighRatio < 0.25 ? (0.25 - avgHighRatio) * 1.15 : 0;
+  const spikeContribution = Math.min(0.45, Math.max(0, avgPeriodicSpikes - 0.45) * 0.14);
 
-  if (avgPeriodicSpikes > 2.8) {
-    spectralAiScore = Math.min(0.92, 0.5 + avgPeriodicSpikes * 0.12);
+  let spectralAiScore = 0.22 + slopePenalty + highFreqDeficit + spikeContribution;
+  if (avgHighRatio >= 0.42 && avgPeriodicSpikes < 0.8 && avgSlope <= -1.25 && avgSlope >= -2.45) {
+    spectralAiScore = Math.max(0.11, 0.24 - (avgHighRatio - 0.42) * 0.3);
+  }
+
+  spectralAiScore = Math.max(0.08, Math.min(0.94, Number(spectralAiScore.toFixed(3))));
+  const indicators = [];
+
+  if (avgPeriodicSpikes > 2.0) {
     indicators.push({
       type: 'ANOMALY',
       name: 'Periodic Fourier Spectral Peaks',
-      detail: `Detected anomalous periodic high-frequency energy spikes (${avgPeriodicSpikes.toFixed(2)} dB delta), characteristic of generative neural upsampling grids.`
+      detail: `Detected periodic high-frequency energy spikes (${avgPeriodicSpikes.toFixed(2)} dB delta), characteristic of generative neural upsampling grids.`
     });
-  } else if (avgPeriodicSpikes < 0.8 && avgSlope <= -1.4 && avgSlope >= -2.4) {
-    spectralAiScore = 0.20;
-    indicators.push({
-      type: 'AUTHENTIC',
-      name: 'Smooth Radial Fourier Decay',
-      detail: `Frequency power spectrum displays uniform continuous radial decay (slope: ${avgSlope.toFixed(2)}) without periodic lattice harmonics, consistent with natural scene optics.`
-    });
-  } else if (avgSlope > -0.9) {
-    // Unnatural high frequency energy plateau
-    spectralAiScore += 0.15;
+  } else if (avgSlope > -0.95) {
     indicators.push({
       type: 'ANOMALY',
       name: 'Spectral Energy Plateau',
-      detail: `High-frequency decay slope is unnaturally flat (${avgSlope.toFixed(2)} vs optical expectation -1.8).`
+      detail: `High-frequency decay slope is unusually flat (${avgSlope.toFixed(2)} vs optical baseline -1.85).`
     });
-  } else if (avgSlope < -3.2) {
-    // Over-smoothed / low-pass diffusion blur
-    spectralAiScore += 0.12;
+  } else if (avgSlope < -3.0 || (avgHighRatio < 0.14 && avgPeriodicSpikes >= 1.2)) {
     indicators.push({
       type: 'ANOMALY',
       name: 'High-Frequency Spectral Deficit',
-      detail: `High-frequency energy falls off prematurely (${avgSlope.toFixed(2)} slope), typical of diffusion denoising steps.`
+      detail: `High-frequency detail falls off steeply (slope ${avgSlope.toFixed(2)}, H/L ratio ${avgHighRatio.toFixed(2)}), typical of latent diffusion smoothing.`
+    });
+  } else if (spectralAiScore <= 0.36) {
+    indicators.push({
+      type: 'AUTHENTIC',
+      name: 'Smooth Radial Fourier Decay',
+      detail: `Continuous radial power decay (slope ${avgSlope.toFixed(2)}, spikes ${avgPeriodicSpikes.toFixed(2)} dB) aligns with physical optics.`
     });
   } else {
-    // In normal optical range
-    spectralAiScore = 0.35;
     indicators.push({
       type: 'AUTHENTIC',
       name: 'Natural Frequency Distribution',
-      detail: `Radial spectral energy decay slope (${avgSlope.toFixed(2)}) conforms with empirical photographic power laws.`
+      detail: `Radial spectral energy slope (${avgSlope.toFixed(2)}) remains close to photographic power laws.`
     });
   }
 
   return {
     isValid: true,
-    spectralAiScore: Math.max(0.05, Math.min(0.95, spectralAiScore)),
+    spectralAiScore,
     avgPeriodicSpikes: Math.round(avgPeriodicSpikes * 100) / 100,
     avgDecaySlope: Math.round(avgSlope * 100) / 100,
     avgHighRatio: Math.round(avgHighRatio * 100) / 100,

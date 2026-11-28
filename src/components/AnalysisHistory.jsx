@@ -1,279 +1,200 @@
-import React from 'react';
-import { 
-  X, 
-  Trash2, 
-  History, 
-  Clock, 
+import React, { useEffect } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import {
+  X,
+  Trash2,
+  History,
+  Clock,
   FileImage,
   ArrowRight,
-  ShieldCheck,
-  AlertTriangle,
-  HelpCircle,
   RefreshCw
 } from 'lucide-react';
-import { formatBytes } from '../services/detectionService';
 
-export default function AnalysisHistory({ 
-  isOpen, 
-  onClose, 
-  history = [], 
-  onSelectHistoryItem, 
+export default function AnalysisHistory({
+  isOpen,
+  onClose,
+  history = [],
+  onSelectHistoryItem,
   onReanalyzeItem,
-  onClearHistory 
+  onClearHistory
 }) {
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 200,
-      background: 'rgba(23, 43, 77, 0.45)',
-      backdropFilter: 'blur(4px)',
-      WebkitBackdropFilter: 'blur(4px)',
-      display: 'flex',
-      justifyContent: 'flex-end',
-      animation: 'fadeIn 0.2s ease'
-    }}>
-      {/* Slide-in Drawer Container */}
-      <div style={{
-        width: '100%',
-        maxWidth: '440px',
-        height: '100%',
-        background: 'var(--bg-secondary)',
-        boxShadow: '-12px 0 40px rgba(0, 0, 0, 0.25)',
-        display: 'flex',
-        flexDirection: 'column',
-        animation: 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-      }}>
-        {/* Drawer Header */}
-        <div style={{
-          padding: '20px 22px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'var(--bg-secondary)',
-          boxShadow: 'var(--shadow-sm)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '12px',
-              background: 'var(--badge-blue-bg)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'var(--shadow-sm)'
-            }}>
-              <History size={18} color="var(--badge-blue-text)" />
-            </div>
-            <div>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: '700', color: 'var(--text-primary)' }}>
-                Session History
-              </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.74rem', fontWeight: '400', color: 'var(--text-muted)' }}>
-                {history.length} {history.length === 1 ? 'image' : 'images'} audited in this session
-              </p>
-            </div>
-          </div>
-
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Session Forensic History"
+          className="fixed inset-0 z-50 flex justify-end"
+        >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              padding: '6px',
-              borderRadius: '6px'
-            }}
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs"
+          />
+
+          {/* Slide-over Panel */}
+          <motion.aside
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 360, damping: 34 }}
+            className="relative z-10 w-full max-w-md h-full bg-[var(--bg-secondary)] border-l border-[var(--border-hairline)] shadow-[var(--shadow-lg)] flex flex-col"
           >
-            <X size={18} />
-          </button>
-        </div>
-
-        {/* Drawer Content List */}
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '18px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px'
-        }}>
-          {history.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '60px 20px',
-              color: '#64748B'
-            }}>
-              <FileImage size={42} color="#CBD5E1" style={{ margin: '0 auto 12px auto' }} />
-              <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.95rem', color: '#172B4D', marginBottom: '6px', fontWeight: '700' }}>
-                No Scans Conducted Yet
-              </h4>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.82rem', fontWeight: '400', lineHeight: 1.5, maxWidth: '260px', margin: '0 auto', color: '#64748B' }}>
-                Upload and analyze an image to track your inspection chain-of-custody in this session.
-              </p>
-            </div>
-          ) : (
-            history.map((item) => {
-              const isAi = item.result.verdictLevel === 'ai';
-              const isReal = item.result.verdictLevel === 'real';
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    onSelectHistoryItem(item);
-                    onClose();
-                  }}
-                  className="glass-panel"
-                  style={{
-                    padding: '12px 14px',
-                    borderRadius: '16px',
-                    cursor: 'pointer',
-                    background: 'var(--sub-block-bg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'var(--bg-hover)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'var(--sub-block-bg)';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-                  }}
-                >
-                  {/* Thumbnail */}
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '12px',
-                    overflow: 'hidden',
-                    background: 'var(--bg-surface)',
-                    flexShrink: 0
-                  }}>
-                    <img 
-                      src={item.previewUrl} 
-                      alt="History Preview" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                    />
-                  </div>
-
-                  <div style={{ flex: 1, overflow: 'hidden' }}>
-                    <div style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: '0.86rem',
-                      fontWeight: '600',
-                      color: 'var(--text-primary)',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis'
-                    }}>
-                      {item.imageData?.name || item.result.metadata?.fileName || 'Inspected Image'}
-                    </div>
-
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      marginTop: '3px'
-                    }}>
-                      <span style={{
-                        fontSize: '0.66rem',
-                        fontFamily: 'var(--font-mono)',
-                        fontWeight: '500',
-                        padding: '2px 8px',
-                        borderRadius: '9999px',
-                        background: isAi ? 'var(--error-bg)' : isReal ? 'var(--success-bg)' : 'var(--warning-bg)',
-                        color: isAi ? 'var(--error)' : isReal ? 'var(--success)' : 'var(--warning)'
-                      }}>
-                        {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
-                      </span>
-                      <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', fontWeight: '400', color: 'var(--text-muted)' }}>
-                        {item.result.confidence}% conf
-                      </span>
-                    </div>
-
-                    <div style={{
-                      fontSize: '0.68rem',
-                      fontFamily: 'var(--font-mono)',
-                      color: 'var(--text-muted)',
-                      marginTop: '3px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <Clock size={11} />
-                      <span>{new Date(item.timestamp).toLocaleTimeString()}</span>
-                      {item.result.isFallback && (
-                        <span style={{ color: 'var(--warning)', marginLeft: '4px', fontSize: '0.62rem' }}>• Local Fallback</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {onReanalyzeItem && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onReanalyzeItem(item);
-                      }}
-                      title="Re-analyze image with updated engine"
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'var(--blue-light)',
-                        padding: '6px',
-                        cursor: 'pointer',
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'transform 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.transform = 'rotate(45deg)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}
-                    >
-                      <RefreshCw size={14} />
-                    </button>
-                  )}
-
-                  <ArrowRight size={14} color="var(--text-muted)" />
+            {/* Header */}
+            <div className="px-5 py-4 border-b border-[var(--border-hairline)] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[var(--badge-blue-bg)] border border-[var(--border-specular)] flex items-center justify-center">
+                  <History className="w-4.5 h-4.5 text-[var(--badge-blue-text)]" />
                 </div>
-              );
-            })
-          )}
-        </div>
+                <div>
+                  <h3 className="text-base font-bold text-[var(--text-primary)]">
+                    Session Chain of Custody
+                  </h3>
+                  <p className="font-mono text-[11px] text-[var(--text-muted)] tabular-nums">
+                    {history.length} {history.length === 1 ? 'specimen' : 'specimens'} audited
+                  </p>
+                </div>
+              </div>
 
-        {/* Drawer Footer */}
-        {history.length > 0 && (
-          <div style={{
-            padding: '16px 20px',
-            background: 'var(--sub-block-bg)',
-            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.05)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <button
-              onClick={onClearHistory}
-              className="btn-danger-outline"
-              style={{ fontSize: '0.82rem', padding: '6px 12px', fontFamily: 'var(--font-body)', fontWeight: '500' }}
-            >
-              <Trash2 size={13} />
-              <span>Clear History</span>
-            </button>
-            <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-body)', color: 'var(--text-muted)' }}>
-              Ephemeral Session Storage
-            </span>
-          </div>
-        )}
-      </div>
-    </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close session history"
+                className="p-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--sub-block-bg)] transition-colors"
+              >
+                <X className="w-4.5 h-4.5" />
+              </button>
+            </div>
+
+            {/* History List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2.5">
+              {history.length === 0 ? (
+                <div className="text-center py-16 px-6">
+                  <FileImage className="w-11 h-11 text-[var(--text-placeholder)] mx-auto mb-3" />
+                  <h4 className="text-sm font-bold text-[var(--text-primary)] mb-1">
+                    No Specimens Audited Yet
+                  </h4>
+                  <p className="text-xs text-[var(--text-muted)] max-w-xs mx-auto leading-relaxed">
+                    Upload an image or run a calibrated specimen to inspect your ephemeral session trail.
+                  </p>
+                </div>
+              ) : (
+                history.map((item) => {
+                  const isAi = item.result.verdictLevel === 'ai';
+                  const isReal = item.result.verdictLevel === 'real';
+
+                  return (
+                    <div
+                      key={item.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        onSelectHistoryItem(item);
+                        onClose();
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onSelectHistoryItem(item);
+                          onClose();
+                        }
+                      }}
+                      className="rounded-2xl bg-[var(--sub-block-bg)] border border-[var(--border-hairline)] hover:border-[var(--border-specular)] p-3 flex items-center gap-3 transition-all cursor-pointer group"
+                    >
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-[var(--bg-surface)] shrink-0 border border-[var(--border-hairline)]">
+                        <img
+                          src={item.previewUrl}
+                          alt={item.imageData?.name || 'History preview'}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-[var(--text-primary)] truncate">
+                          {item.imageData?.name || item.result.metadata?.fileName || 'Inspected Image'}
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-1">
+                          <span
+                            className={`mono-badge text-[10px] py-0.5 px-2 ${
+                              isAi
+                                ? 'mono-badge-ai'
+                                : isReal
+                                  ? 'mono-badge-real'
+                                  : 'mono-badge-warn'
+                            }`}
+                          >
+                            {isAi ? 'AI-GENERATED' : isReal ? 'AUTHENTIC' : 'INCONCLUSIVE'}
+                          </span>
+                          <span className="font-mono text-[11px] text-[var(--text-muted)] tabular-nums">
+                            {item.result.confidence}% conf
+                          </span>
+                        </div>
+
+                        <div className="font-mono text-[10px] text-[var(--text-muted)] mt-1 flex items-center gap-1.5">
+                          <Clock className="w-3 h-3" />
+                          <span>{new Date(item.timestamp).toLocaleTimeString()}</span>
+                          {item.result.isFallback && (
+                            <span className="text-[var(--warning)]">· Local</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {onReanalyzeItem && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onReanalyzeItem(item);
+                          }}
+                          title="Re-analyze image"
+                          aria-label="Re-analyze image"
+                          className="p-2 rounded-full text-[var(--blue-light)] hover:bg-[var(--badge-blue-bg)] transition-transform hover:rotate-45"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
+                      <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Footer */}
+            {history.length > 0 && (
+              <div className="px-5 py-3.5 border-t border-[var(--border-hairline)] bg-[var(--sub-block-bg)] flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={onClearHistory}
+                  className="btn-danger-outline text-xs py-1.5 px-3"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Clear Session</span>
+                </button>
+                <span className="font-mono text-[11px] text-[var(--text-muted)]">
+                  sessionStorage only
+                </span>
+              </div>
+            )}
+          </motion.aside>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
